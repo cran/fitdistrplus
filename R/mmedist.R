@@ -1,4 +1,28 @@
-momdist<-function (data, distr) 
+#############################################################################
+#   Copyright (c) 2009 Marie Laure Delignette-Muller, Regis Pouillot, Jean-Baptiste Denis                                                                                                  
+#                                                                                                                                                                        
+#   This program is free software; you can redistribute it and/or modify                                               
+#   it under the terms of the GNU General Public License as published by                                         
+#   the Free Software Foundation; either version 2 of the License, or                                                   
+#   (at your option) any later version.                                                                                                            
+#                                                                                                                                                                         
+#   This program is distributed in the hope that it will be useful,                                                             
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of                                          
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                                 
+#   GNU General Public License for more details.                                                                                    
+#                                                                                                                                                                         
+#   You should have received a copy of the GNU General Public License                                           
+#   along with this program; if not, write to the                                                                                           
+#   Free Software Foundation, Inc.,                                                                                                              
+#   59 Temple Place, Suite 330, Boston, MA 02111-1307, USA                                                             
+#                                                                                                                                                                         
+#############################################################################
+### Matching moment estimation for non-censored data
+###
+###         R functions
+### 
+
+mmedist<-function (data, distr) 
 {
     if (!is.character(distr)) distname<-substring(as.character(match.call()$distr),2)
     else distname<-distr
@@ -11,7 +35,7 @@ momdist<-function (data, distr)
     if (!(is.vector(data) & is.numeric(data) & length(data)>1))
         stop("data must be a numeric vector of length greater than 1")
     if (distname == "norm") {
-        n<-length(data)
+        n <- length(data)
         sd0 <- sqrt((n - 1)/n) * sd(data)
         mx <- mean(data)
         estimate <- c(mx, sd0)
@@ -21,7 +45,7 @@ momdist<-function (data, distr)
     if (distname == "lnorm") {
         if (any(data <= 0)) 
             stop("values must be positive to fit a lognormal distribution")
-        n<-length(data)
+        n <- length(data)
         ldata <- log(data)
         sd0 <- sqrt((n - 1)/n) * sd(ldata)
         ml <- mean(ldata)
@@ -40,7 +64,7 @@ momdist<-function (data, distr)
         return(estimate)        
     }
     if (distname == "gamma" ) {
-        n<-length(data)
+        n <- length(data)
         m <- mean(data)
         v <- (n - 1)/n*var(data)
         shape <- m^2/v
@@ -50,7 +74,7 @@ momdist<-function (data, distr)
         return(estimate)        
    }
    if (distname == "nbinom" ) {
-        n<-length(data)
+        n <- length(data)
         m <- mean(data)
         v <- (n - 1)/n*var(data)
         size <- if (v > m) m^2/(v - m)
@@ -70,7 +94,7 @@ momdist<-function (data, distr)
     if (distname == "beta" ) {
         if (any(data < 0) | any(data > 1)) 
             stop("values must be in [0-1] to fit a beta distribution")
-        n<-length(data)
+        n <- length(data)
         m <- mean(data)
         v <- (n - 1)/n*var(data)
         aux<-m*(1-m)/v - 1
@@ -81,7 +105,7 @@ momdist<-function (data, distr)
         return(estimate)        
    }
     if (distname == "unif" ) {
-        n<-length(data)
+        n <- length(data)
         m <- mean(data)
         v <- (n - 1)/n*var(data)
         min1 <- m-sqrt(3*v)
@@ -91,7 +115,7 @@ momdist<-function (data, distr)
         return(estimate)        
    }
     if (distname == "logis" ) {
-        n<-length(data)
+        n <- length(data)
         m <- mean(data)
         v <- (n - 1)/n*var(data)
         scale <- sqrt(3*v)/pi
@@ -100,4 +124,10 @@ momdist<-function (data, distr)
         return(estimate)        
    }
  
+}
+
+## old function with previous name 
+momdist<-function (data, distr) 
+{
+    stop("the name \"momdist\" for matching moments function is NO MORE used and is replaced by \"mmedist\".")
 }

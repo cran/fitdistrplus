@@ -12,7 +12,7 @@
 }
 
 \usage{
-fitdistcens(censdata, distr, start)
+fitdistcens(censdata, distr, start,...)
 \method{print}{fitdistcens}(x,...)
 \method{plot}{fitdistcens}(x,...)
 \method{summary}{fitdistcens}(object,...)
@@ -36,42 +36,46 @@ fitdistcens(censdata, distr, start)
     starting values are computed (see details).  }
 \item{x}{ an object of class 'fitdistcens'.  }
 \item{object}{ an object of class 'fitdistcens'.  }
-\item{...}{ further arguments passed to or from other methods }
+\item{...}{ further arguments to be passed to generic functions, or to the function \code{"mledist"} 
+     in order to control the optimization method.}
 }
 
 \details{
     Maximum likelihood estimations of the distribution parameters are computed using 
-    the function \code{\link{mledistcens}}. 
-    Maximum likelihood estimations of the distribution parameters are computed. 
-    Direct optimization of the log-likelihood is performed using \code{\link{optim}}, with its
-    default method \code{"Nelder-Mead"} for distributions characterized by more than one parameter and
-    the method \code{"BFGS"} for distributions characterized by only one parameter. 
+    the function \code{\link{mledist}}. 
+    By default direct optimization of the log-likelihood is performed using \code{\link{optim}},
+    with the "Nelder-Mead" method for distributions characterized by more than one parameter
+    and the "BFGS" method for distributions characterized by only one parameter. 
+    The method used in \code{\link{optim}} may be chosen or another optimization method
+    may be chosen using ... argument (see \code{\link{mledist}} for details).
     For the following named distributions, reasonable starting values will 
     be computed if \code{start} is omitted : \code{"norm"}, \code{"lnorm"},
     \code{"exp"} and \code{"pois"}, \code{"cauchy"}, \code{"gamma"}, \code{"logis"},
     \code{"nbinom"} (parametrized by mu and size), \code{"geom"}, \code{"beta"} and \code{"weibull"}. 
     Note that these starting 
-    values may not be good enough if the fit is poor. The function is not able to fit a uniform distribution.
+    values may not be good enough if the fit is poor. The function is not able to fit a uniform distribution.     
     With the parameter estimates, the function returns the log-likelihood and the standard errors of 
     the estimates calculated from the 
-    Hessian at the solution found by \code{optim}.     
+    Hessian at the solution found by \code{optim} or by the user-supplied function passed to mledist.
      
     The plot of an object of class "fitdistcens" returned by \code{fitdistcens} uses the function \code{\link{plotdistcens}}.
 }
 
 \value{ 
-    \code{fitdistcens} returns an object of class 'fitdistcens', a list with 5 components,
+    \code{fitdistcens} returns an object of class 'fitdistcens', a list with following components,
     \item{ estimate }{ the parameter estimates }
     \item{ sd }{ the estimated standard errors }
     \item{ cor }{ the estimated correlation matrix }
     \item{ loglik }{ the log-likelihood }
+     \item{ aic }{ the Akaike information criterion }
+    \item{ bic }{ the the so-called BIC or SBC (Schwarz Bayesian criterion)}
     \item{ censdata }{ the censored dataset }
     \item{ distname }{ the name of the distribution }
 }
 
 
 \seealso{ 
-    \code{\link{plotdistcens}}, \code{\link{optim}}, \code{\link{mledistcens}} and 
+    \code{\link{plotdistcens}}, \code{\link{optim}}, \code{\link{mledist}} and 
     \code{\link{fitdist}}.
 }
 
@@ -87,6 +91,9 @@ Marie-Laure Delignette-Muller \email{ml.delignette@vet-lyon.fr}
 %\note{  }
 
 \examples{
+# (1) basic fit of a normal distribution on censored data
+#
+
 d1<-data.frame(
 left=c(1.73,1.51,0.77,1.96,1.96,-1.4,-1.4,NA,-0.11,0.55,0.41,
     2.56,NA,-0.53,0.63,-1.4,-1.4,-1.4,NA,0.13),
@@ -97,11 +104,18 @@ f1n
 summary(f1n)
 plot(f1n,rightNA=3)
 
-dgumbel<-function(x,a,b) 1/b*exp((a-x)/b)*exp(-exp((a-x)/b))
-pgumbel<-function(q,a,b) exp(-exp((a-q)/b))
+# (2) defining your own distribution functions, here for the Gumbel distribution
+# for other distributions, see the CRAN task view dedicated to probability distributions
+
+dgumbel <- function(x,a,b) 1/b*exp((a-x)/b)*exp(-exp((a-x)/b))
+pgumbel <- function(q,a,b) exp(-exp((a-q)/b))
+qgumbel <- function(p,a,b) a-b*log(-log(p))
 f1g<-fitdistcens(d1,"gumbel",start=list(a=0,b=2))
 summary(f1g)
 plot(f1g,rightNA=3)
+
+# (3) comparison of fits of various distributions
+# 
 
 d3<-data.frame(left=10^(d1$left),right=10^(d1$right))
 f3w<-fitdistcens(d3,"weibull")
@@ -113,6 +127,36 @@ plot(f3l,leftNA=0)
 f3e<-fitdistcens(d3,"exp")
 summary(f3e)
 plot(f3e,leftNA=0)
+
+# (4) how to change the optimisation method?
+#
+
+fitdistcens(d3,"gamma",optim.method="Nelder-Mead")
+fitdistcens(d3,"gamma",optim.method="BFGS") 
+fitdistcens(d3,"gamma",optim.method="SANN") 
+fitdistcens(d3,"gamma",optim.method="L-BFGS-B",lower=c(0,0)) 
+
+# (5) custom optimisation function - example with the genetic algorithm
+#
+\dontrun{
+
+    #wrap genoud function rgenoud package
+    mygenoud <- function(fn, par, ...) 
+    {
+        require(rgenoud)
+        res <- genoud(fn, starting.values=par, ...)        
+        standardres <- c(res, convergence=0)
+            
+        return(standardres)
+    }
+
+    # call fitdistcens with a 'custom' optimization function
+    fit.with.genoud<-fitdistcens(d3, "gamma", custom.optim=mygenoud, nvars=2,    
+        Domains=cbind(c(0,0), c(10, 10)), boundary.enforcement=1, 
+        print.level=1, hessian=TRUE)
+
+    summary(fit.with.genoud)
+}
 
 }
 

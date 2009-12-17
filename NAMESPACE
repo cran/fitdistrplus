@@ -1,0 +1,38 @@
+### Exports
+
+#fitdist class
+export(fitdist)
+S3method(summary, fitdist)
+S3method(plot, fitdist)
+S3method(print, fitdist)
+S3method(print, summary.fitdist)
+
+#fitditscens class
+export(fitdistcens)
+S3method(summary, fitdistcens)
+S3method(plot, fitdistcens)
+S3method(print, fitdistcens)
+
+#bootdist class
+export(bootdist)
+S3method(summary, bootdist)
+S3method(plot, bootdist)
+S3method(print, bootdist)
+
+#bootdistcens class
+export(bootdistcens)
+S3method(summary, bootdistcens)
+S3method(plot, bootdistcens)
+S3method(print, bootdistcens)
+
+#other functions
+export(descdist)
+
+export(mledist)
+
+export(mmedist)
+
+export(plotdist, plotdistcens)
+
+### use dynamic library for C code
+#useDynLib(fitdistrplus, .registration = TRUE)

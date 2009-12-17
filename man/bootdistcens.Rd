@@ -13,7 +13,7 @@
 }
 
 \usage{
-bootdistcens(f, niter=999)
+bootdistcens(f, niter=1001)
 \method{print}{bootdistcens}(x,...)
 \method{plot}{bootdistcens}(x,...)
 \method{summary}{bootdistcens}(object,...)
@@ -25,15 +25,15 @@ bootdistcens(f, niter=999)
 \item{niter}{ The number of samples drawn by bootstrap.  }
 \item{x}{ an object of class 'bootdistcens'.  }
 \item{object}{ an object of class 'bootdistcens'.  }
-\item{...}{ further arguments passed to other methods }
+\item{...}{ further arguments to be passed to generic methods }
 }
 
 \details{
     Samples are drawn by 
     non parametric bootstrap (resampling with replacement from the data set). On each bootstrap sample the function 
-    \code{mledistcens} is used to estimate bootstrapped values of parameters. When \code{mledistcens} fails
+    \code{mledist} is used to estimate bootstrapped values of parameters. When \code{mledist} fails
     to converge, \code{NA} values are returned. Medians and 2.5 and 97.5 percentiles are computed by removing
-    \code{NA} values. The number of iterations for which \code{mledistcens} converges is printed in the summary with
+    \code{NA} values. The number of iterations for which \code{mledist} converges is printed in the summary with
     the medians and the 95 percent confidence intervals of parameters (2.5 and 97.5 percentiles).
     
     The plot of an object of class 'bootdistcens' consists in a scatterplot or a matrix of scatterplots
@@ -48,13 +48,13 @@ bootdistcens(f, niter=999)
     \code{bootdistcens} returns an object of class 'bootdistcens', a list with 3 components,
     \item{ estim }{ a data frame containing the boostrapped values of parameters.}
     \item{ converg }{ a vector containing the codes for convergence obtained when using \code{mledist} on 
-        each bootraped data set or \code{NULL} if \code{momdist} is used.}
-    \item{ CI }{ bootstrap medians and 95 percent confidence intervals of parameters. }
+        each bootstraped data set or \code{NULL} if \code{mmedist} is used.}
+    \item{ CI }{ bootstrap medians and 95 percent confidence percentile intervals of parameters. }
 }
         
 
 \seealso{ 
-    \code{\link{fitdistcens}} and \code{\link{mledistcens}}.
+    \code{\link{fitdistcens}} and \code{\link{mledist}}.
 }
 
 \references{ 

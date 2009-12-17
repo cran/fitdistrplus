@@ -13,7 +13,7 @@
 }
 
 \usage{
-bootdist(f, bootmethod="param", niter=999)
+bootdist(f, bootmethod="param", niter=1001)
 \method{print}{bootdist}(x,...)
 \method{plot}{bootdist}(x,...)
 \method{summary}{bootdist}(object,...)
@@ -27,13 +27,13 @@ bootdist(f, bootmethod="param", niter=999)
 \item{niter}{ The number of samples drawn by bootstrap.  }
 \item{x}{ an object of class 'bootdist'.  }
 \item{object}{ an object of class 'bootdist'.  }
-\item{...}{ further arguments passed to other methods }
+\item{...}{ further arguments to be passed to generic methods }
 }
 
 \details{
     Samples are drawn by parametric bootstrap (resampling from the distribution fitted by \code{fitdist}) or
     non parametric bootstrap (resampling with replacement from the data set). On each bootstrap sample the function 
-    \code{mledist}  or the function \code{momdist} (according to the component \code{f$method} of the 
+    \code{mledist}  or the function \code{mmedist} (according to the component \code{f$method} of the 
     object of class 'fitdist') is used to estimate bootstrapped values of parameters. When \code{mledist} fails
     to converge, \code{NA} values are returned. Medians and 2.5 and 97.5 percentiles are computed by removing
     \code{NA} values. The number of iterations for which \code{mledist} converges is printed in the summary with
@@ -51,15 +51,15 @@ bootdist(f, bootmethod="param", niter=999)
     \code{bootdist} returns an object of class 'bootdist', a list with 4 components,
     \item{ estim }{ a data frame containing the boostrapped values of parameters.}
     \item{ converg }{ a vector containing the codes for convergence obtained when using \code{mledist} on 
-        each bootraped data set or \code{NULL} if \code{momdist} is used.}
+        each bootstraped data set or \code{NULL} if \code{mmedist} is used.}
     \item{ method }{ A character string coding for the type of resampling : \code{"param"} for a parametric
         resampling and \code{"nonparam"} for a nonparametric resampling of data. }
-    \item{ CI }{ bootstrap medians and 95 percent confidence intervals of parameters. }
+    \item{ CI }{ bootstrap medians and 95 percent confidence percentile intervals of parameters. }
 }
         
 
 \seealso{ 
-    \code{\link{fitdist}}, \code{\link{mledist}} and \code{\link{momdist}}.
+    \code{\link{fitdist}}, \code{\link{mledist}} and \code{\link{mmedist}}.
 }
 
 \references{ 
@@ -91,7 +91,7 @@ b1b<-bootdist(f1b)
 plot(b1b)
 
 x2<-c(rep(4,1),rep(2,3),rep(1,7),rep(0,12))
-f2<-fitdist(x2,"pois",method="mom")
+f2<-fitdist(x2,"pois",method="mme")
 b2<-bootdist(f2)
 plot(b2,pch=16)
 summary(b2)

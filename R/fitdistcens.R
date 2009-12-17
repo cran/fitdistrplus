@@ -1,5 +1,33 @@
-fitdistcens<-function (censdata, distr, start) 
+#############################################################################
+#   Copyright (c) 2009 Marie Laure Delignette-Muller, Regis Pouillot, Jean-Baptiste Denis                                                                                                  
+#                                                                                                                                                                        
+#   This program is free software; you can redistribute it and/or modify                                               
+#   it under the terms of the GNU General Public License as published by                                         
+#   the Free Software Foundation; either version 2 of the License, or                                                   
+#   (at your option) any later version.                                                                                                            
+#                                                                                                                                                                         
+#   This program is distributed in the hope that it will be useful,                                                             
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of                                          
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                                 
+#   GNU General Public License for more details.                                                                                    
+#                                                                                                                                                                         
+#   You should have received a copy of the GNU General Public License                                           
+#   along with this program; if not, write to the                                                                                           
+#   Free Software Foundation, Inc.,                                                                                                              
+#   59 Temple Place, Suite 330, Boston, MA 02111-1307, USA                                                             
+#                                                                                                                                                                         
+#############################################################################
+### fit parametric distributions for censored data
+###
+###         R functions
+### 
+
+fitdistcens<-function (censdata, distr, start,...) 
 {
+    if (missing(censdata) ||
+        !(is.vector(censdata$left) & is.vector(censdata$right) & length(censdata[,1])>1))
+        stop("datacens must be a dataframe with two columns named left 
+            and right and more than one line")
     if (!is.character(distr)) distname<-substring(as.character(match.call()$distr),2)
     else distname<-distr
     ddistname<-paste("d",distname,sep="")
@@ -8,11 +36,11 @@ fitdistcens<-function (censdata, distr, start)
     pdistname<-paste("p",distname,sep="")
     if (!exists(pdistname,mode="function"))
         stop(paste("The ",pdistname," function must be defined"))
-    # MLE fit with mledistcens 
+    # MLE fit with mledist 
     if (missing(start))
-        mle<-mledistcens(censdata,distname) 
+        mle<-mledist(censdata,distname,...) 
     else 
-    mle<-mledistcens(censdata,distname,start)
+    mle<-mledist(censdata,distname,start,...)
     if (mle$convergence>0) 
         stop("the function mle failed to estimate the parameters, 
         with the error code ",mle$convergence) 
@@ -21,8 +49,12 @@ fitdistcens<-function (censdata, distr, start)
     sd<-sqrt(diag(varcovar))
     correl<-cov2cor(varcovar)
     loglik<-mle$loglik
+    n<-nrow(censdata)
+    npar<-length(estimate)
+    aic<--2*loglik+2*npar
+    bic<--2*loglik+log(n)*npar
          
-    return(structure(list(estimate = estimate, sd = sd, cor = correl, loglik = loglik, 
+    return(structure(list(estimate = estimate, sd = sd, cor = correl, loglik = loglik,aic=aic,bic=bic, 
         censdata=censdata, distname=distname), class = "fitdistcens"))
         
 }
@@ -58,7 +90,9 @@ summary.fitdistcens <- function(object,...){
     "' BY MAXIMUM LIKELIHOOD ON CENSORED DATA \n")
     cat("PARAMETERS\n")
     print(cbind.data.frame("estimate" = object$estimate, "Std. Error" = object$sd))
-    cat("Loglikelihood: ",object$loglik,"\n")
+    cat("Loglikelihood: ",object$loglik,"  ")
+    cat("AIC: ",object$aic,"  ")
+    cat("BIC: ",object$bic,"\n")
     if (length(object$estimate) > 1) {
         cat("Correlation matrix:\n")
         print(object$cor)

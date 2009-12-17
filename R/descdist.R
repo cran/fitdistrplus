@@ -1,3 +1,27 @@
+#############################################################################
+#   Copyright (c) 2009 Marie Laure Delignette-Muller, Regis Pouillot, Jean-Baptiste Denis                                                                                                  
+#                                                                                                                                                                        
+#   This program is free software; you can redistribute it and/or modify                                               
+#   it under the terms of the GNU General Public License as published by                                         
+#   the Free Software Foundation; either version 2 of the License, or                                                   
+#   (at your option) any later version.                                                                                                            
+#                                                                                                                                                                         
+#   This program is distributed in the hope that it will be useful,                                                             
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of                                          
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                                 
+#   GNU General Public License for more details.                                                                                    
+#                                                                                                                                                                         
+#   You should have received a copy of the GNU General Public License                                           
+#   along with this program; if not, write to the                                                                                           
+#   Free Software Foundation, Inc.,                                                                                                              
+#   59 Temple Place, Suite 330, Boston, MA 02111-1307, USA                                                             
+#                                                                                                                                                                         
+#############################################################################
+### Description of an empirical distribution
+###
+###         R functions
+### 
+
 descdist <- function(data,discrete=FALSE,boot=NULL,graph=TRUE)
 {
     #if(is.mcnode(data)) data <- as.vector(data)
@@ -20,8 +44,8 @@ descdist <- function(data,discrete=FALSE,boot=NULL,graph=TRUE)
     mean=mean(data),sd=sqrt(moment(data,2)),
     skewness=skewness(data),kurtosis=kurtosis(data))
     
-    op<-options()
-    options(digits=3)
+    #op<-options()
+    #options(digits=3)
     cat("summary statistics\n")
     cat("------\n")
     cat("min: ",res$min,"  max: ",res$max,"\n")
@@ -30,7 +54,7 @@ descdist <- function(data,discrete=FALSE,boot=NULL,graph=TRUE)
     cat("sample sd: ",res$sd,"\n")
     cat("sample skewness: ",res$skewness,"\n")
     cat("sample kurtosis: ",res$kurtosis,"\n")
-    options(op)
+    #options(op)
     
     skewdata<-res$skewness
     kurtdata<-res$kurtosis

@@ -1,4 +1,29 @@
-bootdist<-function (f, bootmethod="param", niter=999)
+#############################################################################
+#   Copyright (c) 2009 Marie Laure Delignette-Muller, Regis Pouillot, Jean-Baptiste Denis                                                                                                  
+#                                                                                                                                                                        
+#   This program is free software; you can redistribute it and/or modify                                               
+#   it under the terms of the GNU General Public License as published by                                         
+#   the Free Software Foundation; either version 2 of the License, or                                                   
+#   (at your option) any later version.                                                                                                            
+#                                                                                                                                                                         
+#   This program is distributed in the hope that it will be useful,                                                             
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of                                          
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                                 
+#   GNU General Public License for more details.                                                                                    
+#                                                                                                                                                                         
+#   You should have received a copy of the GNU General Public License                                           
+#   along with this program; if not, write to the                                                                                           
+#   Free Software Foundation, Inc.,                                                                                                              
+#   59 Temple Place, Suite 330, Boston, MA 02111-1307, USA                                                             
+#                                                                                                                                                                         
+#############################################################################
+### bootstrap in fitdistrplus
+###
+###         R functions
+### 
+
+
+bootdist<-function (f, bootmethod="param", niter=1001)
 { 
     if (niter<10) 
         stop("niter must be an integer above 10")
@@ -46,7 +71,7 @@ bootdist<-function (f, bootmethod="param", niter=999)
     }
     else { # f$method=="mom"
         funcmom<-function(iter) {
-            mom<-momdist(rdata[,iter],f$distname)
+            mom<-mmedist(rdata[,iter],f$distname)
         }
         resboot<-sapply(1:niter,funcmom)
         if (is.vector(resboot)) {
@@ -76,8 +101,8 @@ print.bootdist <- function(x,...){
         cat("Parameter values obtained with parametric bootstrap \n")
     else
        cat("Parameter values obtained with nonparametric bootstrap \n")
-    op<-options()
-    options(digits=3)
+    #op<-options()
+    #options(digits=3)
     print(x$estim,...)    
     if (!is.null(x$converg)) { 
         nconverg<-length(x$converg[x$converg==0])
@@ -85,7 +110,7 @@ print.bootdist <- function(x,...){
         cat("Maximum likelihood method converged for ",nconverg," among ",
             length(x$converg)," iterations \n")
     }
-    options(op)
+    #options(op)
 
 }
 
@@ -94,27 +119,27 @@ plot.bootdist <- function(x,...){
         stop("Use only with 'bootdist' objects")
     if (dim(x$estim)[2]==1) {
         stripchart(x$estim,method="jitter",
-            xlab="Scatterplot of boostrapped values of the parameter",...)
+            xlab="Boostrapped values of the parameter",...)
     }
     else {
         if (dim(x$estim)[2]==2)
             plot(x$estim,
-            main="Scatterplot of boostrapped values of parameters",...)
+            main="Boostrapped values of parameters",...)
         else 
             plot(x$estim,
-            main="Scatterplots of boostrapped values of parameters",...)
+            main="Boostrapped values of parameters",...)
     }
 }
 
 summary.bootdist <- function(object,...){
     if (!inherits(object, "bootdist"))
         stop("Use only with 'bootdist' objects")
-    op<-options()
-    options(digits=3)
+    #op<-options()
+    #options(digits=3)
     if (object$method=="param") 
-        cat("Parametric bootstrap medians and 95% CI \n")
+        cat("Parametric bootstrap medians and 95% percentile CI \n")
     else
-       cat("Nonparametric bootstrap medians and 95% CI \n")
+       cat("Nonparametric bootstrap medians and 95% percentile CI \n")
     print(object$CI)
     
      if (!is.null(object$converg)) { 
@@ -123,5 +148,5 @@ summary.bootdist <- function(object,...){
         cat("Maximum likelihood method converged for ",nconverg," among ",
             length(object$converg)," iterations \n")
     }
-   options(op)
+   #options(op)
 }
