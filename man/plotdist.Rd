@@ -28,7 +28,7 @@ plotdist(data,distr,para,breaks="default",discrete=FALSE,...)
     account if \code{distname} is defined. In this last case, the distribution is automatically assumed
     discrete if and only if \code{distname} is \code{"binom"}, \code{"nbinom"},\code{"geom"},
     \code{"hyper"} or \code{"pois"}.  }
-\item{...}{ further graphical arguments passed to other methods }
+\item{\dots}{ further graphical arguments passed to graphical functions used in plotdist }
 }
 
 \details{
@@ -36,13 +36,16 @@ plotdist(data,distr,para,breaks="default",discrete=FALSE,...)
     in density and in cdf. For continuous distributions, the function \code{\link{hist}} is used with its default
     breaks definition if \code{breaks} is \code{"default"} or passing \code{breaks} as an argument if it differs
     from \code{"default"}. For continuous distribution and when a theoretical distribution is specified
-    by both arguments \code{distname} and \code{para}, Q-Q plot and P-P plot are also plotted (Cullen and Fray, 1999).
+    by both arguments \code{distname} and \code{para}, Q-Q plot
+    (plot of the quantiles of the theoretical fitted distribution (x-axis) against the empirical quantiles of the data)
+    and P-P plot (i.e. for each value of the data set, plot of the cumulative density function of the fitted distribution
+    (x-axis) against the empirical cumulative density function (y-axis)) are also given (Cullen and Frey, 1999).
     The function \code{\link{ppoints}} is used for the Q-Q plot, to generate the set of probabilities at 
     which to evaluate the inverse distribution.
 }
 
 \seealso{ 
-    \code{\link{descdist}}, \code{\link{hist}}, \code{\link{plotdistcens}} and \code{\link{ppoints}}.
+    \code{\link{descdist}}, \code{\link{hist}},  \code{\link{plot}}, \code{\link{plotdistcens}} and \code{\link{ppoints}}.
 }
 
 \references{ 
@@ -59,13 +62,20 @@ Marie-Laure Delignette-Muller \email{ml.delignette@vet-lyon.fr}
 x1<-c(6.4,13.3,4.1,1.3,14.1,10.6,9.9,9.6,15.3,22.1,13.4,
 13.2,8.4,6.3,8.9,5.2,10.9,14.4)
 plotdist(x1)
+plotdist(x1,col="red",type="b",pch=4)
+plotdist(x1,type="s")
 
 x2<-c(rep(4,1),rep(2,3),rep(1,7),rep(0,12))
 plotdist(x2,discrete=TRUE)
 plotdist(x2,"pois",para=list(lambda=mean(x2)))
+plotdist(x2,"pois",para=list(lambda=mean(x2)),col="red",lwd="2")
 
 xn<-rnorm(n=100,mean=10,sd=5)
 plotdist(xn,"norm",para=list(mean=mean(xn),sd=sd(xn)))
+plotdist(xn,"norm",para=list(mean=mean(xn),sd=sd(xn)),pch=16,col="green")
+
+data(groundbeef)
+plotdist(groundbeef$serving)
 }
 
 \keyword{ distribution }% at least one, from doc/KEYWORDS
