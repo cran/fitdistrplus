@@ -1,5 +1,28 @@
 === fitdistrplus : Help to fit of a parametric distribution ===
 
+Version 0.2-1
+=============
+
+NEW FEATURES
+- a new fitting method was implemented for continuous distributions : the maximum goodness-of-fit
+estimation (function "mgedist") (for the moment only available for non censored data).
+
+Version 0.1-5
+=============
+
+NEW FEATURES
+- a new goodness-of-fit statistic was added in gofstat, with corresponding test : 
+the Cramer-von Mises distance
+- a new fitting method has been implemented : the quantile matching estimation (function "qmedist"). 
+For the moment, only available for non censored data.
+- the moment matching estimation has been extended (in function mmedist) to enable numerical 
+matching when closed formula are not available.
+
+BUG FIXES
+
+- correction of a bug inserted while adding the argument "fix.arg" which prevent the print of the
+results of goodness-of-fit tests .
+
 
 Version 0.1-4
 =============

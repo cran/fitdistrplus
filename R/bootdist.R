@@ -27,14 +27,18 @@ bootdist<-function (f, bootmethod="param", niter=1001)
 { 
     if (niter<10) 
         stop("niter must be an integer above 10")
-    if (!is.element(bootmethod,c("param","nonparam")))
-        stop("bootmethod must be affected to 'param' or 'nonparam'") 
+#    if (!is.element(bootmethod,c("param","nonparam")))
+#        stop("bootmethod must be affected to 'param' or 'nonparam'")
+        bootmethod <- match.arg(bootmethod, c("param","nonparam"))
+    
     if (!inherits(f, "fitdist"))
         stop("Use only with 'fitdist' objects")
     rdistname<-paste("r",f$distname,sep="")
     if (!exists(rdistname,mode="function"))
         stop(paste("The ",rdistname," function must be defined"))
-    if (bootmethod=="param") { # parametric bootstrap
+    
+    #simulate bootstrap data
+    if (bootmethod == "param") { # parametric bootstrap
         rdata<-do.call(rdistname,c(list(n=niter*f$n),as.list(f$estimate),f$fix.arg))
         dim(rdata)<-c(f$n,niter)
     }
@@ -42,19 +46,21 @@ bootdist<-function (f, bootmethod="param", niter=1001)
         rdata<-sample(f$data,size=niter*f$n,replace=TRUE)
         dim(rdata)<-c(f$n,niter)
     }
-    if (f$method=="mle") {
-        start<-f$estimate
+    
+    #compute bootstrap estimates
+    foncestim <- switch(f$method,"mle"=mledist,"qme"=qmedist,"mme"=mmedist,"mge"=mgedist)
+    start<-f$estimate
         if (is.null(f$dots))
-            funcmle<-function(iter) {
-                mle <- do.call(mledist,list(data=rdata[,iter],distr=f$distname,start=start,fix.arg=f$fix.arg))
-                return(c(mle$estimate,mle$convergence))
+            func<-function(iter) {
+                res <- do.call(foncestim,list(data=rdata[,iter],distr=f$distname,start=start,fix.arg=f$fix.arg))
+                return(c(res$estimate,res$convergence))
             }
         else
-            funcmle<-function(iter) {
-                mle <- do.call(mledist,c(list(data=rdata[,iter],distr=f$distname,start=start,fix.arg=f$fix.arg),f$dots))
-                return(c(mle$estimate,mle$convergence))
+            func<-function(iter) {
+                res <- do.call(foncestim,c(list(data=rdata[,iter],distr=f$distname,start=start,fix.arg=f$fix.arg),f$dots))
+                return(c(res$estimate,res$convergence))
             }
-        resboot<-sapply(1:niter,funcmle)
+        resboot<-sapply(1:niter,func)
         rownames(resboot)<-c(names(start),"convergence")
         if (length(resboot[,1])>2) {
             estim<-data.frame(t(resboot)[,-length(resboot[,1])])
@@ -74,30 +80,7 @@ bootdist<-function (f, bootmethod="param", niter=1001)
         return(structure(list(estim=estim,
         converg=t(resboot)[,length(resboot[,1])],method=bootmethod, CI=bootCI),
         class="bootdist"))
-    }
-    else { # f$method=="mom"
-        funcmom<-function(iter) {
-            mom<-mmedist(rdata[,iter],f$distname)
-        }
-        resboot<-sapply(1:niter,funcmom)
-        if (is.vector(resboot)) {
-            estim<-as.data.frame(resboot)
-            names(estim)<-names(f$estimate)
-            bootCI <- c(median(resboot,na.rm=TRUE),quantile(resboot,0.025,na.rm=TRUE),
-            quantile(resboot,0.975,na.rm=TRUE))
-            names(bootCI)<-c("Median","2.5%","97.5%") 
-        }           
-         else {
-            estim<-data.frame(t(resboot))
-            bootCI <- cbind(apply(resboot,1,median,na.rm=TRUE),
-                apply(resboot,1,quantile,0.025,na.rm=TRUE),
-            apply(resboot,1,quantile,0.975,na.rm=TRUE))
-            colnames(bootCI) <- c("Median","2.5%","97.5%")
-         }
-        return(structure(list(estim=estim, 
-        converg=NULL,method=bootmethod,CI=bootCI), 
-        class="bootdist"))
-    }
+        
 }
 
 print.bootdist <- function(x,...){
@@ -110,11 +93,12 @@ print.bootdist <- function(x,...){
     #op<-options()
     #options(digits=3)
     print(x$estim,...)    
-    if (!is.null(x$converg)) { 
-        nconverg<-length(x$converg[x$converg==0])
+    nconverg<-length(x$converg[x$converg==0])
+    if (nconverg < length(x$converg))
+    {
         cat("\n")
-        cat("Maximum likelihood method converged for ",nconverg," among ",
-            length(x$converg)," iterations \n")
+        cat("The estimation method converged only for ",nconverg," among ",
+                length(x$converg)," iterations \n")
     }
     #options(op)
 
@@ -148,11 +132,12 @@ summary.bootdist <- function(object,...){
        cat("Nonparametric bootstrap medians and 95% percentile CI \n")
     print(object$CI)
     
-     if (!is.null(object$converg)) { 
-        nconverg<-length(object$converg[object$converg==0])
-        cat(" \n")
-        cat("Maximum likelihood method converged for ",nconverg," among ",
-            length(object$converg)," iterations \n")
+    nconverg<-length(object$converg[object$converg==0])
+    if (nconverg < length(object$converg))
+    {
+        cat("\n")
+        cat("The estimation method converged only for ",nconverg," among ",
+                length(object$converg)," iterations \n")
     }
    #options(op)
 }

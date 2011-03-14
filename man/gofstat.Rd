@@ -34,7 +34,11 @@ gofstat(f, chisqbreaks, meancount, print.test = FALSE)
     by the argument 
     \code{chisqbreaks} or cells automatically defined from the data in order 
     to reach roughly the same number of observations per cell, roughly equal to the argument
-    \code{meancount}, or sligthly more if there are some ties. If \code{chisqbreaks} and \code{meancount} 
+    \code{meancount}, or sligthly more if there are some ties. 
+    The choice to define cells from the empirical distribution (data) and not from the
+    theoretical distribution was done to enable the comparison of Chi-squared values obtained
+    with different distributions fitted on a same dataset.
+    If \code{chisqbreaks} and \code{meancount} 
     are both omitted, \code{meancount} is fixed in order to obtain roughly \eqn{(4n)^{2/5}} cells, 
     with \eqn{n} the length of the dataset (Vose, 2000).
     The Chi-squared statistic is not computed if the program fails
@@ -44,8 +48,8 @@ gofstat(f, chisqbreaks, meancount, print.test = FALSE)
     
     For the distributions assumed continuous (all but \code{"binom"}, 
     \code{"nbinom"}, \code{"geom"}, \code{"hyper"} and \code{"pois"} for R base distributions), 
-    Kolmogorov-Smirnov and Anderson-Darling statistics are also computed, 
-    as defined by Cullen and Frey (1999). 
+    Kolmogorov-Smirnov, Cramer-von Mises and Anderson-Darling  and statistics are also computed, 
+    as defined by Stephens (1986). 
     
     An approximate Kolmogorov-Smirnov test is 
     performed by assuming the distribution parameters known. The critical value defined by Stephens (1986) 
@@ -57,12 +61,14 @@ gofstat(f, chisqbreaks, meancount, print.test = FALSE)
     For datasets with more than 5 observations and for distributions for 
     which the test is described by Stephens (1986) (\code{"norm"}, \code{"lnorm"},
     \code{"exp"}, \code{"cauchy"}, \code{"gamma"}, \code{"logis"} and \code{"weibull"}),
-    the Anderson-darling test is performed as described by Stephens (1986). This test takes into 
+    the Cramer-von Mises and Anderson-darling tests are performed as described by Stephens (1986). 
+    Those tests take into 
     account the fact that the parameters are not known but estimated from the data. The result is the 
-    decision to reject or not the distribution at the significance level 0.05.
+    decision to reject or not the distribution at the significance level 0.05. Those tests are available
+    only for maximum likelihood estimations.
     
     Only recommended statistics are automatically printed, i.e.
-    Anderson-Darling and Kolmogorov statistics for continuous distributions and
+    Cramer-von Mises, Anderson-Darling and Kolmogorov statistics for continuous distributions and
     Chi-squared statistics for discrete ones ( \code{"binom"}, 
     \code{"nbinom"}, \code{"geom"}, \code{"hyper"} and \code{"pois"} ). Results of the tests are printed
     only if \code{print.test=TRUE}. Even not printed, all the available results may be found in the list 
@@ -77,6 +83,8 @@ gofstat(f, chisqbreaks, meancount, print.test = FALSE)
     \item{ chisqpvalue }{ p-value of the Chi-squared statistic or \code{NULL} if not computed}
     \item{ chisqdf }{ degree of freedom of the Chi-squared distribution or \code{NULL} if not computed }
     \item{ chisqtable }{ a table with observed and theoretical counts used for the Chi-squared calculations }
+    \item{ cvm }{ the Cramer-von Mises statistic or \code{NULL} if not computed }
+    \item{ cvmtest }{ the decision of the Cramer-von Mises test or \code{NULL} if not computed }
     \item{ ad }{ the Anderson-Darling statistic or \code{NULL} if not computed }
     \item{ adtest }{ the decision of the Anderson-Darling test or \code{NULL} if not computed }
     \item{ ks }{ the Kolmogorov-Smirnov statistic or \code{NULL} if not computed }
@@ -100,7 +108,7 @@ Vose D (2000) Risk analysis, a quantitative guide. John Wiley & Sons Ltd, Chisch
 
 
 \author{ 
-Marie-Laure Delignette-Muller \email{ml.delignette@vet-lyon.fr} and
+Marie-Laure Delignette-Muller \email{ml.delignette@vetagro-sup.fr} and
 Christophe Dutang
 }
 
