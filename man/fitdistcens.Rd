@@ -38,8 +38,10 @@ fitdistcens(censdata, distr, start=NULL, fix.arg=NULL,...)
     that must kept fixed rather than estimated by maximum likelihood. }
 \item{x}{ an object of class 'fitdistcens'.  }
 \item{object}{ an object of class 'fitdistcens'.  }
-\item{...}{ further arguments to be passed to generic functions, or to the function \code{"mledist"} 
-     in order to control the optimization method.}
+\item{...}{ further arguments to be passed to generic functions,
+    to the function \code{"plotdistcens"} in order to control the type of ecdf-plot used for censored data, 
+    or to the function \code{"mledist"} 
+    in order to control the optimization method.}
 }
 
 \details{
@@ -73,6 +75,8 @@ fitdistcens(censdata, distr, start=NULL, fix.arg=NULL,...)
     \item{ bic }{ the the so-called BIC or SBC (Schwarz Bayesian criterion)}
     \item{ censdata }{ the censored dataset }
     \item{ distname }{ the name of the distribution }
+    \item{ fix.arg }{ the named list giving the values of parameters of the named distribution
+    that must kept fixed rather than estimated by maximum likelihood or NULL if there are no such parameters. }
     \item{ dots }{ the list of  further arguments passed in \dots to be used in \code{bootdistcens} to
     control the optimization method used in iterative calls to \code{mledist} or NULL if no such arguments}
 }
@@ -89,7 +93,7 @@ Venables WN and Ripley BD (2002) Modern applied statistics with S. Springer, New
 
 
 \author{ 
-Marie-Laure Delignette-Muller \email{ml.delignette@vetagro-sup.fr} 
+Marie-Laure Delignette-Muller \email{marielaure.delignettemuller@vetagro-sup.fr} 
 }
 
 %\note{  }
@@ -106,7 +110,7 @@ right=c(1.73,1.51,0.77,1.96,1.96,0,-0.7,-1.4,-0.11,0.55,0.41,
 f1n<-fitdistcens(d1, "norm")
 f1n
 summary(f1n)
-plot(f1n,rightNA=3)
+plot(f1n)
 
 # (2) defining your own distribution functions, here for the Gumbel distribution
 # for other distributions, see the CRAN task view dedicated to 
@@ -118,7 +122,7 @@ pgumbel <- function(q,a,b) exp(-exp((a-q)/b))
 qgumbel <- function(p,a,b) a-b*log(-log(p))
 f1g<-fitdistcens(d1,"gumbel",start=list(a=0,b=2))
 summary(f1g)
-plot(f1g,rightNA=3)
+plot(f1g)
 
 # (3) comparison of fits of various distributions
 # 
@@ -126,13 +130,13 @@ plot(f1g,rightNA=3)
 d3<-data.frame(left=10^(d1$left),right=10^(d1$right))
 f3w<-fitdistcens(d3,"weibull")
 summary(f3w)
-plot(f3w,leftNA=0)
+plot(f3w)
 f3l<-fitdistcens(d3,"lnorm")
 summary(f3l)
-plot(f3l,leftNA=0)
+plot(f3l)
 f3e<-fitdistcens(d3,"exp")
 summary(f3e)
-plot(f3e,leftNA=0)
+plot(f3e)
 
 # (4) how to change the optimisation method?
 #
@@ -174,7 +178,10 @@ fitdistcens(d1, "norm", start=list(sd=1.5),fix.arg=list(mean=0.1))
 data(smokedfish)
 fitsf <- fitdistcens(smokedfish,"norm")
 summary(fitsf)
+# default plot using the Turnbull algorithm
 plot(fitsf)
+# basic plot using intervals and points (see ?plotdiscens for details)
+plot(fitsf, Turnbull = FALSE)
 
 }
 
