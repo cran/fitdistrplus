@@ -10,47 +10,52 @@
 }
 
 \usage{
-cdfcompcens(ft,xlogscale=FALSE,addlegend=TRUE,legendtext,datacol,
-fitcol,fitlty,xlab,ylab,main,xlegend = "bottomright",
-ylegend = NULL, ...)
+cdfcompcens(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, main, xlab, ylab, 
+    datacol, fitlty, fitcol, addlegend = TRUE, legendtext, xlegend = "bottomright", 
+    ylegend = NULL, lines01 = FALSE, Turnbull.confint = FALSE, \dots)
 }
 %- maybe also 'usage' for other objects documented here.
 
 \arguments{
-\item{ft}{ A list of object of class 'fitdist'.  }
-\item{xlogscale}{ If TRUE the cdf plot uses a log scale for data (x axis) }
-\item{addlegend}{ If TRUE a legend is added to the plot to link colors and types of lines
-    to the fitted distributions }
-\item{legendtext}{An expression vector of length the number of fits to compare, so 
-    the length of list ft }
-\item{datacol}{A specification of the color to be 
-    used in plotting data points (ecdf)}
-\item{fitcol}{A vector of length the number of fits to compare specifying the
-     colors of lines used to plot fitted cumulative distributions}
-\item{fitlty}{A vector of length the number of fits to compare specifying the
-     types of lines used to plot fitted cumulative distributions}
-\item{xlab}{A title for the x axis}
-\item{ylab}{A title for the y axis}
-\item{main}{An overall title for the plot}
-\item{xlegend,ylegend}{the x and y co-ordinates to be used to position the legend.
+\item{ft}{One \code{"fitdistcens"} object or a list of objects of class \code{"fitdistcens"}.}
+\item{xlim}{The \eqn{x}-limits of the plot.}
+\item{ylim}{The \eqn{y}-limits of the plot.}
+\item{xlogscale}{If \code{TRUE}, uses a logarithmic scale for the \eqn{x}-axis.}
+\item{ylogscale}{If \code{TRUE}, uses a logarithmic scale for the \eqn{y}-axis.}
+\item{main}{A main title for the plot, see also \code{\link{title}}.}
+\item{xlab}{A label for the \eqn{x}-axis, defaults to a description of \code{x}.}
+\item{ylab}{A label for the \eqn{y}-axis, defaults to a description of \code{y}.}
+\item{datacol}{A specification of the color to be used in plotting data points.}
+\item{fitcol}{A (vector of) color(s) to plot fitted distributions. 
+    If there are fewer colors than points they are recycled in the standard fashion.}
+\item{fitlty}{A (vector of) line type(s) to plot fitted distributions. 
+    If there are fewer colors than points they are recycled in the standard fashion.
+    See also \code{\link{par}}.}
+\item{addlegend}{If \code{TRUE}, a legend is added to the plot.}
+\item{legendtext}{A character or expression vector of length \eqn{\geq 1} to appear
+    in the legend, see also \code{\link{legend}}.}
+\item{xlegend, ylegend}{The \eqn{x} and \eqn{y} co-ordinates to be used to position the legend.
           They can be specified by keyword or in any way which is
-          accepted by 'xy.coords': See \code{\link{legend}} for details.}
-\item{\dots}{ further graphical arguments passed to graphical functions used in cdfcompcens }
+          accepted by 'xy.coords': see \code{\link{legend}} for details.}
+\item{lines01}{A logical to plot two horizontal lines at \code{h=0} and \code{h=1}.}
+\item{Turnbull.confint}{ if TRUE, confidence intervals will be added to the Turnbull plot
+    of the empirical distribution.}
+\item{\dots}{Further graphical arguments passed to graphical functions used in \code{cdfcompcens}.}
 }
 
 \details{
-    Empirical and theoretical distributions are simply plotted in cdf. 
+    Empirical and theoretical distributions are plotted in cdf. 
     The EM approach of Turnbull (Turnbull, 1974) is used to compute the overall 
-    empirical cdf curve with confidence intervals, 
+    empirical cdf curve, with confidence intervals if \code{Turnbull.confint} is \code{TRUE}, 
     by calls to functions \code{survfit} and \code{plot.survfit} from the 
     \code{survival} package.
-    By default a legend is added to the plot. Arguments
-    legendtext,datacol,fitcol,fitlty,xlab,ylab,main,xlegend,ylegend are optional and
-    fixed to default values if omitted.
+    By default a legend is added to the plot. Many graphical arguments are optional, 
+    dedicated to personalize the plot, and fixed to default values if omitted.
 }
 
 \seealso{ 
-    \code{\link{plotdistcens}}, \code{\link{survfit.formula}}, \code{\link{legend}}.
+    \code{\link{plotdistcens}}, \code{\link{survfit.formula}}, \code{\link{legend}} 
+    and \code{\link{par}}.
 }
 
 \references{ 
@@ -60,7 +65,7 @@ censored data.\emph{Journal of American Statistical Association}, \bold{69}, 169
 
 
 \author{ 
-Marie-Laure Delignette-Muller \email{marielaure.delignettemuller@vetagro-sup.fr} 
+Marie-Laure Delignette-Muller \email{marielaure.delignettemuller@vetagro-sup.fr}. 
 }
 
 %\note{  }
@@ -69,33 +74,26 @@ Marie-Laure Delignette-Muller \email{marielaure.delignettemuller@vetagro-sup.fr}
 # (1) Plot various distributions fitted to bacterial contamination data
 #
 data(smokedfish)
-fitsfn <- fitdistcens(smokedfish,"norm")
+Clog10 <- log10(smokedfish)
+
+fitsfn <- fitdistcens(Clog10,"norm")
 summary(fitsfn)
 
-fitsfl <- fitdistcens(smokedfish,"logis")
+fitsfl <- fitdistcens(Clog10,"logis")
 summary(fitsfl)
 
 dgumbel <- function(x,a,b) 1/b*exp((a-x)/b)*exp(-exp((a-x)/b))
 pgumbel <- function(q,a,b) exp(-exp((a-q)/b))
 qgumbel <- function(p,a,b) a-b*log(-log(p))
-fitsfg<-fitdistcens(smokedfish,"gumbel",start=list(a=-3,b=3))
+fitsfg<-fitdistcens(Clog10,"gumbel",start=list(a=-3,b=3))
 summary(fitsfg)
 
 cdfcompcens(list(fitsfn,fitsfl,fitsfg))
 cdfcompcens(list(fitsfn,fitsfl,fitsfg),datacol="orange",
     legendtext=c("normal","logistic","Gumbel"),
     main="bacterial contamination fits",
-    xlab="bacterial concentration (CFU/g)",ylab="F")
-cdfcompcens(list(fitsfn,fitsfl,fitsfg),datacol="orange",
-    legendtext=c("normal","logistic","Gumbel"),
-    main="bacterial contamination fits",
     xlab="bacterial concentration (CFU/g)",ylab="F",
-    xlegend = "center")
-
-# (2) Same plot in x logscale
-#
-cdfcompcens(list(fitsfn,fitsfl,fitsfg),xlog = TRUE)
-
+    xlegend = "center",lines01 = TRUE)
 
 }
 

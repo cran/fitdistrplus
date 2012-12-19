@@ -25,16 +25,16 @@
 fitdist <- function (data, distr, method = c("mle", "mme", "qme", "mge"), start=NULL, fix.arg=NULL, ...) 
 {
     if (!is.character(distr)) 
-        distname <- substring(as.character(match.call()$distr),2)
+        distname <- substring(as.character(match.call()$distr), 2)
     else 
         distname <- distr
-    ddistname <- paste("d",distname,sep="")
+    ddistname <- paste("d", distname, sep="")
     if (!exists(ddistname, mode="function"))
-        stop(paste("The ",ddistname," function must be defined"))
+        stop(paste("The ", ddistname, " function must be defined"))
     
-    pdistname <- paste("p",distname,sep="")
+    pdistname <- paste("p", distname, sep="")
     if (!exists(pdistname, mode="function"))
-        stop(paste("The ",pdistname," function must be defined"))
+        stop(paste("The ", pdistname, " function must be defined"))
         
     if(any(method == "mom"))
         warning("the name \"mom\" for matching moments is NO MORE used and is replaced by \"mme\".")
@@ -44,18 +44,20 @@ fitdist <- function (data, distr, method = c("mle", "mme", "qme", "mge"), start=
     if (length(dots)==0) 
         dots <- NULL
     
-#   if (!is.null(start) & method=="mme")
-#        warnings("Starting values for parameters will not be used with matching moments")  
-#    if (!is.null(fix.arg) & method=="mme")
-#       stop("Matching moments cannot be used when some distribution parameters are fixed")  
     if (!(is.vector(data) & is.numeric(data) & length(data)>1))
         stop("data must be a numeric vector of length greater than 1")
-        
+    
+    my3dots <- list(...)    
     
     n <- length(data)
     # Fit with mledist, qmedist, mgedist or mmedist
     if (method == "mme")
     {
+        if (!is.element(distname, c("norm", "lnorm", "pois", "exp", "gamma", 
+                "nbinom", "geom", "beta", "unif", "logis")))
+            if (!"order" %in% names(my3dots))
+                stop("moment matching estimation needs an 'order' argument.")   
+        
         mme <- mmedist(data, distname, start=start, fix.arg=fix.arg, ...)
                 
         sd <- NULL
@@ -72,7 +74,7 @@ fitdist <- function (data, distr, method = c("mle", "mme", "qme", "mge"), start=
         mle <- mledist(data, distname, start, fix.arg, ...)
         if (mle$convergence>0) 
            stop("the function mle failed to estimate the parameters, 
-                with the error code ",mle$convergence, "\n") 
+                with the error code ", mle$convergence, "\n") 
         estimate <- mle$estimate
         if(!is.null(mle$hessian)){
             if(all(!is.na(mle$hessian))){
@@ -96,6 +98,9 @@ fitdist <- function (data, distr, method = c("mle", "mme", "qme", "mge"), start=
         convergence <- mle$convergence      
     }else if (method == "qme")
     {
+        if (!"probs" %in% names(my3dots))
+            stop("quantile matching estimation needs an 'probs' argument.") 
+                
         qme <- qmedist(data, distname, start, fix.arg, ...)
 
         estimate <- qme$estimate
@@ -109,7 +114,10 @@ fitdist <- function (data, distr, method = c("mle", "mme", "qme", "mge"), start=
         convergence <- qme$convergence      
     }else if (method == "mge")
     {
-       mge <- mgedist(data, distname, start, fix.arg, ...)
+        if (!"gof" %in% names(my3dots))
+            warning("maximum GOF estimation has a default 'gof' argument set to 'CvM'.")    
+
+        mge <- mgedist(data, distname, start, fix.arg, ...)
 
         estimate <- mge$estimate
         sd <- NULL
@@ -131,31 +139,23 @@ fitdist <- function (data, distr, method = c("mle", "mme", "qme", "mge"), start=
                     loglik = loglik, aic=aic, bic=bic, n = n, data=data, 
                     distname = distname, fix.arg = fix.arg, dots = dots, 
                     convergence = convergence)
-
-# i think lines below are not required, as those arguments are in dots    (ML)
-#    if (method == "qme")
-#        reslist <- c(reslist, list(probs=qme$probs))
-#    if (method == "mge")
-#        reslist <- c(reslist, list(gof=mge$gof))
-#    if (method == "mme")
-#        reslist <- c(reslist, list(order=mme$order, memp=mme$memp))
-
     
     return(structure(reslist, class = "fitdist"))
 
 }
 
-print.fitdist <- function(x, ...){
+print.fitdist <- function(x, ...)
+{
     if (!inherits(x, "fitdist"))
         stop("Use only with 'fitdist' objects")
     if (x$method=="mme") 
-        cat("Fitting of the distribution '",x$distname,"' by matching moments \n")
+        cat("Fitting of the distribution '", x$distname, "' by matching moments \n")
     else if (x$method=="mle") 
-       cat("Fitting of the distribution '",x$distname,"' by maximum likelihood \n")
+       cat("Fitting of the distribution '", x$distname, "' by maximum likelihood \n")
     else if (x$method=="qme") 
-        cat("Fitting of the distribution '",x$distname,"' by matching quantiles \n")
+        cat("Fitting of the distribution '", x$distname, "' by matching quantiles \n")
     else if (x$method=="mge") 
-        cat("Fitting of the distribution '",x$distname,"' by maximum goodness-of-fit \n")
+        cat("Fitting of the distribution '", x$distname, "' by maximum goodness-of-fit \n")
     
     cat("Parameters:\n")
     if (x$method=="mle") 
@@ -165,25 +165,28 @@ print.fitdist <- function(x, ...){
 
 }
 
-plot.fitdist <- function(x, breaks="default", ...){
+plot.fitdist <- function(x, breaks="default", ...)
+{
     if (!inherits(x, "fitdist"))
         stop("Use only with 'fitdist' objects")
-    plotdist(data=x$data,distr=x$distname,
-    para=c(as.list(x$estimate),as.list(x$fix.arg)),breaks=breaks,...)
+    plotdist(data=x$data, distr=x$distname, 
+    para=c(as.list(x$estimate), as.list(x$fix.arg)), breaks=breaks, ...)
 }
 
-summary.fitdist <- function(object, ...){
+summary.fitdist <- function(object, ...)
+{
     if (!inherits(object, "fitdist"))
         stop("Use only with 'fitdist' objects")
-    object$ddistname <- paste("d", object$distname,sep="")
-    object$pdistname <- paste("p", object$distname,sep="")
-    object$qdistname <- paste("q", object$distname,sep="")
+    object$ddistname <- paste("d", object$distname, sep="")
+    object$pdistname <- paste("p", object$distname, sep="")
+    object$qdistname <- paste("q", object$distname, sep="")
     
     class(object) <- c("summary.fitdist", class(object))    
     object
 }
 
-print.summary.fitdist <- function(x, ...){
+print.summary.fitdist <- function(x, ...)
+{
     if (!inherits(x, "summary.fitdist"))
         stop("Use only with 'fitdist' objects")
 
@@ -191,13 +194,13 @@ print.summary.fitdist <- function(x, ...){
     pdistname <- x$pdistname
     
     if (x$method=="mme") 
-        cat("Fitting of the distribution '",x$distname,"' by matching moments \n")
+        cat("Fitting of the distribution '", x$distname, "' by matching moments \n")
     else if (x$method=="mle") 
-       cat("Fitting of the distribution '",x$distname,"' by maximum likelihood \n")
+       cat("Fitting of the distribution '", x$distname, "' by maximum likelihood \n")
     else if (x$method=="qme") 
-        cat("Fitting of the distribution '",x$distname,"' by matching quantiles \n")
+        cat("Fitting of the distribution '", x$distname, "' by matching quantiles \n")
     else if (x$method=="mge") 
-        cat("Fitting of the distribution '",x$distname,"' by maximum goodness-of-fit \n")
+        cat("Fitting of the distribution '", x$distname, "' by maximum goodness-of-fit \n")
     
     cat("Parameters : \n")
     if (x$method == "mle")
@@ -205,9 +208,9 @@ print.summary.fitdist <- function(x, ...){
     else
         print(cbind.data.frame("estimate" = x$estimate), ...)
 
-    cat("Loglikelihood: ",x$loglik,"  ")
-    cat("AIC: ",x$aic,"  ")
-    cat("BIC: ",x$bic,"\n")
+    cat("Loglikelihood: ", x$loglik, "  ")
+    cat("AIC: ", x$aic, "  ")
+    cat("BIC: ", x$bic, "\n")
     
     if (x$method=="mle") {
         if (length(x$estimate) > 1) {
@@ -219,3 +222,5 @@ print.summary.fitdist <- function(x, ...){
     
     invisible(x)
 }
+
+#see quantiles.R for quantile.fitdist

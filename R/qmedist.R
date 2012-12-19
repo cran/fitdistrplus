@@ -23,8 +23,7 @@
 ### 
 
 qmedist <- function (data, distr, probs, start=NULL, fix.arg=NULL, 
-    qtype=7, 
-    optim.method="default", lower=-Inf, upper=Inf, custom.optim=NULL, ...)
+    qtype=7, optim.method="default", lower=-Inf, upper=Inf, custom.optim=NULL, ...)
     # data may correspond to a vector for non censored data or to
     # a dataframe of two columns named left and right for censored data 
 {
@@ -171,7 +170,7 @@ qmedist <- function (data, distr, probs, start=NULL, fix.arg=NULL,
     argqdistname <- names(formals(qdistname))   
     m <- match(names(start), argqdistname)
     mfix <- match(names(vfix.arg), argqdistname)
-    if (any(is.na(m)))
+    if (any(is.na(m)) || length(m) == 0)
         stop("'start' must specify names which are arguments to 'distr'")
     if (any(is.na(mfix)))
         stop("'fix.arg' must specify names which are arguments to 'distr'")
@@ -237,6 +236,7 @@ qmedist <- function (data, distr, probs, start=NULL, fix.arg=NULL,
         if (inherits(opttryerror,"try-error"))
         {
             warnings("The function optim encountered an error and stopped")
+            print(opttryerror)			
             return(list(estimate = rep(NA,length(vstart)), convergence = 100, value = NA, 
                         hessian = NA))
         }
@@ -248,10 +248,9 @@ qmedist <- function (data, distr, probs, start=NULL, fix.arg=NULL,
                         value = NA, hessian = NA))
         }
         
-        return(list(estimate = opt$par, convergence = opt$convergence, value = opt$value, hessian = opt$hessian, 
-                    probs=probs, optim.function="optim",  
-                    loglik=loglik(opt$par, fix.arg, data, ddistname) ))  
-        
+        res <- list(estimate = opt$par, convergence = opt$convergence, value = opt$value, 
+					hessian = opt$hessian, probs=probs, optim.function="optim", 
+					loglik=loglik(opt$par, fix.arg, data, ddistname), fix.arg=fix.arg)		
     }
     else # Try to minimize the stat distance using a user-supplied optim function 
     {
@@ -263,8 +262,8 @@ qmedist <- function (data, distr, probs, start=NULL, fix.arg=NULL,
         
         if (inherits(opttryerror,"try-error"))
         {
-            print(opttryerror)
             warnings("The customized optimization function encountered an error and stopped")
+            print(opttryerror)			
             return(list(estimate = rep(NA,length(vstart)), convergence = 100, value = NA, 
                         hessian = NA))
         }
@@ -276,11 +275,10 @@ qmedist <- function (data, distr, probs, start=NULL, fix.arg=NULL,
                         value = NA, hessian = NA))
         }
         
-        return(list(estimate = opt$par, convergence = opt$convergence, value = opt$value, hessian = opt$hessian, 
-                    probs=probs, optim.function=custom.optim,  
-                    loglik=loglik(opt$par, fix.arg, data, ddistname)))  
-
+        res <- list(estimate = opt$par, convergence = opt$convergence, value = opt$value, 
+					hessian = opt$hessian, probs=probs, optim.function=custom.optim, 
+					loglik=loglik(opt$par, fix.arg, data, ddistname), fix.arg=fix.arg)		
     }   
-        
+    return(res)    
      
 }

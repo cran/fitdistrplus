@@ -10,8 +10,8 @@
 }
 
 \usage{
-descdist(data,discrete=FALSE,boot=NULL,method="unbiased",
-graph=TRUE,obs.col="darkblue",boot.col="blue")
+descdist(data, discrete = FALSE, boot = NULL, method = "unbiased",
+graph = TRUE, obs.col = "darkblue", boot.col = "orange")
 }
 %- maybe also 'usage' for other objects documented here.
 
@@ -29,8 +29,7 @@ graph=TRUE,obs.col="darkblue",boot.col="blue")
 \details{
     Minimum, maximum, median, mean, sample sd, and sample (if \code{method=="sample"}) or by default 
     unbiased estimations of skewness and 
-    Pearsons's kurtosis values (Fisher, 1930) are printed. Be careful, estimations of skewness and kurtosis
-    are unbiased only for normal distributions and estimated values are thus only indicative.
+    Pearsons's kurtosis values are printed (Sokal and Rohlf, 1995).
     A skewness-kurtosis plot such as the one proposed by Cullen and Frey (1999) is given for the 
     empirical distribution. On this plot, values for common distributions are also displayed as a tools 
     to help the choice of distributions to fit to data. For some distributions (normal, uniform,
@@ -43,7 +42,7 @@ graph=TRUE,obs.col="darkblue",boot.col="blue")
     shapes close to lognormal and gamma distributions may be obtained with this distribution.
     
     In order to take into account the uncertainty 
-    of the estimated values of kurtosis and skewness from data, the data set may be boostraped by 
+    of the estimated values of kurtosis and skewness from data, the data set may be bootstraped by 
     fixing the argument \code{boot} to an integer above 10. \code{boot} values of skewness and kurtosis 
     corresponding to the \code{boot} bootstrap samples are then computed and reported in blue color on the 
     skewness-kurtosis plot.
@@ -70,14 +69,15 @@ graph=TRUE,obs.col="darkblue",boot.col="blue")
 
 \references{ 
 Cullen AC and Frey HC (1999) Probabilistic techniques in exposure assessment. Plenum Press, USA, pp. 81-159.
+
 Evans M, Hastings N and Peacock B (2000) Statistical distributions. John Wiley and Sons Inc.
 
-Fisher RA (1930) The moments of the distribution for normal samples of measures of departures from normality.
-Proc. R. Soc. London, Series A 130, 16-28.
+Sokal RR and Rohlf FJ (1995) Biometry. W.H. Freeman and Company, USA, pp. 111-115.
+
 }
 
 \author{ 
-Marie-Laure Delignette-Muller \email{ml.delignette@vetagro-sup.fr} 
+Marie-Laure Delignette-Muller \email{marielaure.delignettemuller@vetagro-sup.fr}.
 }
 
 %\note{  }
@@ -86,34 +86,35 @@ Marie-Laure Delignette-Muller \email{ml.delignette@vetagro-sup.fr}
 # (1) Description of a sample from a normal distribution
 # with and without uncertainty on skewness and kurtosis estimated by bootstrap 
 #
+set.seed(1234)
 x1 <- rnorm(100)
 descdist(x1)
-descdist(x1,boot=1000)
+descdist(x1,boot=500)
 
 # (2) Description of a sample from a beta distribution
 # with uncertainty on skewness and kurtosis estimated by bootstrap
 # with changing of default colors 
 #
-descdist(rbeta(100,shape1=0.05,shape2=1),boot=1000,
-obs.col="blue",boot.col="orange")
+descdist(rbeta(100,shape1=0.05,shape2=1),boot=500,
+obs.col="blue",boot.col="yellow")
 
 # (3) Description of a sample from a gamma distribution
 # with uncertainty on skewness and kurtosis estimated by bootstrap
 # without plotting 
 #
-descdist(rgamma(100,shape=2,rate=1),boot=1000,graph=FALSE)
+descdist(rgamma(100,shape=2,rate=1),boot=500,graph=FALSE)
 
 # (3) Description of a sample from a Poisson distribution
 # with uncertainty on skewness and kurtosis estimated by bootstrap 
 #
-descdist(rpois(100,lambda=2),discrete=TRUE,boot=1000)
+descdist(rpois(100,lambda=2),discrete=TRUE,boot=500)
 
 # (4) Description of serving size data
 # with uncertainty on skewness and kurtosis estimated by bootstrap 
 #
 data(groundbeef)
 serving <- groundbeef$serving
-descdist(serving, boot=1000)
+descdist(serving, boot=500)
 }
 
 \keyword{ distribution }% at least one, from doc/KEYWORDS

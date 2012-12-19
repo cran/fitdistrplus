@@ -8,8 +8,8 @@
 }
 
 \usage{
-mmedist(data, distr, order, memp, start=NULL, fix.arg=NULL,
-    optim.method="default", lower=-Inf, upper=Inf, custom.optim=NULL, ...) 
+mmedist(data, distr, order, memp, start = NULL, fix.arg = NULL,
+    optim.method = "default", lower = -Inf, upper = Inf, custom.optim = NULL, \dots) 
 
 }
 \arguments{
@@ -71,14 +71,17 @@ to the number of parameters to estimate.}
 
         \code{100} indicates that \code{optim} encountered an internal error.
         }
-    \item{ loglik }{ the log-likelihood.}
-    \item{ hessian }{ (if appropriate) a symmetric matrix computed by \code{optim} as an estimate of the Hessian
+    \item{loglik}{ the log-likelihood.}
+    \item{hessian}{ (if appropriate) a symmetric matrix computed by \code{optim} as an estimate of the Hessian
         at the solution found or computed in the user-supplied optimization function.
         It is used in \code{fitdist} to estimate standard errors. }
-    \item{ optim.function }{ (if appropriate) the name of the optimization function. }
-    \item{ memp }{ (if appropriate) the empirical moment function. }
-    \item{ order }{ the order of the moment(s) matched.}        
-    \item{ method }{either \code{"closed formula"} or the name of the optimization method.}
+    \item{optim.function}{ (if appropriate) the name of the optimization function. }
+    \item{memp}{ (if appropriate) the empirical moment function. }
+    \item{order}{ the order of the moment(s) matched.}        
+    \item{method}{either \code{"closed formula"} or the name of the optimization method.}
+    \item{fix.arg}{ the named list giving the values of parameters of the named distribution
+        that must kept fixed rather than estimated by maximum likelihood or \code{NULL} 
+        if there are no such parameters. }
     
 }
 
@@ -96,7 +99,7 @@ to the number of parameters to estimate.}
 
 \author{ 
 Marie-Laure Delignette-Muller \email{marielaure.delignettemuller@vetagro-sup.fr} and 
-Christophe Dutang
+Christophe Dutang.
 }
 
 \examples{
@@ -104,23 +107,22 @@ Christophe Dutang
 # (1) basic fit of a normal distribution with moment matching estimation
 #
 
-x1<-c(6.4,13.3,4.1,1.3,14.1,10.6,9.9,9.6,15.3,22.1,13.4,
-13.2,8.4,6.3,8.9,5.2,10.9,14.4)
+set.seed(1234)
+x1 <- rnorm(n=100)
 mmedist(x1,"norm")
 
 # (2) fit a discrete distribution (Poisson)
 #
 
-x2<-c(rep(4,1),rep(2,3),rep(1,7),rep(0,12))
+set.seed(1234)
+x2 <- rpois(n=30,lambda = 2)
 mmedist(x2,"pois")
-
-
 
 # (3) fit a finite-support distribution (beta)
 #
 
-x3<-c(0.80,0.72,0.88,0.84,0.38,0.64,0.69,0.48,0.73,0.58,0.81,
-0.83,0.71,0.75,0.59)
+set.seed(1234)
+x3 <- rbeta(n=100,shape1=5, shape2=10)
 mmedist(x3,"beta")
 
 
@@ -130,16 +132,16 @@ mmedist(x3,"beta")
 \dontrun{
     require(actuar)
     #simulate a sample
-    x4 <- rpareto(1000, 6, 2)
+    x4  <-  rpareto(1000, 6, 2)
 
     #empirical raw moment
-    memp <- function(x, order)
+    memp  <-  function(x, order)
         ifelse(order == 1, mean(x), sum(x^order)/length(x))
 
 
     #fit
-    mmedist(x4, "pareto", order=c(1, 2), memp="memp", start=c(10, 10), 
-    lower=1, upper=Inf)
+    mmedist(x4, "pareto", order=c(1, 2), memp="memp", 
+        start=c(shape=10, scale=10), lower=1, upper=Inf)
 
 }
 

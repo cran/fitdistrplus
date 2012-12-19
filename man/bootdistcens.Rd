@@ -3,7 +3,6 @@
 \alias{plot.bootdistcens}
 \alias{print.bootdistcens}
 \alias{summary.bootdistcens}
-%- Also NEED an '\alias' for EACH other topic documented here.
 
 \title{ Bootstrap simulation of uncertainty for censored data}
 
@@ -14,18 +13,18 @@
 
 \usage{
 bootdistcens(f, niter=1001)
-\method{print}{bootdistcens}(x,...)
-\method{plot}{bootdistcens}(x,...)
-\method{summary}{bootdistcens}(object,...)
+\method{print}{bootdistcens}(x, \dots)
+\method{plot}{bootdistcens}(x, \dots)
+\method{summary}{bootdistcens}(object, \dots)
+
 }
-%- maybe also 'usage' for other objects documented here.
 
 \arguments{
-\item{f}{ An object of class 'fitdistcens' result of the function \code{fitdistcens}.}
+\item{f}{ An object of class \code{"fitdistcens"} result of the function \code{fitdistcens}.}
 \item{niter}{ The number of samples drawn by bootstrap.  }
-\item{x}{ an object of class 'bootdistcens'.  }
-\item{object}{ an object of class 'bootdistcens'.  }
-\item{...}{ further arguments to be passed to generic methods }
+\item{x}{ An object of class \code{"bootdistcens"}.  }
+\item{object}{ An object of class \code{"bootdistcens"}.  }
+\item{\dots}{ Further arguments to be passed to generic methods }
 }
 
 \details{
@@ -38,7 +37,7 @@ bootdistcens(f, niter=1001)
     If inferior to the whole number of iterations, the number of iterations for which \code{mledist} converges 
     is also printed in the summary.
     
-    The plot of an object of class 'bootdistcens' consists in a scatterplot or a matrix of scatterplots
+    The plot of an object of class \code{"bootdistcens"} consists in a scatterplot or a matrix of scatterplots
     of the bootstrapped values of parameters.
     It uses the function \code{\link{stripchart}} when the fitted distribution
     is characterized by only one parameter, and the function \code{\link{plot}} in other cases.
@@ -47,16 +46,43 @@ bootdistcens(f, niter=1001)
 }
 
 \value{ 
-    \code{bootdistcens} returns an object of class 'bootdistcens', a list with 3 components,
-    \item{ estim }{ a data frame containing the boostrapped values of parameters.}
-    \item{ converg }{ a vector containing the codes for convergence obtained when using \code{mledist} on 
-        each bootstraped data set.}
-    \item{ CI }{ bootstrap medians and 95 percent confidence percentile intervals of parameters. }
+    \code{bootdistcens} returns an object of class \code{"bootdistcens"}, a list with 4 components,
+    \item{estim}{ a data frame containing the bootstrapped values of parameters.}
+    \item{converg}{ a vector containing the codes for convergence obtained if an iterative method is
+        used to estimate parameters on 
+        each bootstraped data set (and 0 if a closed formula is used).}
+    \item{method}{ A character string coding for the type of resampling : 
+     in this case \code{"nonparam"} as it is the only available method for censored data. }
+    \item{nbboot}{ The number of samples drawn by bootstrap.}   
+    \item{CI}{ bootstrap medians and 95 percent confidence percentile intervals of parameters. }
+    \item{fitpart}{ The object of class \code{"fitdistcens"} on which the bootstrap procedure
+        was applied.}
+    
+Generic functions:
+\describe{       
+    \item{\code{print}}{
+    The print of a \code{"bootdistcens"} object shows the bootstrap parameter estimates. If inferior to the whole number of bootstrap iterations, 
+    the number of iterations 
+    for which the estimation converges is also printed.
+    }
+    \item{\code{summary}}{
+    The summary provides the median and 2.5 and 97.5 percentiles of each parameter. If inferior to the whole number of bootstrap iterations, 
+    the number of iterations 
+    for which the estimation converges is also printed in the summary.
+    }
+    \item{\code{plot}}{
+    The plot shows the bootstrap estimates with \code{stripchart} function
+    for univariate parameters and \code{plot} function for multivariate parameters.
+    }          
+    
+}   
 }
         
 
 \seealso{ 
-    \code{\link{fitdistcens}} and \code{\link{mledist}}.
+    \code{\link{fitdistcens}}, \code{\link{mledist}} and  \code{\link{quantile.bootdistcens}} 
+    for another generic function to calculate 
+    quantiles from the fitted distribution and its bootstrap results.
 }
 
 \references{ 
@@ -65,49 +91,36 @@ Cullen AC and Frey HC (1999) Probabilistic techniques in exposure assessment. Pl
 
 
 \author{ 
-Marie-Laure Delignette-Muller \email{marielaure.delignettemuller@vetagro-sup.fr} 
+Marie-Laure Delignette-Muller \email{marielaure.delignettemuller@vetagro-sup.fr}.
 }
 
 %\note{  }
 
 \examples{
-# (1) Fit of a normal distribution followed by nonparametric bootstrap
+# (1) Fit of a normal distribution to fluazinam data in log10
+# followed by nonparametric bootstrap and calculation of quantiles
+# with 95 percent confidence intervals
 #
-d1<-data.frame(
-left=c(1.73,1.51,0.77,1.96,1.96,-1.4,-1.4,NA,-0.11,0.55,
-    0.41,2.56,NA,-0.53,0.63,-1.4,-1.4,-1.4,NA,0.13),
-right=c(1.73,1.51,0.77,1.96,1.96,0,-0.7,-1.4,-0.11,0.55,
-    0.41,2.56,-1.4,-0.53,0.63,0,-0.7,NA,-1.4,0.13))
-f1<-fitdistcens(d1, "norm")
-b1<-bootdistcens(f1)
+data(fluazinam)
+(d1 <-log10(fluazinam))
+f1 <- fitdistcens(d1, "norm")
+b1 <- bootdistcens(f1, niter = 101)
 b1
 summary(b1)
 plot(b1)
+quantile(b1)
 
-# (2) Fit of a gamma distribution followed by nonparametric bootstrap
+# (2) Estimation of the mean of the normal distribution 
+# by maximum likelihood with the standard deviation fixed at 1 
+# using the argument fix.arg
+# followed by nonparametric bootstrap with less iterations
+# and calculation of quantiles with 95 percent confidence intervals
 #
-d3<-data.frame(left=10^(d1$left),right=10^(d1$right))
-f3 <- fitdistcens(d3,"gamma")
-b3 <- bootdistcens(f3,niter=101)
-summary(b3)
-plot(b3)
-
-# (3) Fit of a gamma distribution followed by nonparametric bootstrap
-# with control of the optimization method
-#
-f3BFGS <- fitdistcens(d3,"gamma",optim.method="L-BFGS-B",lower=c(0,0))
-b3BFGS <- bootdistcens(f3BFGS,niter=101)
-summary(b3BFGS)
-plot(b3BFGS)
-
-# (4) Estimation of the standard deviation of a normal distribution 
-# by maximum likelihood with the mean fixed at 0.1 using the argument fix.arg
-# followed by nonparametric bootstrap
-#
-f1b <- fitdistcens(d1, "norm", start=list(sd=1.5),fix.arg=list(mean=0.1))
-b1b<-bootdistcens(f1b,niter=101)
+f1b <- fitdistcens(d1, "norm", start = list(mean = 1),fix.arg = list(sd = 1))
+b1b <- bootdistcens(f1b, niter = 101)
 summary(b1b)
 plot(b1b)
+quantile(b1b)
 
 }
 

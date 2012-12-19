@@ -1,3 +1,7 @@
+### Imports
+import(stats)
+import(survival)
+
 ### Exports
 
 #fitdist class
@@ -6,6 +10,8 @@ S3method(summary, fitdist)
 S3method(plot, fitdist)
 S3method(print, fitdist)
 S3method(print, summary.fitdist)
+S3method(print, quantile.fitdist)
+S3method(quantile, fitdist)
 
 #fitditscens class
 export(fitdistcens)
@@ -13,37 +19,44 @@ S3method(summary, fitdistcens)
 S3method(plot, fitdistcens)
 S3method(print, fitdistcens)
 S3method(print, summary.fitdistcens)
+S3method(print, quantile.fitdistcens)
+S3method(quantile, fitdistcens)
 
 #bootdist class
 export(bootdist)
 S3method(summary, bootdist)
 S3method(plot, bootdist)
 S3method(print, bootdist)
+S3method(print, summary.bootdist)
+S3method(print, quantile.bootdist)
+S3method(quantile, bootdist)
 
 #bootdistcens class
 export(bootdistcens)
 S3method(summary, bootdistcens)
 S3method(plot, bootdistcens)
 S3method(print, bootdistcens)
+S3method(print, summary.bootdistcens)
+S3method(print, quantile.bootdistcens)
+S3method(quantile, bootdistcens)
+
+#dedicated fit functions
+export(mledist, mmedist, qmedist, mgedist)
+
+#plot functions
+export(plotdist, plotdistcens)
+
+#graphical comparison
+export(cdfcomp, denscomp, qqcomp, ppcomp)
+export(cdfcompcens)
+
+#quantile functions
+#export(quantiledist)
+#export(quantiledistcens)
 
 #other functions
 export(descdist)
-
 export(gofstat)
-
-export(mledist)
-
-export(mmedist)
-
-export(qmedist)
-
-export(mgedist)
-
-export(plotdist, plotdistcens)
-
-export(cdfcomp)
-
-export(cdfcompcens)
 
 ### use dynamic library for C code
 #useDynLib(fitdistrplus, .registration = TRUE)

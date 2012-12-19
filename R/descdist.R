@@ -1,5 +1,5 @@
 #############################################################################
-#   Copyright (c) 2009 Marie Laure Delignette-Muller, Regis Pouillot, Jean-Baptiste Denis                                                                                                  
+#   Copyright (c) 2009 Marie Laure Delignette-Muller                                                                                                  
 #                                                                                                                                                                        
 #   This program is free software; you can redistribute it and/or modify                                               
 #   it under the terms of the GNU General Public License as published by                                         
@@ -22,8 +22,8 @@
 ###         R functions
 ### 
 
-descdist <- function(data,discrete=FALSE,boot=NULL,method="unbiased",graph=TRUE,
-obs.col="darkblue",boot.col="blue")
+descdist <- function(data, discrete = FALSE, boot = NULL, method = "unbiased", graph = TRUE,
+obs.col = "darkblue", boot.col = "orange")
 {
     #if(is.mcnode(data)) data <- as.vector(data)
     if (missing(data) || !is.vector(data,mode="numeric"))
@@ -48,8 +48,8 @@ obs.col="darkblue",boot.col="blue")
         # unbiased estimation (Fisher 1930)
             n <- length(data)
             var<-moment(data,2)
-            gamma2 <- moment(data,4)/var^2 - 3
-            unbiased.kurtosis <- (n-1)/ ((n-2)*(n-3)) * ((n+1)*gamma2 + 6 ) + 3
+            gamma2 <- moment(data,4)/var^2 
+            unbiased.kurtosis <- (n-1)/ ((n-2)*(n-3)) * ((n+1)*gamma2 -3*(n-1) ) + 3
             return(unbiased.kurtosis)
         }
         standdev <- function(data){
@@ -80,8 +80,6 @@ obs.col="darkblue",boot.col="blue")
     mean=mean(data),sd=standdev(data),
     skewness=skewness(data),kurtosis=kurtosis(data))
     
-    #op<-options()
-    #options(digits=3)
     cat("summary statistics\n")
     cat("------\n")
     cat("min: ",res$min,"  max: ",res$max,"\n")
@@ -101,7 +99,6 @@ obs.col="darkblue",boot.col="blue")
         cat("estimated kurtosis: ",res$kurtosis,"\n")
     }
 
-    #options(op)
     
     skewdata<-res$skewness
     kurtdata<-res$kurtosis

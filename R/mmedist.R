@@ -1,5 +1,5 @@
 #############################################################################
-#   Copyright (c) 2010 Marie Laure Delignette-Muller, Regis Pouillot, Jean-Baptiste Denis, Christophe Dutang                                                                                                  
+#   Copyright (c) 2010 Marie Laure Delignette-Muller, Christophe Dutang                                                                                                  
 #                                                                                                                                                                        
 #   This program is free software; you can redistribute it and/or modify                                               
 #   it under the terms of the GNU General Public License as published by                                         
@@ -26,19 +26,18 @@ mmedist <- function (data, distr, order, memp, start=NULL, fix.arg=NULL,
     optim.method="default", lower=-Inf, upper=Inf, custom.optim=NULL, ...) 
 {
     if (!is.character(distr)) 
-#        distname <- substring(as.character(match.call()$distr), 2)
     stop("distr must be a character string naming a distribution")
     else 
         distname <- distr
     
-    if (is.element(distname, c("norm","lnorm","pois","exp","gamma","nbinom","geom",
-       "beta","unif","logis")))
+    if (is.element(distname, c("norm", "lnorm", "pois", "exp", "gamma", "nbinom", "geom",
+       "beta", "unif", "logis")))
         meth <- "closed formula"
     else
         meth <- optim.method
     
-    mdistname <- paste("m",distname,sep="")
-    ddistname <- paste("d",distname,sep="")
+    mdistname <- paste("m", distname, sep="")
+    ddistname <- paste("d", distname, sep="")
 
     if(meth != "closed formula")
     {
@@ -46,6 +45,9 @@ mmedist <- function (data, distr, order, memp, start=NULL, fix.arg=NULL,
             stop(paste("The moment function must be defined."))     
     # mdistname contains the good name of the theoretical moment function    
     }
+    if (!(is.numeric(data) & length(data)>1)) 
+        stop("data must be a numeric vector of length greater than 1.")
+    
     
     if(meth == "closed formula")
     {
@@ -60,28 +62,22 @@ mmedist <- function (data, distr, order, memp, start=NULL, fix.arg=NULL,
             mx <- mean(data)
             estimate <- c(mean=mx, sd=sd0)
             order <- 1:2
-#           names(estimate) <- c("mean", "sd")   
         }
         if (distname == "lnorm") {
             if (any(data <= 0)) 
                 stop("values must be positive to fit a lognormal distribution")
             n <- length(data)
-            ldata <- log(data)
-            sd0 <- sqrt((n - 1)/n) * sd(ldata)
-            ml <- mean(ldata)
-            estimate <- c(meanlog=ml, sdlog=sd0)
+            sd2 <- log(1+var(data)/mean(data)^2)
+            estimate <- c(meanlog=log(mean(data)) - sd2/2, sdlog=sqrt(sd2))
             order <- 1:2            
-#           names(estimate) <- c("meanlog", "sdlog")
         }
         if (distname == "pois") {
             estimate <- c(lambda=mean(data))
             order <- 1          
-#           names(estimate) <- "lambda" 
         }
         if (distname == "exp") {
             estimate <- c(rate=1/mean(data))
             order <- 1          
-#           names(estimate) <- "rate" 
         }
         if (distname == "gamma" ) {
             n <- length(data)
@@ -91,7 +87,6 @@ mmedist <- function (data, distr, order, memp, start=NULL, fix.arg=NULL,
             rate <- m/v
             estimate<-c(shape=shape, rate=rate)
             order <- 1:2            
-#           names(estimate) <- c("shape", "rate")
        }
        if (distname == "nbinom" ) {
             n <- length(data)
@@ -101,7 +96,6 @@ mmedist <- function (data, distr, order, memp, start=NULL, fix.arg=NULL,
                     else NaN
             estimate<-c(size=size, mu=m)
             order <- 1:2           
-#           names(estimate)<-c("size","mu")
        }
        if (distname == "geom" ) {
             m <- mean(data)
@@ -109,7 +103,6 @@ mmedist <- function (data, distr, order, memp, start=NULL, fix.arg=NULL,
                     else NaN
             estimate<-c(prob=prob)
             order <- 1         
-#           names(estimate)<-"prob"
        }
         if (distname == "beta" ) {
             if (any(data < 0) | any(data > 1)) 
@@ -122,7 +115,6 @@ mmedist <- function (data, distr, order, memp, start=NULL, fix.arg=NULL,
             shape2 <- (1-m)*aux
             estimate<-c(shape1=shape1, shape2=shape2)
             order <- 1:2            
-#           names(estimate) <- c("shape1", "shape2")
        }
         if (distname == "unif" ) {
             n <- length(data)
@@ -132,7 +124,6 @@ mmedist <- function (data, distr, order, memp, start=NULL, fix.arg=NULL,
             max1 <- m+sqrt(3*v)
             estimate<-c(min1,max1)
             order <- 1:2            
-#           names(estimate) <- c("min", "max")
        }
         if (distname == "logis" ) {
             n <- length(data)
@@ -141,7 +132,6 @@ mmedist <- function (data, distr, order, memp, start=NULL, fix.arg=NULL,
             scale <- sqrt(3*v)/pi
             estimate<-c(location=m, scale=scale)
             order <- 1:2            
-#           names(estimate) <- c("location", "scale")
        }
         res <- list(estimate=estimate, convergence=0, order=order, memp=NULL)
     }else #an optimimisation has to be done
@@ -149,7 +139,7 @@ mmedist <- function (data, distr, order, memp, start=NULL, fix.arg=NULL,
         
         if(length(start) != length(order))
             stop("wrong dimension for the moment order to match.")
-        if(!exists(memp, mode="function")) 
+        if(!exists("memp", mode="function")) 
             stop("the empirical moment function must be defined.")
 
         
@@ -160,14 +150,14 @@ mmedist <- function (data, distr, order, memp, start=NULL, fix.arg=NULL,
         argmdistname <- names(formals(mdistname))   
         m <- match(names(start), argmdistname)
         mfix <- match(names(vfix.arg), argmdistname)
-        if (any(is.na(m)))
-        stop("'start' must specify names which are arguments to 'distr'")
+        if (any(is.na(m)) || length(m) == 0)
+            stop("'start' must specify names which are arguments to 'distr'")
         if (any(is.na(mfix)))
-        stop("'fix.arg' must specify names which are arguments to 'distr'")
+            stop("'fix.arg' must specify names which are arguments to 'distr'")
         # check that some parameters are not both in fix.arg and start
         minter <- match(names(start), names(fix.arg))
         if (any(!is.na(minter)))
-        stop("a distribution parameter cannot be specified both in 'start' and 'fix.arg'")
+            stop("a distribution parameter cannot be specified both in 'start' and 'fix.arg'")
         
         # definition of the function to minimize : least square
         #Cramer - von Mises
@@ -209,6 +199,7 @@ mmedist <- function (data, distr, order, memp, start=NULL, fix.arg=NULL,
             if (inherits(opttryerror,"try-error"))
             {
                 warnings("The function optim encountered an error and stopped")
+                print(opttryerror)              
                 return(list(estimate = rep(NA,length(vstart)), convergence = 100, value = NA, 
                             hessian = NA))
             }
@@ -233,8 +224,8 @@ mmedist <- function (data, distr, order, memp, start=NULL, fix.arg=NULL,
             
             if (inherits(opttryerror,"try-error"))
             {
-                print(opttryerror)
                 warnings("The customized optimization function encountered an error and stopped")
+                print(opttryerror)              
                 return(list(estimate = rep(NA,length(vstart)), convergence = 100, value = NA, 
                             hessian = NA))
             }
@@ -260,6 +251,7 @@ mmedist <- function (data, distr, order, memp, start=NULL, fix.arg=NULL,
         loglik <- loglik(res$estimate, fix.arg, data, ddistname)
     else
         loglik <- NULL
+    res <- c(res, fix.arg=fix.arg)
     
     return( c(res, list(loglik=loglik, method=meth)) )
     
