@@ -28,15 +28,11 @@
 cdfcomp <- function(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, main, xlab, ylab, 
     datapch, datacol, fitlty, fitcol, addlegend = TRUE, legendtext, 
     xlegend = "bottomright", ylegend = NULL, horizontals = TRUE, verticals = FALSE, 
-    use.ppoints = TRUE, a.ppoints = 0.5, lines01 = FALSE, ...)
+    use.ppoints = TRUE, a.ppoints = 0.5, lines01 = FALSE, discrete, ...)
 {
     if(inherits(ft, "fitdist"))
     {
         ft <- list(ft)
-    }else if(length(ft) == 1)
-    {
-        if(!inherits(ft, "fitdist"))
-            stop("argument ft must a 'fitdist' object or a list of 'fitdist' objects.")
     }else if(!is.list(ft))
     {
         stop("argument ft must be a list of 'fitdist' objects")
@@ -61,6 +57,10 @@ cdfcomp <- function(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, main, 
     if (missing(main)) main <- paste("Empirical and theoretical CDFs")
 
     mydata <- ft[[1]]$data
+	distname <- ft[[1]]$distname
+    n <- length(mydata)
+    s <- sort(mydata)
+	
     if ((xlogscale == TRUE) & min(mydata) <= 0)
         stop("log transformation of data requires only positive
     values")
@@ -84,16 +84,30 @@ cdfcomp <- function(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, main, 
         invisible()
     }
     lapply( ft,verif.ftidata)
+	
+	# initiate discrete if not given 
+	if(missing(discrete))
+	{
+		if (is.element(distname, c("binom", "nbinom", "geom", "hyper", "pois"))) 
+			discrete <- TRUE
+		else 
+			discrete <- FALSE
+	}
+	if(!is.logical(discrete))
+		stop("wrong argument 'discrete'.")
+	
     
     # plot of data (ecdf)
-    n <- length(mydata)
-    s <- sort(mydata)
-    if(xlogscale)
+    if(xlogscale && !discrete)
         sfin <- seq(log10(xmin), log10(xmax), by=(log10(xmax)-log10(xmin))/100)
-    else
+    else if(!xlogscale && !discrete)
         sfin <- seq(xmin, xmax, by=(xmax-xmin)/100)
+	else
+	{
+		sfin <- seq(xmin, xmax, by=1)
+	}
 
-    if (use.ppoints)
+    if (use.ppoints && !discrete)
         obsp <- ppoints(n,a = a.ppoints)
     else
         # previous version with no vizualisation of ex-aequos
@@ -108,9 +122,7 @@ cdfcomp <- function(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, main, 
         para <- c(as.list(fti$estimate), as.list(fti$fix.arg))
         distname <- fti$distname
         pdistname <- paste("p",distname,sep="")
-        if (is.element(distname,c("binom","nbinom","geom","hyper","pois")))
-            warning(" Be careful, variables are considered continuous in this function!")
-        if(xlogscale)
+        if(xlogscale && !discrete)
         {
             do.call(pdistname, c(list(q=10^sfin), as.list(para)))
         }else
@@ -127,7 +139,7 @@ cdfcomp <- function(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, main, 
     logxy <- paste(ifelse(xlogscale,"x",""), ifelse(ylogscale,"y",""), sep="")
     #main plotting
     plot(s, obsp, main=main, xlab=xlab, ylab=ylab, xlim=xlim, ylim=ylim,
-         log=logxy, pch=datapch, col=datacol, ...)
+         log=logxy, pch=datapch, col=datacol, type="p", ...)
 
     # optional add of horizontal and vbertical lines for step function
     if (horizontals)
@@ -151,10 +163,12 @@ cdfcomp <- function(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, main, 
     #plot fitted cdfs
     if(!xlogscale)
         for(i in 1:nft)
-            lines(sfin, fittedprob[,i], lty=fitlty[i], col=fitcol[i], ...)
+            lines(sfin, fittedprob[,i], lty=fitlty[i], col=fitcol[i], 
+				  type=ifelse(discrete, "s", "l"), ...)
     if(xlogscale)
         for(i in 1:nft)
-            lines(10^sfin, fittedprob[,i], lty=fitlty[i], col=fitcol[i], ...)
+            lines(10^sfin, fittedprob[,i], lty=fitlty[i], col=fitcol[i], 
+				  type=ifelse(discrete, "s", "l"), ...)
 
     if(lines01)
         abline(h=c(0, 1), lty="dashed", col="grey")

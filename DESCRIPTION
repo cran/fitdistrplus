@@ -1,8 +1,8 @@
 Package: fitdistrplus
 Title: Help to fit of a parametric distribution to non-censored or
         censored data
-Version: 1.0-0
-Date: 2012-12-19
+Version: 1.0-1
+Date: 2013-04-10
 Author: Marie Laure Delignette-Muller
         <marielaure.delignettemuller@vetagro-sup.fr>, Regis Pouillot
         <rpouillot@yahoo.fr>, Jean-Baptiste Denis
@@ -23,6 +23,7 @@ Imports: stats
 Suggests: actuar, rgenoud, mc2d
 License: GPL (>= 2)
 URL: http://riskassessment.r-forge.r-project.org
-Packaged: 2012-12-23 13:03:50 UTC; dutangc
+Packaged: 2013-04-10 06:00:15 UTC; mdeligne
+NeedsCompilation: no
 Repository: CRAN
-Date/Publication: 2012-12-27 19:05:46
+Date/Publication: 2013-04-10 09:01:55

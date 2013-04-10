@@ -1,21 +1,23 @@
 \name{gofstat}
 \alias{gofstat}
-%- Also NEED an '\alias' for EACH other topic documented here.
-
+\alias{print.gofstat.fitdist}
 \title{ Goodness-of-fit statistics}
 
 \description{
- Computes goodness-of-fit statistics for a fit of a parametric distribution on 
- non-censored data.  
+ Computes goodness-of-fit statistics for parametric distributions fitted to a same  
+ non-censored data set.  
 }
 
 \usage{
-gofstat(f, chisqbreaks, meancount, print.test = FALSE)
+gofstat(f, chisqbreaks, meancount, discrete, fitnames=NULL) 
+	
+\method{print}{gofstat.fitdist}(x, \dots)
+	
 }
-%- maybe also 'usage' for other objects documented here.
 
 \arguments{
-\item{f}{ An object of class \code{"fitdist"} result of the function \code{fitdist}.}
+\item{f}{ An object of class \code{"fitdist"}, output of the function \code{fitdist}, or
+	a list of \code{"fitdist"} objects.}
 \item{chisqbreaks}{ A numeric vector defining the breaks of the cells used to compute the chi-squared
     statistic. If omitted, these breaks are automatically computed from the data 
     in order to reach roughly the same number of observations per cell, roughly equal to the argument
@@ -25,40 +27,44 @@ gofstat(f, chisqbreaks, meancount, print.test = FALSE)
     account if the breaks are directly defined in the argument \code{chisqbreaks}. If \code{chisqbreaks} 
     and \code{meancount} are both omitted, \code{meancount} is fixed in order to obtain roughly 
     \eqn{(4n)^{2/5}} cells with \eqn{n} the length of the dataset. }
-\item{print.test}{ If \code{FALSE}, the results of the tests are computed but not printed  }
+\item{discrete}{If \code{TRUE}, only the Chi-squared statistic is computed.
+	If missing, \code{discrete} is set to \code{TRUE} when the distribution name of
+	the first fit belongs to \code{"binom"}, \code{"nbinom"}, \code{"geom"}, 
+	\code{"hyper"}, \code{"pois"}.}
+\item{fitnames}{A vector defining the names of the fits.}
+\item{x}{An object of class \code{"fitdist"}.  }
+\item{\dots}{Further arguments to be passed to generic functions.}
 }
 
 \details{
      
     Goodness-of-fit statistics are computed. The Chi-squared statistic is computed using cells defined 
     by the argument 
-    \code{chisqbreaks} or cells automatically defined from the data in order 
+    \code{chisqbreaks} or cells automatically defined from data, in order 
     to reach roughly the same number of observations per cell, roughly equal to the argument
     \code{meancount}, or sligthly more if there are some ties. 
-    The choice to define cells from the empirical distribution (data) and not from the
-    theoretical distribution was done to enable the comparison of Chi-squared values obtained
-    with different distributions fitted on a same dataset.
+    The choice to define cells from the empirical distribution (data), and not from the
+    theoretical distribution, was done to enable the comparison of Chi-squared values obtained
+    with different distributions fitted on a same data set.
     If \code{chisqbreaks} and \code{meancount} 
     are both omitted, \code{meancount} is fixed in order to obtain roughly \eqn{(4n)^{2/5}} cells, 
-    with \eqn{n} the length of the dataset (Vose, 2000).
+    with \eqn{n} the length of the data set (Vose, 2000).
     The Chi-squared statistic is not computed if the program fails
     to define enough cells due to a too small dataset. When the Chi-squared statistic is computed, 
     and if the degree of freedom (nb of cells - nb of parameters - 1)  of the corresponding distribution 
     is strictly positive, the p-value of the Chi-squared test is returned.
     
-    For the distributions assumed continuous (all but \code{"binom"}, 
-    \code{"nbinom"}, \code{"geom"}, \code{"hyper"} and \code{"pois"} for R base distributions), 
-    Kolmogorov-Smirnov, Cramer-von Mises and Anderson-Darling  and statistics are also computed, 
-    as defined by Stephens (1986). 
+    For continuous distributions, Kolmogorov-Smirnov, Cramer-von Mises and 
+	Anderson-Darling  and statistics are also computed, as defined by Stephens (1986). 
     
     An approximate Kolmogorov-Smirnov test is 
     performed by assuming the distribution parameters known. The critical value defined by Stephens (1986) 
     for a completely specified distribution is used to reject or not the 
     distribution at the significance level 0.05. Because of this approximation, the result of the test
-    (decision of rejection of the distribution or not) is returned only for datasets with more 
+    (decision of rejection of the distribution or not) is returned only for data sets with more 
     than 30 observations. Note that this approximate test may be too conservative. 
     
-    For datasets with more than 5 observations and for distributions for 
+    For data sets with more than 5 observations and for distributions for 
     which the test is described by Stephens (1986) for maximum likelihood estimations 
     (\code{"exp"}, \code{"cauchy"}, \code{"gamma"} and \code{"weibull"}),
     the Cramer-von Mises and Anderson-darling tests are performed as described by Stephens (1986). 
@@ -71,25 +77,36 @@ gofstat(f, chisqbreaks, meancount, print.test = FALSE)
     Only recommended statistics are automatically printed, i.e.
     Cramer-von Mises, Anderson-Darling and Kolmogorov statistics for continuous distributions and
     Chi-squared statistics for discrete ones ( \code{"binom"}, 
-    \code{"nbinom"}, \code{"geom"}, \code{"hyper"} and \code{"pois"} ). Results of the tests are printed
-    only if \code{print.test=TRUE}. Even not printed, all the available results may be found in the list 
-    returned by the function. 
-    
+    \code{"nbinom"}, \code{"geom"}, \code{"hyper"} and \code{"pois"} ). 
+	
+	Results of the tests are not printed but stored in the output of the function. 
+	    
 }
 
 \value{ 
-    \code{gof} returns a list with following components,
-    \item{ chisq }{ the Chi-squared statistic or \code{NULL} if not computed }
-    \item{ chisqbreaks }{ breaks used to define cells in the Chi-squared statistic }
-    \item{ chisqpvalue }{ p-value of the Chi-squared statistic or \code{NULL} if not computed}
-    \item{ chisqdf }{ degree of freedom of the Chi-squared distribution or \code{NULL} if not computed }
+    \code{gof.stat} returns an object of class \code{"gofstat.fitdist"} with following components,
+    \item{ chisq }{ a named vector with the Chi-squared statistics or \code{NULL} if not computed}
+    \item{ chisqbreaks }{ common breaks used to define cells in the Chi-squared statistic }
+    \item{ chisqpvalue }{ a named vector with the p-values of the Chi-squared statistic 
+    or \code{NULL} if not computed}
+    \item{ chisqdf }{ a named vector with the degrees of freedom of the Chi-squared distribution
+    or \code{NULL} if not computed }
     \item{ chisqtable }{ a table with observed and theoretical counts used for the Chi-squared calculations }
-    \item{ cvm }{ the Cramer-von Mises statistic or \code{NULL} if not computed }
-    \item{ cvmtest }{ the decision of the Cramer-von Mises test or \code{NULL} if not computed }
-    \item{ ad }{ the Anderson-Darling statistic or \code{NULL} if not computed }
-    \item{ adtest }{ the decision of the Anderson-Darling test or \code{NULL} if not computed }
-    \item{ ks }{ the Kolmogorov-Smirnov statistic or \code{NULL} if not computed }
-    \item{ kstest }{ the decision of the Kolmogorov-Smirnov test or \code{NULL} if not computed }
+    \item{ cvm }{ a named vector of the Cramer-von Mises statistics or \code{"not computed"} if not computed }
+    \item{ cvmtest }{ a named vector of the decisions of the Cramer-von Mises test 
+    or \code{"not computed"} if not computed }
+    \item{ ad }{ a named vector with the Anderson-Darling statistics or 
+    \code{"not computed"} if not computed }
+    \item{ adtest }{ a named vector with the decisions of the Anderson-Darling test 
+    or \code{"not computed"} if not computed }
+    \item{ ks }{ a named vector with the Kolmogorov-Smirnov statistic or 
+    \code{"not computed"} if not computed }
+    \item{ kstest }{ a named vector with the decisions of the Kolmogorov-Smirnov test 
+    or \code{"not computed"} if not computed }
+	\item{aic}{a named vector with the values of the Aikake's Information Criterion.}
+	\item{bic}{a named vector with the values of the Bayesian Information Criterion.}
+	\item{discrete}{the input argument or the automatic choice by the function.}
+	\item{nbfit}{Number of fits in argument.}
 }
 
 \seealso{ 
@@ -109,15 +126,16 @@ Vose D (2000) Risk analysis, a quantitative guide. John Wiley & Sons Ltd, Chisch
 
 
 \author{ 
-Marie-Laure Delignette-Muller \email{marielaure.delignettemuller@vetagro-sup.fr}.
+Marie-Laure Delignette-Muller \email{marielaure.delignettemuller@vetagro-sup.fr}
+and
+Christophe Dutang.
 }
 
-%\note{  }
 
 \examples{
 
-# (1) fit of two distributions by maximum likelihood estimation
-# to the serving size data
+# (1) fit of two distributions to the serving size data
+# by maximum likelihood estimation
 # and comparison of goodness-of-fit statistics
 #
 
@@ -127,6 +145,9 @@ serving <- groundbeef$serving
 gofstat(fitg)
 (fitln <- fitdist(serving, "lnorm"))
 gofstat(fitln)
+
+gofstat(list(fitg, fitln))
+
 
 # (2) fit of two discrete distributions to toxocara data
 # and comparison of goodness-of-fit statistics
@@ -138,14 +159,12 @@ number <- toxocara$number
 fitp <- fitdist(number,"pois")
 summary(fitp)
 plot(fitp)
-gp <- gofstat(fitp,print.test = TRUE)
-gp$chistable
 
 fitnb <- fitdist(number,"nbinom")
 summary(fitnb)
 plot(fitnb)
-gnb <- gofstat(fitnb,print.test = TRUE)
-gnb$chisqtable
+
+gofstat(list(fitp, fitnb),fitnames = c("Poisson","negbin"))
 
 # (3) Use of Chi-squared results in addition to
 #     recommended statistics for continuous distributions
@@ -155,14 +174,11 @@ set.seed(1234)
 x4 <- rweibull(n=1000,shape=2,scale=1)
 # fit of the good distribution
 f4 <- fitdist(x4,"weibull")
-g4  <- gofstat(f4,meancount=10)
-print(g4)
 
 # fit of a bad distribution
 f4b <- fitdist(x4,"cauchy")
-g4b  <- gofstat(f4b,meancount=10)
-print(g4b)
 
+gofstat(list(f4,f4b),fitnames=c("Weibull", "Cauchy"))
 
 }
 \keyword{ distribution }

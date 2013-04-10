@@ -9,9 +9,11 @@ library(fitdistrplus)
 data(groundbeef)
 serving <- groundbeef$serving
 (fitg <- fitdist(serving, "gamma"))
-gofstat(fitg)
+gg <- gofstat(fitg)
 (fitln <- fitdist(serving, "lnorm"))
-gofstat(fitln)
+gn <- gofstat(fitln)
+
+gofstat(list(fitg, fitln))
 
 # (2) fit of two discrete distributions to toxocara data
 # and comparison of goodness-of-fit statistics
@@ -20,17 +22,22 @@ gofstat(fitln)
 data(toxocara)
 number <- toxocara$number
 
-fitp <- fitdist(number,"pois")
+fitp <- fitdist(number, "pois")
 summary(fitp)
 plot(fitp)
-gp <- gofstat(fitp,print.test = TRUE)
-gp$chistable
+gp <- gofstat(fitp)
+gp
 
-fitnb <- fitdist(number,"nbinom")
+fitnb <- fitdist(number, "nbinom")
 summary(fitnb)
 plot(fitnb)
-gnb <- gofstat(fitnb,print.test = TRUE)
-gnb$chisqtable
+gnb <- gofstat(fitnb)
+gnb
+
+gofstat(list(fitp, fitnb))
+
+attributes(gofstat(list(fitp, fitnb)))
+
 
 # (3) Use of Chi-squared results in addition to
 #     recommended statistics for continuous distributions
@@ -39,13 +46,13 @@ gnb$chisqtable
 set.seed(1234)
 x4 <- rweibull(n=1000,shape=2,scale=1)
 # fit of the good distribution
-f4 <- fitdist(x4,"weibull")
-g4  <- gofstat(f4,meancount=10)
+f4 <- fitdist(x4, "weibull")
+g4  <- gofstat(f4, meancount=10)
 print(g4)
 
 # fit of a bad distribution
-f4b <- fitdist(x4,"cauchy")
-g4b  <- gofstat(f4b,meancount=10)
+f4b <- fitdist(x4, "cauchy")
+g4b  <- gofstat(f4b, meancount=10)
 print(g4b)
 
 
