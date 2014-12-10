@@ -22,7 +22,7 @@
 ###         R functions
 ### 
 
-fitdist <- function (data, distr, method = c("mle", "mme", "qme", "mge"), start=NULL, fix.arg=NULL, ...) 
+fitdist <- function (data, distr, method = c("mle", "mme", "qme", "mge"), start=NULL, fix.arg=NULL, discrete, ...) 
 {
     if (!is.character(distr)) 
         distname <- substring(as.character(match.call()$distr), 2)
@@ -35,7 +35,17 @@ fitdist <- function (data, distr, method = c("mle", "mme", "qme", "mge"), start=
     pdistname <- paste("p", distname, sep="")
     if (!exists(pdistname, mode="function"))
         stop(paste("The ", pdistname, " function must be defined"))
-        
+    
+    if(missing(discrete))
+    {
+      if (is.element(distname, c("binom", "nbinom", "geom", "hyper", "pois"))) 
+        discrete <- TRUE
+      else
+        discrete <- FALSE
+    }
+    if(!is.logical(discrete))
+      stop("wrong argument 'discrete'.")
+    
     if(any(method == "mom"))
         warning("the name \"mom\" for matching moments is NO MORE used and is replaced by \"mme\".")
     
@@ -61,7 +71,7 @@ fitdist <- function (data, distr, method = c("mle", "mme", "qme", "mge"), start=
         mme <- mmedist(data, distname, start=start, fix.arg=fix.arg, ...)
                 
         sd <- NULL
-        correl <- NULL
+        correl <- varcovar <- NULL
         
         estimate <- mme$estimate
         loglik <- mme$loglik
@@ -77,7 +87,8 @@ fitdist <- function (data, distr, method = c("mle", "mme", "qme", "mge"), start=
                 with the error code ", mle$convergence, "\n") 
         estimate <- mle$estimate
         if(!is.null(mle$hessian)){
-            if(all(!is.na(mle$hessian))){
+            #check for NA values and invertible Hessian
+            if(all(!is.na(mle$hessian)) && qr(mle$hessian)$rank == NCOL(mle$hessian)){
                 varcovar <- solve(mle$hessian)
                 sd <- sqrt(diag(varcovar))
                 correl <- cov2cor(varcovar)
@@ -109,7 +120,7 @@ fitdist <- function (data, distr, method = c("mle", "mme", "qme", "mge"), start=
         npar <- length(estimate)
         aic <- -2*loglik+2*npar
         bic <- -2*loglik+log(n)*npar
-        correl <- NULL
+        correl <- varcovar <- NULL
         
         convergence <- qme$convergence      
     }else if (method == "mge")
@@ -125,7 +136,7 @@ fitdist <- function (data, distr, method = c("mle", "mme", "qme", "mge"), start=
         npar <- length(estimate)
         aic <- -2*loglik+2*npar
         bic <- -2*loglik+log(n)*npar
-        correl <- NULL
+        correl <- varcovar <- NULL
         
         convergence <- mge$convergence      
     }else
@@ -136,9 +147,9 @@ fitdist <- function (data, distr, method = c("mle", "mme", "qme", "mge"), start=
     if (!is.null(fix.arg)) fix.arg <- as.list(fix.arg)
     
     reslist <- list(estimate = estimate, method = method, sd = sd, cor = correl, 
-                    loglik = loglik, aic=aic, bic=bic, n = n, data=data, 
+                    vcov = varcovar, loglik = loglik, aic=aic, bic=bic, n = n, data=data,
                     distname = distname, fix.arg = fix.arg, dots = dots, 
-                    convergence = convergence)
+                    convergence = convergence, discrete = discrete)
     
     return(structure(reslist, class = "fitdist"))
 
@@ -161,7 +172,7 @@ print.fitdist <- function(x, ...)
     if (x$method=="mle") 
         print(cbind.data.frame("estimate" = x$estimate, "Std. Error" = x$sd), ...)
      else 
-        print(cbind.data.frame("estimate" = x$estimate))
+        print(cbind.data.frame("estimate" = x$estimate), ...)
 
 }
 
@@ -170,7 +181,7 @@ plot.fitdist <- function(x, breaks="default", ...)
     if (!inherits(x, "fitdist"))
         stop("Use only with 'fitdist' objects")
     plotdist(data=x$data, distr=x$distname, 
-    para=c(as.list(x$estimate), as.list(x$fix.arg)), breaks=breaks, ...)
+    para=c(as.list(x$estimate), as.list(x$fix.arg)), breaks=breaks, discrete = x$discrete, ...)
 }
 
 summary.fitdist <- function(object, ...)
@@ -224,3 +235,7 @@ print.summary.fitdist <- function(x, ...)
 }
 
 #see quantiles.R for quantile.fitdist
+#see logLik.R for loglik.fitdist
+#see vcov.R for vcov.fitdist
+#see coef.R for coef.fitdist
+

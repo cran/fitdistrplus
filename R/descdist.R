@@ -23,7 +23,7 @@
 ### 
 
 descdist <- function(data, discrete = FALSE, boot = NULL, method = "unbiased", graph = TRUE,
-obs.col = "darkblue", boot.col = "orange")
+obs.col = "darkblue", obs.pch = 16, boot.col = "orange")
 {
     #if(is.mcnode(data)) data <- as.vector(data)
     if (missing(data) || !is.vector(data,mode="numeric"))
@@ -76,29 +76,10 @@ obs.col = "darkblue", boot.col = "orange")
     else
         stop("The only possible value for the argument method are 'unbiased' or 'sample'")
     
-    res<-list(min=min(data),max=max(data),median=median(data),
+    res <- list(min=min(data),max=max(data),median=median(data),
     mean=mean(data),sd=standdev(data),
-    skewness=skewness(data),kurtosis=kurtosis(data))
+    skewness=skewness(data),kurtosis=kurtosis(data), method = method)
     
-    cat("summary statistics\n")
-    cat("------\n")
-    cat("min: ",res$min,"  max: ",res$max,"\n")
-    cat("median: ",res$median,"\n")
-    cat("mean: ",res$mean,"\n")
-    if (method=="sample")
-    {
-        cat("sample sd: ",res$sd,"\n")
-        cat("sample skewness: ",res$skewness,"\n")
-        cat("sample kurtosis: ",res$kurtosis,"\n")
-    }
-    else
-    if (method=="unbiased")
-    {
-        cat("estimated sd: ",res$sd,"\n")
-        cat("estimated skewness: ",res$skewness,"\n")
-        cat("estimated kurtosis: ",res$kurtosis,"\n")
-    }
-
     
     skewdata<-res$skewness
     kurtdata<-res$kurtosis
@@ -126,7 +107,7 @@ obs.col = "darkblue", boot.col = "orange")
         }
 
         ymax<-kurtmax-1
-        plot(skewdata^2,kurtmax-kurtdata,pch=16,xlim=c(0,xmax),ylim=c(0,ymax),
+        plot(skewdata^2,kurtmax-kurtdata,pch=obs.pch,xlim=c(0,xmax),ylim=c(0,ymax),
         yaxt="n",xlab="square of skewness",ylab="kurtosis",main="Cullen and Frey graph")
         yax<-as.character(kurtmax-0:ymax)
         axis(side=2,at=0:ymax,labels=yax)
@@ -159,7 +140,7 @@ obs.col = "darkblue", boot.col = "orange")
             y<-kurtmax-(es2^4+2*es2^3+3*es2^2-3)
             lines(s2,y,lty=3)
                 
-            legend(xmax*0.2,ymax*1.03,pch=16,legend="Observation",bty="n",cex=0.8,pt.cex=1.2,col=obs.col)
+            legend(xmax*0.2,ymax*1.03,pch=obs.pch,legend="Observation",bty="n",cex=0.8,pt.cex=1.2,col=obs.col)
             if (!is.null(boot)) {
             legend(xmax*0.2,ymax*0.98,pch=1,legend="bootstrapped values",
                 bty="n",cex=0.8,col=boot.col)        
@@ -190,7 +171,7 @@ obs.col = "darkblue", boot.col = "orange")
             s2<-c(s2a,s2b)
             y<-c(ya,yb)
             polygon(s2,y,col="grey80",border="grey80")
-            legend(xmax*0.2,ymax*1.03,pch=16,legend="Observation",bty="n",cex=0.8,pt.cex=1.2)
+            legend(xmax*0.2,ymax*1.03,pch=obs.pch,legend="Observation",bty="n",cex=0.8,pt.cex=1.2, col = obs.col)
             if (!is.null(boot)) {
             legend(xmax*0.2,ymax*0.98,pch=1,legend="bootstrapped values",
                 bty="n",cex=0.8,col=boot.col)        
@@ -212,7 +193,7 @@ obs.col = "darkblue", boot.col = "orange")
             points(s2boot,kurtmax-kurtboot,pch=1,col=boot.col,cex=0.5)
         } 
         # observed distribution
-        points(skewness(data)^2,kurtmax-kurtosis(data),pch=16,cex=2,col=obs.col)
+        points(skewness(data)^2,kurtmax-kurtosis(data),pch=obs.pch,cex=2,col=obs.col)
         # norm dist
         points(0,kurtmax-3,pch=8,cex=1.5,lwd=2)
         if (!discrete) {
@@ -225,5 +206,33 @@ obs.col = "darkblue", boot.col = "orange")
         }
     } # end of is (graph)
     
-    invisible(res)
+    
+    return(structure(res, class = "descdist"))
+    
 }
+
+print.descdist <- function(x, ...)
+{
+  if (!inherits(x, "descdist"))
+    stop("Use only with 'descdist' objects")
+  cat("summary statistics\n")
+  cat("------\n")
+  cat("min: ",x$min,"  max: ",x$max,"\n")
+  cat("median: ",x$median,"\n")
+  cat("mean: ",x$mean,"\n")
+  if (x$method=="sample")
+  {
+    cat("sample sd: ",x$sd,"\n")
+    cat("sample skewness: ",x$skewness,"\n")
+    cat("sample kurtosis: ",x$kurtosis,"\n")
+  }
+  else
+    if (x$method=="unbiased")
+    {
+      cat("estimated sd: ",x$sd,"\n")
+      cat("estimated skewness: ",x$skewness,"\n")
+      cat("estimated kurtosis: ",x$kurtosis,"\n")
+    }
+  
+}
+

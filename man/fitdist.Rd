@@ -3,6 +3,9 @@
 \alias{plot.fitdist}
 \alias{print.fitdist}
 \alias{summary.fitdist}
+\alias{logLik.fitdist}
+\alias{vcov.fitdist}
+\alias{coef.fitdist}
 \alias{fitdistrplus}
 \title{ Fit of univariate distributions to non-censored data}
 
@@ -10,18 +13,25 @@
  Fit of univariate distributions to non-censored data by maximum likelihood, 
  moment matching, quantile matching or 
  maximizing goodness-of-fit (minimizing distance). Generic methods are \code{print}, \code{plot}, 
- \code{summary} and \code{quantile}.
+\code{summary}, \code{quantile}, \code{logLik}, \code{vcov} and \code{coef}.
 }
 
 \usage{
 fitdist(data, distr, method = c("mle", "mme", "qme", "mge"), 
-    start=NULL, fix.arg=NULL, \dots)
+    start=NULL, fix.arg=NULL, discrete, \dots)
     
 \method{print}{fitdist}(x, \dots)
 
 \method{plot}{fitdist}(x, breaks="default", \dots)
 
 \method{summary}{fitdist}(object, \dots)
+
+\method{logLik}{fitdist}(object, \dots)
+
+\method{vcov}{fitdist}(object, \dots)
+
+\method{coef}{fitdist}(object, \dots)
+
 
 }
 
@@ -46,6 +56,14 @@ fitdist(data, distr, method = c("mle", "mme", "qme", "mge"),
     with its default breaks definition. Else \code{breaks} is passed to the function \code{hist}.
     This argument is not taken into account with discrete distributions: \code{"binom"}, 
     \code{"nbinom"}, \code{"geom"}, \code{"hyper"} and \code{"pois"}. }
+\item{discrete}{ If TRUE, the distribution is considered as discrete.
+  If \code{discrete} is missing, 
+	\code{discrete} is automaticaly set to \code{TRUE} when \code{distr} belongs to 
+	\code{"binom"}, \code{"nbinom"}, \code{"geom"},
+    \code{"hyper"} or \code{"pois"} and to \code{FALSE} in the other cases. It is thus recommended
+    to enter this argument when using another discrete distribution. This argument will not directly affect
+    the results of the fit but will be passed to functions \code{\link{gofstat}}, \code{\link{plotdist}} 
+    and \code{\link{cdfcomp}}.  }
 \item{\dots}{Further arguments to be passed to generic functions, or to one of the functions
     \code{"mledist"},  \code{"mmedist"}, \code{"qmedist"} or \code{"mgedist"}
     depending of the chosen method
@@ -115,28 +133,35 @@ fitdist(data, distr, method = c("mle", "mme", "qme", "mge"),
     Hessian at the solution found by \code{optim} or by the user-supplied function passed to mledist.
 
     NB: if your data values are particularly small or large, a scaling may be needed 
-    before the optimization process. See example (14).
+    before the optimization process. See example (14) in this page and examples (14,15) in the test file.
+    Please also take a look at Rmpfr package available on CRAN.
     
 }
 
 \value{ 
     \code{fitdist} returns an object of class \code{"fitdist"}, a list with the following components:
-    \item{estimate }{ the parameter estimates }
+    \item{estimate }{ the parameter estimates.}
     \item{method }{ the character string coding for the fitting method : 
         \code{"mle"} for 'maximum likelihood estimation', \code{"mme"} for 'matching moment estimation',
          \code{"qme"} for 'matching quantile estimation'
-         and \code{"mge"} for 'maximum goodness-of-fit estimation' }
-    \item{sd}{ the estimated standard errors or \code{NULL} if not available }
-    \item{cor}{ the estimated correlation matrix or \code{NULL} if not available}
-    \item{loglik}{ the log-likelihood}
-    \item{aic}{ the Akaike information criterion}
-    \item{bic}{ the the so-called BIC or SBC (Schwarz Bayesian criterion)}
-    \item{n}{ the length of the data set }
-    \item{data}{ the data set }
-    \item{distname}{ the name of the distribution }
+    and \code{"mge"} for 'maximum goodness-of-fit estimation'.}
+    \item{sd}{ the estimated standard errors, \code{NA} if numerically not computable
+        or \code{NULL} if not available.}
+    \item{cor}{ the estimated correlation matrix, \code{NA} if numerically not computable
+        or \code{NULL} if not available.}
+    \item{vcov}{ the estimated variance-covariance matrix, \code{NULL} if not available.}
+    \item{loglik}{ the log-likelihood.}
+    \item{aic}{ the Akaike information criterion.}
+    \item{bic}{ the the so-called BIC or SBC (Schwarz Bayesian criterion).}
+    \item{n}{ the length of the data set.}
+    \item{data}{ the data set.}
+    \item{distname}{ the name of the distribution.}
     \item{fix.arg}{ the named list giving the values of parameters of the named distribution
         that must be kept fixed rather than estimated by maximum likelihood or \code{NULL} 
         if there are no such parameters. }
+    \item{discrete}{ the input argument or the automatic definition by the function to be passed
+        to functions \code{\link{gofstat}}, \code{\link{plotdist}} 
+        and \code{\link{cdfcomp}}. }
     \item{dots}{ the list of  further arguments passed in \dots to be used in \code{\link{bootdist}} 
         in iterative calls to \code{\link{mledist}}, \code{\link{mmedist}},
         \code{\link{qmedist}}, \code{\link{mgedist}} or 
@@ -163,12 +188,18 @@ fitdist(data, distr, method = c("mle", "mme", "qme", "mge"),
     a density Q-Q plot (function \code{\link{qqcomp}}),
     or a P-P plot (function \code{\link{ppcomp}}).
     }
-    
+    \item{\code{logLik}}{ Extracts the estimated log-likelihood from the \code{"fitdist"} object.
+    }
+    \item{\code{vcov}}{ Extracts the estimated var-covariance matrix from the \code{"fitdist"} object
+    (only available When \code{method = "mle"}).
+    }
+    \item{\code{coef}}{ Extracts the fitted coefficients from the \code{"fitdist"} object.
+    }
 }
 
 }
 
-\seealso{ 
+\seealso{
     See \code{\link{mledist}}, \code{\link{mmedist}}, \code{\link{qmedist}}, 
     \code{\link{mgedist}} for details on parameter estimation.
     See \code{\link{gofstat}} for goodness-of-fit statistics.
@@ -181,11 +212,11 @@ fitdist(data, distr, method = c("mle", "mme", "qme", "mge"),
 }
 
 \references{ 
-Cullen AC and Frey HC (1999) Probabilistic techniques in exposure assessment. Plenum Press, USA, pp. 81-155.
+Cullen A.C. and Frey H.C. (1999) Probabilistic techniques in exposure assessment. Plenum Press, USA, pp. 81-155.
 
-Venables WN and Ripley BD (2002) Modern applied statistics with S. Springer, New York, pp. 435-446.
+Venables W.N. and Ripley B.D. (2002) Modern applied statistics with S. Springer, New York, pp. 435-446.
 
-Vose D (2000) Risk analysis, a quantitative guide. John Wiley & Sons Ltd, Chischester, England, pp. 99-143.
+Vose D. (2000) Risk analysis, a quantitative guide. John Wiley & Sons Ltd, Chischester, England, pp. 99-143.
 }
 
 
@@ -394,7 +425,8 @@ serving <- groundbeef$serving
 (f7 <- fitdist(serving, "weibull", method="mge", gof="AD2L"))
 (f8 <- fitdist(serving, "weibull", method="mge", gof="AD2"))
 cdfcomp(list(f1, f2, f3, f4, f5, f6, f7, f8))
-cdfcomp(list(f1, f2, f3, f4, f5, f6, f7, f8), xlogscale=TRUE, xlim=c(8, 250), verticals=TRUE)
+cdfcomp(list(f1, f2, f3, f4, f5, f6, f7, f8), 
+  xlogscale=TRUE, xlim=c(8, 250), verticals=TRUE)
 denscomp(list(f1, f2, f3, f4, f5, f6, f7, f8))
 
 # (13) Fit of a uniform distribution using maximum likelihood 
@@ -459,6 +491,22 @@ fCvM <- fitdist(t, "triang", method="mge", start = list(min=4, mode=6,max=9), go
 fKS <- fitdist(t, "triang", method="mge", start = list(min=4, mode=6,max=9), gof="KS")
 cdfcomp(list(fCvM,fKS))
 }
+
+# (17) fit a non classical discrete distribution (the zero inflated Poisson distribution)
+#
+
+require(gamlss.dist)
+set.seed(1234)
+x <- rZIP(n = 30, mu = 5, sigma = 0.2)
+plotdist(x, discrete = TRUE)
+fitzip <- fitdist(x, "ZIP", start =  list(mu = 4, sigma = 0.15), discrete = TRUE, 
+  optim.method = "L-BFGS-B", lower = c(0, 0), upper = c(Inf, 1))
+summary(fitzip)
+plot(fitzip)
+fitp <- fitdist(x, "pois")
+cdfcomp(list(fitzip, fitp))
+gofstat(list(fitzip, fitp))
+
 
 }
 \keyword{ distribution }

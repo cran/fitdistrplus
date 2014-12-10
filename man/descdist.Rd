@@ -1,5 +1,6 @@
 \name{descdist}
 \alias{descdist}
+\alias{print.descdist}
 %- Also NEED an '\alias' for EACH other topic documented here.
 
 \title{ Description of an empirical distribution for non-censored data}
@@ -11,7 +12,10 @@
 
 \usage{
 descdist(data, discrete = FALSE, boot = NULL, method = "unbiased",
-graph = TRUE, obs.col = "darkblue", boot.col = "orange")
+graph = TRUE, obs.col = "darkblue", obs.pch = 16, boot.col = "orange")
+
+\method{print}{descdist}(x, \dots)
+
 }
 %- maybe also 'usage' for other objects documented here.
 
@@ -23,7 +27,10 @@ graph = TRUE, obs.col = "darkblue", boot.col = "orange")
 \item{method}{ "unbiased" for unbiased estimated values of statistics or "sample" for sample values. }
 \item{graph}{ If \code{FALSE}, the skewness-kurtosis graph is not plotted. }
 \item{obs.col}{ Color used for the observed point on the skewness-kurtosis graph. }
+\item{obs.pch}{ plotting character used for the observed point on the skewness-kurtosis graph. }
 \item{boot.col}{ Color used for bootstrap sample of points on the skewness-kurtosis graph. }
+\item{x}{An object of class \code{"descdist"}.  }
+\item{\dots}{Further arguments to be passed to generic functions}
 }
 
 \details{
@@ -63,6 +70,8 @@ graph = TRUE, obs.col = "darkblue", boot.col = "orange")
     \item{ sd }{ the standard deviation sample or estimated value  }
     \item{ skewness }{ the skewness sample or estimated value  }
     \item{ kurtosis }{ the kurtosis sample or estimated value  }    
+    \item{method}{ the method specified in input ("unbiased" for unbiased 
+    estimated values of statistics or "sample" for sample values. }
 }
 
 \seealso{ 
@@ -95,10 +104,10 @@ descdist(x1,boot=500)
 
 # (2) Description of a sample from a beta distribution
 # with uncertainty on skewness and kurtosis estimated by bootstrap
-# with changing of default colors 
+# with changing of default colors and plotting character for observed point
 #
 descdist(rbeta(100,shape1=0.05,shape2=1),boot=500,
-obs.col="blue",boot.col="yellow")
+obs.col="blue", obs.pch = 15, boot.col="yellow")
 
 # (3) Description of a sample from a gamma distribution
 # with uncertainty on skewness and kurtosis estimated by bootstrap

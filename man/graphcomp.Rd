@@ -4,12 +4,13 @@
 \alias{denscomp}
 \alias{qqcomp}
 \alias{ppcomp}
-\title{Graphical comparison of multiple fitted distributions (for non-censored continuous data)}
+\title{Graphical comparison of multiple fitted distributions (for non-censored data)}
 \description{   
  \code{cdfcomp} plots the empirical cumulative distribution against fitted distribution functions,
  \code{denscomp} plots the histogram against fitted density functions, 
  \code{qqcomp} plots theoretical quantiles against empirical ones,
  \code{ppcomp} plots theoretical probabilities against empirical ones.
+ Only \code{cdfcomp} is able to plot fits of a discrete distribution.
 }
 
 \usage{
@@ -63,9 +64,9 @@ ppcomp(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, main, xlab, ylab,
 \item{verticals}{If \code{TRUE}, draws also vertical lines for the empirical cdf function. 
     Only taken into account if \code{horizontals=TRUE}. }
 \item{use.ppoints}{If \code{TRUE}, probability points of the empirical distribution
-    are defined as 
-    \code{(1:n - a.ppoints)/(n - 2a.ppoints + 1)}
-     using function \code{\link{ppoints}}. If FALSE, 
+    are defined using function \code{\link{ppoints}} as 
+    \code{(1:n - a.ppoints)/(n - 2a.ppoints + 1)}.
+     If FALSE, 
     probability points are simply defined as \code{1:n / n}. This argument is ignored 
     for discrete data.}
 \item{a.ppoints}{If \code{use.ppoints=TRUE}, this is passed to function \code{\link{ppoints}}.}
@@ -81,12 +82,9 @@ ppcomp(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, main, xlab, ylab,
     see also \code{\link{hist}}.}
 \item{\dots}{Further graphical arguments passed to graphical functions used in cdfcomp, denscomp,
     ppcomp and qqcomp.}
-\item{discrete}{ If \code{TRUE}, the distribution is considered as discrete.
-	If missing, \code{discrete} is set to \code{TRUE} when the distribution
-	name of the first fit belongs to 
-	\code{"binom"}, \code{"nbinom"}, \code{"geom"}, \code{"hyper"}, 
-	\code{"pois"}; otherwise \code{discrete} is set to \code{FALSE}. 
-	}	
+\item{discrete}{If \code{TRUE}, the distributions are considered discrete.
+  If missing, \code{discrete} is passed from the first object of class \code{"fitdist"} of 
+  the list \code{ft}.}
 }
 
 \details{
