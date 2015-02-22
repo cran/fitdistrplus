@@ -1,8 +1,8 @@
 Package: fitdistrplus
 Title: Help to Fit of a Parametric Distribution to Non-Censored or
         Censored Data
-Version: 1.0-3
-Date: 2014-12-10
+Version: 1.0-4
+Date: 2015-02-22
 Authors@R: c(person("Marie Laure", "Delignette-Muller", role = c("aut", "cre"), email= "marielaure.delignettemuller@vetagro-sup.fr"),person("Christophe", "Dutang", role = "aut", email = "christophe.dutang@univ-lemans.fr"),person("Regis", "Pouillot", role = "ctb", email = "rpouillot@yahoo.fr"),person("Jean-Baptiste", "Denis", role = "ctb", email = "jbdenis@jouy.inra.fr"))
 Description: Extends the fitdistr function (of the MASS package) with several functions to help the fit of a parametric distribution to non-censored or censored data. Censored data may contain left censored, right censored and interval censored values, with several lower and upper bounds. In addition to maximum likelihood estimation method the package provides moment matching, quantile matching and maximum goodness-of-fit estimation methods (available only for non-censored data).
 Depends: R (>= 2.10.0)
@@ -17,8 +17,8 @@ Author: Marie Laure Delignette-Muller [aut, cre],
 Maintainer: Marie Laure Delignette-Muller <marielaure.delignettemuller@vetagro-sup.fr>
 Repository: CRAN
 Repository/R-Forge/Project: riskassessment
-Repository/R-Forge/Revision: 300
-Repository/R-Forge/DateTimeStamp: 2014-12-11 08:38:24
-Date/Publication: 2014-12-13 00:24:55
-Packaged: 2014-12-11 08:45:40 UTC; rforge
+Repository/R-Forge/Revision: 304
+Repository/R-Forge/DateTimeStamp: 2015-02-23 07:31:59
+Date/Publication: 2015-02-23 17:20:39
+Packaged: 2015-02-23 07:45:42 UTC; rforge
 NeedsCompilation: no
