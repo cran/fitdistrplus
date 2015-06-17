@@ -140,6 +140,14 @@ mgedist <- function (data, distr, gof = "CvM", start=NULL, fix.arg=NULL, optim.m
         if (distname == "unif") {
             start <- list(min=min(data),max=max(data))
         }
+        if (distname == "pareto") {
+            if (any(data <= 0)) 
+                stop("values must be positive to fit a lognormal distribution")
+            n <- length(data)
+            m <- min(data)
+            a <- n/sum(log(data)-log(m))
+            start <- list(shape=a, scale=m)
+    }
         if (!is.list(start)) 
             stop("'start' must be defined as a named list for this distribution") 
    } # end of the definition of starting values 
