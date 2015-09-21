@@ -23,7 +23,8 @@
 ### 
 
 qmedist <- function (data, distr, probs, start=NULL, fix.arg=NULL, 
-    qtype=7, optim.method="default", lower=-Inf, upper=Inf, custom.optim=NULL, ...)
+    qtype=7, optim.method="default", lower=-Inf, upper=Inf, custom.optim=NULL, 
+    weights=NULL, silent=TRUE, ...)
     # data may correspond to a vector for non censored data or to
     # a dataframe of two columns named left and right for censored data 
 {
@@ -36,32 +37,39 @@ qmedist <- function (data, distr, probs, start=NULL, fix.arg=NULL,
     ddistname <- paste("d",distname,sep="")
     
     if (!exists(qdistname, mode="function"))
-        stop(paste("The ", qdistname, " function must be defined."))
+        stop(paste("The ", qdistname, " function must be defined"))
     if (!exists(ddistname, mode="function"))
-        stop(paste("The ", ddistname, " function must be defined."))
+        stop(paste("The ", ddistname, " function must be defined"))
 
     if (missing(probs))
         stop("missing probs argument for quantile matching estimation")
 
-    if (!is.null(fix.arg) & is.null(start))
-        stop("Starting values must be defined when some distribution parameters are fixed.")    
+    start.arg <- start #to avoid confusion with the start() function of stats pkg (check is done lines 87-100)
+    if(is.vector(start.arg)) #backward compatibility
+      start.arg <- as.list(start.arg)
     
     if(qtype < 1 || qtype > 9)
-        stop("wrong type for the R quantile function.")
-
+        stop("wrong type for the R quantile function")
+    if(!is.null(weights))
+    {
+      if(any(weights < 0))
+        stop("weights should be a vector of numerics greater than 0")
+      if(length(weights) != NROW(data))
+        stop("weights should be a vector with a length equal to the observation number")
+    }
     
     if (is.vector(data)) {
         cens <- FALSE
         if (!(is.numeric(data) & length(data)>1)) 
             stop("data must be a numeric vector of length greater than 1 for non censored data
-            or a dataframe with two columns named left and right and more than one line for censored data.")
+            or a dataframe with two columns named left and right and more than one line for censored data")
     }
     else {
         cens <- TRUE
         censdata <- data
         if (!(is.vector(censdata$left) & is.vector(censdata$right) & length(censdata[,1])>1))
         stop("data must be a numeric vector of length greater than 1 for non censored data
-        or a dataframe with two columns named left and right and more than one line for censored data.")
+        or a dataframe with two columns named left and right and more than one line for censored data")
         pdistname<-paste("p",distname,sep="")
         if (!exists(pdistname,mode="function"))
             stop(paste("The ",pdistname," function must be defined to apply maximum likelihood to censored data"))
@@ -85,103 +93,36 @@ qmedist <- function (data, distr, probs, start=NULL, fix.arg=NULL,
     }
     
     # QME fit 
-    # definition of starting values if not previously defined
-    if (is.null(start)) {
-        if (distname == "norm") {
-            n <- length(data)
-            sd0 <- sqrt((n - 1)/n) * sd(data)
-            mx <- mean(data)
-            start <- list(mean=mx, sd=sd0)
-        }
-        if (distname == "lnorm") {
-            if (any(data <= 0)) 
-                stop("values must be positive to fit a lognormal distribution")
-            n <- length(data)
-            ldata <- log(data)
-            sd0 <- sqrt((n - 1)/n) * sd(ldata)
-            ml <- mean(ldata)
-            start <- list(meanlog=ml, sdlog=sd0)
-        }
-        if (distname == "pois") {
-            start <- list(lambda=mean(data))
-        }
-        if (distname == "exp") {
-            start <- list(rate=1/mean(data))
-        }
-        if (distname == "gamma") {
-            n <- length(data)
-            m <- mean(data)
-            v <- (n - 1)/n*var(data)
-            start <- list(shape=m^2/v,rate=m/v)
-        }
-        if (distname == "nbinom") {
-            n <- length(data)
-            m <- mean(data)
-            v <- (n - 1)/n*var(data)
-            size <- if (v > m) m^2/(v - m)
-                else 100
-            start <- list(size = size, mu = m) 
-        }
-        if (distname == "geom" ) {
-            m <- mean(data)
-            prob <- if (m>0) 1/(1+m)
-                    else 1
-            start <- list(prob=prob)        
-        }
-        if (distname == "beta") {
-            if (any(data < 0) | any(data > 1)) 
-                stop("values must be in [0-1] to fit a beta distribution")
-            n <- length(data)
-            m <- mean(data)
-            v <- (n - 1)/n*var(data)
-            aux <- m*(1-m)/v - 1
-            start <- list(shape1=m*aux,shape2=(1-m)*aux)
-        }
-        if (distname == "weibull") {
-            m <- mean(log(data))
-            v <- var(log(data))
-            shape <- 1.2/sqrt(v)
-            scale <- exp(m + 0.572/shape)
-            start <- list(shape = shape, scale = scale)
-        }
-        if (distname == "logis") {
-            n <- length(data)
-            m <- mean(data)
-            v <- (n - 1)/n*var(data)
-            start <- list(location=m,scale=sqrt(3*v)/pi)
-        }
-        if (distname == "cauchy") {
-            start <- list(location=median(data),scale=IQR(data)/2)
-        }
-        if (distname == "unif") {
-            start <- list(min=min(data),max=max(data))
-        }
-        if (!is.list(start)) 
-            stop("'start' must be defined as a named list for this distribution") 
-   } # end of the definition of starting values 
+    # definition of starting/fixed values values
+    argddistname <- names(formals(ddistname))
+    chfixstt <- checkparam(start.arg=start.arg, fix.arg=fix.arg, argdistname=argddistname, 
+                           errtxt=NULL, data10=head(data, 10), distname=distname)
+    if(!chfixstt$ok)
+      stop(chfixstt$txt)
+    #unlist starting values as needed in optim()
+    if(is.function(chfixstt$start.arg))
+      vstart <- chfixstt$start.arg(data)
+    else
+      vstart <- unlist(chfixstt$start.arg)
+    if(is.function(fix.arg)) #function
+    { 
+      fix.arg.fun <- fix.arg
+      fix.arg <- fix.arg(data)
+    }else
+      fix.arg.fun <- NULL
+    #otherwise fix.arg is a named list or NULL
+    
+    # end of the definition of starting/fixed values 
 
-    if(length(start) != length(probs))
+    if(length(vstart) != length(probs))
         stop("wrong dimension for the quantiles to match.")
     
    ############# QME fit using optim or custom.optim ##########
-    vstart <- unlist(start)
-    vfix.arg <- unlist(fix.arg)
-    # check of the names of the arguments of the density function
-    argqdistname <- names(formals(qdistname))   
-    m <- match(names(start), argqdistname)
-    mfix <- match(names(vfix.arg), argqdistname)
-    if (any(is.na(m)) || length(m) == 0)
-        stop("'start' must specify names which are arguments to 'distr'")
-    if (any(is.na(mfix)))
-        stop("'fix.arg' must specify names which are arguments to 'distr'")
-    # check that some parameters are not both in fix.arg and start
-    minter <- match(names(start), names(fix.arg))
-    if (any(!is.na(minter)))
-        stop("a distribution parameter cannot be specified both in 'start' and 'fix.arg'")
 
     # definition of the function to minimize : 
     # for non censored data
-    if (!cens) {
+    if (!cens && is.null(weights)) 
+    {
         # the argument names are:
         # - par for parameters (like in optim function)
         # - fix.arg for optional fixed parameters
@@ -196,19 +137,33 @@ qmedist <- function (data, distr, probs, start=NULL, fix.arg=NULL,
         }
         
         fnobj <- function(par, fix.arg, obs, qdistnam, qtype)
-            sum( sapply(probs, function(p) DIFF2Q(par, fix.arg, p, obs, qdistnam, qtype)) )
+          sum( sapply(probs, function(p) DIFF2Q(par, fix.arg, p, obs, qdistnam, qtype)) )
         
-        
-    }
-    else {
+    }else if (!cens && !is.null(weights)) 
+    {
+      DIFF2Q <- function(par, fix.arg, prob, obs, qdistnam, qtype)
+      {
+        qtheo <- do.call(qdistnam, c(as.list(prob), as.list(par), as.list(fix.arg)) )
+        qemp <- as.numeric(wtd.quantile(x=obs, weights=weights, probs=prob))
+        (qemp - qtheo)^2
+      }
+      fnobj <- function(par, fix.arg, obs, qdistnam, qtype)
+        sum( sapply(probs, function(p) DIFF2Q(par, fix.arg, p, obs, qdistnam, qtype)) )
+    }else
+    {
         stop("Quantile matching estimation is not yet available for censored data.")
     }
     
     # Function to calculate the loglikelihood to return
-    loglik <- function(par, fix.arg, obs, ddistnam) {
+    if(is.null(weights))
+    {  
+      loglik <- function(par, fix.arg, obs, ddistnam) 
         sum(log(do.call(ddistnam, c(list(obs), as.list(par), as.list(fix.arg)) ) ) )
+    }else
+    {
+      loglik <- function(par, fix.arg, obs, ddistnam) 
+        sum(weights * log(do.call(ddistnam, c(list(obs), as.list(par), as.list(fix.arg)) ) ) )
     }
-    
     
     # Choice of the optimization method    
     if (optim.method == "default")
@@ -224,19 +179,22 @@ qmedist <- function (data, distr, probs, start=NULL, fix.arg=NULL,
     }else
         meth <- optim.method
         
+    owarn <- getOption("warn")
     # Try to minimize the stat distance using the base R optim function
     if(is.null(custom.optim))
     {
         if (!cens)
+        {
+            options(warn=ifelse(silent, -1, 0))
             opttryerror <- try(opt <- optim(par=vstart, fn=fnobj, fix.arg=fix.arg, obs=data, qdistnam=qdistname,
                 qtype=qtype, hessian=TRUE, method=meth, lower=lower, upper=upper, ...), silent=TRUE)        
-        else 
+        }else 
             stop("Quantile matching estimation is not yet available for censored data.")
                 
         if (inherits(opttryerror,"try-error"))
         {
-            warnings("The function optim encountered an error and stopped")
-            print(opttryerror)			
+            warnings("The function optim encountered an error and stopped.")
+            if(getOption("show.error.messages")) print(attr(opttryerror, "condition"))			
             return(list(estimate = rep(NA,length(vstart)), convergence = 100, value = NA, 
                         hessian = NA))
         }
@@ -244,13 +202,13 @@ qmedist <- function (data, distr, probs, start=NULL, fix.arg=NULL,
         if (opt$convergence>0) {
             warnings("The function optim failed to converge, with the error code ",
                      opt$convergence)
-            return(list(estimate = rep(NA,length(vstart)), convergence = opt$convergence, 
-                        value = NA, hessian = NA))
         }
-        
+        if(is.null(names(opt$par)))
+          names(opt$par) <- names(vstart)
         res <- list(estimate = opt$par, convergence = opt$convergence, value = opt$value, 
 					hessian = opt$hessian, probs=probs, optim.function="optim", 
-					loglik=loglik(opt$par, fix.arg, data, ddistname), fix.arg=fix.arg)		
+					loglik=loglik(opt$par, fix.arg, data, ddistname), fix.arg=fix.arg,
+          optim.method=meth, weights = weights)		
     }
     else # Try to minimize the stat distance using a user-supplied optim function 
     {
@@ -262,8 +220,8 @@ qmedist <- function (data, distr, probs, start=NULL, fix.arg=NULL,
         
         if (inherits(opttryerror,"try-error"))
         {
-            warnings("The customized optimization function encountered an error and stopped")
-            print(opttryerror)			
+            warnings("The customized optimization function encountered an error and stopped.")
+            if(getOption("show.error.messages")) print(attr(opttryerror, "condition"))			
             return(list(estimate = rep(NA,length(vstart)), convergence = 100, value = NA, 
                         hessian = NA))
         }
@@ -271,14 +229,15 @@ qmedist <- function (data, distr, probs, start=NULL, fix.arg=NULL,
         if (opt$convergence>0) {
             warnings("The customized optimization function failed to converge, with the error code ",
                      opt$convergence)
-            return(list(estimate = rep(NA,length(vstart)), convergence = opt$convergence, 
-                        value = NA, hessian = NA))
         }
-        
+        if(is.null(names(opt$par)))
+          names(opt$par) <- names(vstart)
         res <- list(estimate = opt$par, convergence = opt$convergence, value = opt$value, 
 					hessian = opt$hessian, probs=probs, optim.function=custom.optim, 
-					loglik=loglik(opt$par, fix.arg, data, ddistname), fix.arg=fix.arg)		
+					loglik=loglik(opt$par, fix.arg, data, ddistname), fix.arg=fix.arg, 
+          optim.method=NULL, weights = weights)		
     }   
     return(res)    
      
 }
+

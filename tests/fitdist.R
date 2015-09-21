@@ -12,6 +12,13 @@ summary(fitg)
 plot(fitg)
 cdfcomp(fitg, addlegend=FALSE)
 
+#check names
+names(fitdist(serving, "gamma", optim.method="Brent", lower=0, upper=10, fix.arg=list(shape=2))$estimate)
+names(fitdist(serving, "gamma", optim.method="Nelder-Mead")$estimate)
+names(fitdist(serving, "gamma", optim.method="BFGS")$estimate)
+# names(fitdist(serving, "gamma", optim.method="CG", start=list(shape=4, rate=1/20))$estimate)
+names(fitdist(serving, "gamma", optim.method="L-BFGS-B", lower=0)$estimate)
+
 
 # (2) use the moment matching estimation (using a closed formula)
 #
@@ -58,9 +65,12 @@ plot(fitnb)
 # (6) how to change the optimisation method?
 #
 
+oldw <- getOption("warn")
+options(warn=-1) #to avoid a high number of warnings when nwarnings > 50
 fitdist(serving, "gamma", optim.method="Nelder-Mead")
 fitdist(serving, "gamma", optim.method="BFGS") 
 fitdist(serving, "gamma", optim.method="SANN")
+options(warn=oldw)
 
 # (7) custom optimization function
 #
@@ -117,7 +127,7 @@ if(any(installed.packages()[,"Package"] == "rgenoud"))
     }
     
 #call fitdist with a 'custom' optimization function
-    fit2 <- fitdist(serving, "gamma", custom.optim=mygenoud, nvars=2,    
+    fit2 <- fitdist(serving, "gamma", custom.optim=mygenoud, nvars=2, start=as.list(fit1$estimate),
                     Domains=cbind(c(0, 0), c(10, 10)), boundary.enforcement=1, 
                     print.level=0, hessian=TRUE)
     
@@ -164,7 +174,7 @@ if(any(installed.packages()[,"Package"] == "actuar"))
     
     #fit
     fP <- fitdist(x4, "pareto", method="mme", order=c(1, 2), memp="memp", 
-                  start=c(shape=10, scale=10), lower=1, upper=Inf)
+                  start=list(shape=10, scale=10), lower=1, upper=Inf)
     summary(fP)
     plot(fP)
     
@@ -353,3 +363,81 @@ try( fitdist(mysample, dexp, start= mystart3, method="mge", gof="AD") )
 #    a=rexGAUS(100,mu=500,sigma=50,nu=75)
 #    fitdist(a,dexGAUS,start=list(mu=median(a),sigma=sqrt(var(a)/2),nu=sqrt(var(a)/2)))
 #}
+
+
+# (21) check the 'keepdata' argument
+#
+
+#create the sample
+x <- rexp(1e6, 5)
+summary(x)
+f1 <- fitdist(x, "exp", keepdata=FALSE)
+f2 <- fitdist(x, "exp", keepdata=TRUE)
+
+par(mfrow=c(1,2))
+cdfcomp(f1)
+cdfcomp(f2)
+
+# (22) relevant example for zero modified geometric distribution
+#
+dzmgeom <- function(x, p1, p2)
+{
+  p1 * (x == 0) + (1-p1)*dgeom(x-1, p2)
+}
+pzmgeom <- function(q, p1, p2)
+{
+  p1 * (q >= 0) + (1-p1)*pgeom(q-1, p2)
+}
+rzmgeom <- function(n, p1, p2)
+{
+  u <- rbinom(n, 1, 1-p1) #prob to get zero is p1
+  u[u != 0] <- rgeom(sum(u != 0), p2)+1
+  u
+}
+
+x2 <- rzmgeom(1000, 1/2, 1/10)
+table(x2)
+#this is the MLE which converges almost surely and in distribution to the true value.
+initp1 <- function(x) list(p1=mean(x == 0))
+
+f2 <- fitdist(x2, "zmgeom", fix.arg=initp1, start=list(p2=1/2))
+print(f2)
+summary(f2)
+
+f2 <- fitdist(x2, "zmgeom", fix.arg=list(p1=1/2), start=list(p2=1/2))
+print(f2)
+summary(f2)
+
+
+# (23) check the use of weights
+#
+
+x3 <- rnorm(100)
+fitdist(x3, "norm", method="mle", weights=rep(1, 100))
+fitdist(x3, "norm", method="mme", weights=rep(1, 100))
+fitdist(x3, "norm", method="qme", probs=c(1/3, 2/3), weights=rep(1, 100))
+try(fitdist(x3, "norm", method="mge", gof = "CvM", weights=rep(1, 100)))
+
+
+# (24) check the warning messages when using weights in the fit followed by functions
+# that do not yet take weights into account
+# with an example to be used later to see if weights are well taken into account
+#
+
+x3 <- rnorm(100)
+x3 <- sort(x3)
+(f <- fitdist(x3, "norm", method="mle", weights= c(rep(1, 50), rep(0.1, 50))))
+try(plot(f))
+try(cdfcomp(f))
+(f2 <- fitdist(x3, "logis", method="mle", weights= c(rep(1, 50), rep(0.1, 50))))
+try(cdfcomp(list(f,f2)))
+try(denscomp(f))
+try(denscomp(list(f,f2)))
+try(ppcomp(f))
+try(ppcomp(list(f,f2)))
+try(qqcomp(f))
+try(qqcomp(list(f,f2)))
+try(gofstat(f))
+try(gofstat(list(f,f2)))
+
+

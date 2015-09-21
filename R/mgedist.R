@@ -25,12 +25,12 @@
 ### 
 
 mgedist <- function (data, distr, gof = "CvM", start=NULL, fix.arg=NULL, optim.method="default",
-    lower=-Inf, upper=Inf, custom.optim=NULL, ...)
+    lower=-Inf, upper=Inf, custom.optim=NULL, silent=TRUE, ...)
     # data may correspond to a vector for non censored data or to
     # a dataframe of two columns named left and right for censored data 
 {
     if (!is.character(distr)) 
-    stop("distr must be a character string naming a distribution")
+        stop("distr must be a character string naming a distribution")
     else 
         distname <- distr
         
@@ -48,8 +48,13 @@ mgedist <- function (data, distr, gof = "CvM", start=NULL, fix.arg=NULL, optim.m
 
     gof <- match.arg(gof, c("CvM", "KS", "AD", "ADR", "ADL", "AD2R", "AD2L", "AD2"))
    
-    if (!is.null(fix.arg) & is.null(start))
-        stop("Starting values must be defined when some distribution parameters are fixed")
+    start.arg <- start #to avoid confusion with the start() function of stats pkg (check is done lines 87-100)
+    if(is.vector(start.arg)) #backward compatibility
+      start.arg <- as.list(start.arg)
+    
+    my3dots <- list(...)
+    if ("weights" %in% names(my3dots))
+      stop("Weights is not allowed for maximum GOF estimation")
     
     if (is.vector(data)) {
         cens <- FALSE
@@ -86,79 +91,29 @@ mgedist <- function (data, distr, gof = "CvM", start=NULL, fix.arg=NULL, optim.m
     }
     
     # MGE fit 
-    # definition of starting values if not previously defined
-    if (is.null(start)) {
-        if (distname == "norm") {
-            n <- length(data)
-            sd0 <- sqrt((n - 1)/n) * sd(data)
-            mx <- mean(data)
-            start <- list(mean=mx, sd=sd0)
-        }
-        if (distname == "lnorm") {
-            if (any(data <= 0)) 
-                stop("values must be positive to fit a lognormal distribution")
-            n <- length(data)
-            ldata <- log(data)
-            sd0 <- sqrt((n - 1)/n) * sd(ldata)
-            ml <- mean(ldata)
-            start <- list(meanlog=ml, sdlog=sd0)
-        }
-        if (distname == "exp") {
-            start <- list(rate=1/mean(data))
-        }
-        if (distname == "gamma") {
-            n <- length(data)
-            m <- mean(data)
-            v <- (n - 1)/n*var(data)
-            start <- list(shape=m^2/v,rate=m/v)
-        }
-        if (distname == "beta") {
-            if (any(data < 0) | any(data > 1)) 
-                stop("values must be in [0-1] to fit a beta distribution")
-            n <- length(data)
-            m <- mean(data)
-            v <- (n - 1)/n*var(data)
-            aux <- m*(1-m)/v - 1
-            start <- list(shape1=m*aux,shape2=(1-m)*aux)
-        }
-        if (distname == "weibull") {
-            m <- mean(log(data))
-            v <- var(log(data))
-            shape <- 1.2/sqrt(v)
-            scale <- exp(m + 0.572/shape)
-            start <- list(shape = shape, scale = scale)
-        }
-        if (distname == "logis") {
-            n <- length(data)
-            m <- mean(data)
-            v <- (n - 1)/n*var(data)
-            start <- list(location=m,scale=sqrt(3*v)/pi)
-        }
-        if (distname == "cauchy") {
-            start <- list(location=median(data),scale=IQR(data)/2)
-        }
-        if (distname == "unif") {
-            start <- list(min=min(data),max=max(data))
-        }
-        if (!is.list(start)) 
-            stop("'start' must be defined as a named list for this distribution") 
-   } # end of the definition of starting values 
+    # definition of starting/fixed values values
+    argddistname <- names(formals(ddistname))
+    chfixstt <- checkparam(start.arg=start.arg, fix.arg=fix.arg, argdistname=argddistname, 
+                           errtxt=NULL, data10=head(data, 10), distname=distname)
+    
+    if(!chfixstt$ok)
+      stop(chfixstt$txt)
+    #unlist starting values as needed in optim()
+    if(is.function(chfixstt$start.arg))
+      vstart <- chfixstt$start.arg(data)
+    else
+      vstart <- unlist(chfixstt$start.arg)
+    if(is.function(fix.arg)) #function
+    { 
+      fix.arg.fun <- fix.arg
+      fix.arg <- fix.arg(data)
+    }else
+      fix.arg.fun <- NULL
+    #otherwise fix.arg is a named list or NULL
+    
+    # end of the definition of starting/fixed values 
    
    ############# MGE fit using optim or custom.optim ##########
-    vstart <- unlist(start)
-    vfix.arg <- unlist(fix.arg)
-    # check of the names of the arguments of the density function
-    argddistname <- names(formals(ddistname))   
-    m <- match(names(start), argddistname)
-    mfix <- match(names(vfix.arg), argddistname)
-    if (any(is.na(m)) || length(m) == 0)
-        stop("'start' must specify names which are arguments to 'distr'")
-    if (any(is.na(mfix)))
-        stop("'fix.arg' must specify names which are arguments to 'distr'")
-    # check that some parameters are not both in fix.arg and start
-    minter <- match(names(start), names(fix.arg))
-    if (any(!is.na(minter)))
-        stop("a distribution parameter cannot be specified both in 'start' and 'fix.arg'")
 
     # definition of the function to minimize depending on the argument gof
     # for non censored data
@@ -266,20 +221,23 @@ mgedist <- function (data, distr, gof = "CvM", start=NULL, fix.arg=NULL, optim.m
     }else
         meth <- optim.method
 
-        
+    owarn <- getOption("warn")        
+   
     # Try to minimize the gof distance using the base R optim function
     if(is.null(custom.optim))
     {
+        options(warn=ifelse(silent, -1, 0))
         if (!cens)
             opttryerror <- try(opt <- optim(par=vstart, fn=fnobj, fix.arg=fix.arg, obs=data, pdistnam=pdistname,
             hessian=TRUE, method=meth, lower=lower, upper=upper, ...), silent=TRUE)        
         else 
             stop("Maximum goodness-of-fit estimation is not yet available for censored data.")
+        options(warn=owarn)
                 
         if (inherits(opttryerror,"try-error"))
         {
-            warnings("The function optim encountered an error and stopped")
-            print(opttryerror)          
+            warnings("The function optim encountered an error and stopped.")
+            if(getOption("show.error.messages")) print(attr(opttryerror, "condition"))          
             return(list(estimate = rep(NA,length(vstart)), convergence = 100, loglik = NA, 
                         hessian = NA))
         }
@@ -287,26 +245,28 @@ mgedist <- function (data, distr, gof = "CvM", start=NULL, fix.arg=NULL, optim.m
         if (opt$convergence>0) {
             warnings("The function optim failed to converge, with the error code ",
                      opt$convergence)
-            return(list(estimate = rep(NA,length(vstart)), convergence = opt$convergence, 
-                        value = NA, hessian = NA))
         }
-        
+        if(is.null(names(opt$par)))
+          names(opt$par) <- names(vstart)
         res <- list(estimate = opt$par, convergence = opt$convergence, value = opt$value, 
                     hessian = opt$hessian, gof=gof, optim.function="optim",
-                    loglik=loglik(opt$par, fix.arg, data, ddistname) )
+                    loglik=loglik(opt$par, fix.arg, data, ddistname), fix.arg = fix.arg, 
+                    optim.method=meth, fix.arg.fun = fix.arg.fun)
     }
     else # Try to minimize the gof distance using a user-supplied optim function 
     {
+        options(warn=ifelse(silent, -1, 0))
         if (!cens)
             opttryerror <- try(opt <- custom.optim(fn=fnobj, fix.arg=fix.arg, obs=data, pdistnam=pdistname, par=vstart, ...),
             silent=TRUE)
         else
             stop("Maximum goodness-of-fit estimation is not yet available for censored data.")
+        options(warn=owarn)
         
         if (inherits(opttryerror,"try-error"))
         {
-            warnings("The customized optimization function encountered an error and stopped")
-            print(opttryerror)          
+            warnings("The customized optimization function encountered an error and stopped.")
+            if(getOption("show.error.messages")) print(attr(opttryerror, "condition"))          
             return(list(estimate = rep(NA,length(vstart)), convergence = 100, value = NA, 
                         hessian = NA))
         }
@@ -314,14 +274,14 @@ mgedist <- function (data, distr, gof = "CvM", start=NULL, fix.arg=NULL, optim.m
         if (opt$convergence>0) {
             warnings("The customized optimization function failed to converge, with the error code ",
                      opt$convergence)
-            return(list(estimate = rep(NA,length(vstart)), convergence = opt$convergence, 
-                        value = NA, hessian = NA))
         }
-        
+        if(is.null(names(opt$par)))
+          names(opt$par) <- names(vstart)
         res <- list(estimate = opt$par, convergence = opt$convergence, value = opt$value, 
                     gof=gof, hessian = opt$hessian, optim.function=custom.optim,
-                    loglik=loglik(opt$par, fix.arg, data, ddistname) )
+                    loglik=loglik(opt$par, fix.arg, data, ddistname), fix.arg = fix.arg,
+                    optim.method=NULL, fix.arg.fun = fix.arg.fun)
     }   
-    res <- c(res, fix.arg=fix.arg)
+   
     return(res)                
 }

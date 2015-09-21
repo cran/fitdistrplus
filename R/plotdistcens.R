@@ -32,6 +32,7 @@ Turnbull.confint = FALSE, ...){
     if ((missing(distr) & !missing(para)) || 
     (missing(distr) & !missing(para)))
         stop("distr and para must defined")
+    
         
     if (Turnbull)
     {
@@ -45,10 +46,7 @@ Turnbull.confint = FALSE, ...){
             ylab="CDF",main="Cumulative distribution", conf.int = FALSE, ...)
         xmin <- par("usr")[1]
         xmax <- par("usr")[2]
-    }
-    
-   
-    else
+    }else
     {    
         if (is.finite(leftNA) & any(is.na(censdata$left)))
             censdata[is.na(censdata$left),]$left<-leftNA

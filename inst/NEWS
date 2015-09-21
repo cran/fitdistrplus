@@ -1,5 +1,19 @@
 === fitdistrplus : Help to fit of a parametric distribution ===
 
+Version 1.0-5
+=============
+NEW FEATURES
+- update starting/fixing values in mledist, mmedist, mgedist, qmedist functions.
+- update graphics for bootstrap procedure.
+- add argument do.points in cdfcomp.
+- add argument weights in mledist, qmedist, mmedist, fitdist, fitdistcens.
+- add argument keepdata in fitdist, fitdistcens.
+- suppress warnings/errors in fitdist(cens), bootdist(cens).
+
+BUG FIXES
+- defensive programming in plotdist, cdfcomp,...
+- simplify plotting curves in cdfcomp where seq(xmin, xmax, by=1) was used.
+
 Version 1.0-4
 =============
 - release for the JSS publication.

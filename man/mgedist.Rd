@@ -8,8 +8,8 @@
 }
 
 \usage{
-mgedist(data, distr, gof = "CvM", start = NULL, fix.arg = NULL, 
-    optim.method = "default", lower = -Inf, upper = Inf, custom.optim = NULL, \dots)
+mgedist(data, distr, gof = "CvM", start = NULL, fix.arg = NULL, optim.method = "default", 
+  lower = -Inf, upper = Inf, custom.optim = NULL, silent = TRUE, \dots)
 
 }
 
@@ -22,15 +22,18 @@ mgedist(data, distr, gof = "CvM", start = NULL, fix.arg = NULL,
     "CvM" for Cramer-von Mises distance,"KS" for Kolmogorov-Smirnov distance,
     "AD" for Anderson-Darling distance, "ADR", "ADL", "AD2R", "AD2L" and "AD2" for variants of
     Anderson-Darling distance described by Luceno (2006).}  
-\item{start}{ A named list giving the initial values of parameters of the named distribution. 
-    This argument may be omitted for some distributions for which reasonable 
-    starting values are computed (see details).  }
-\item{fix.arg}{ An optional named list giving the values of parameters of the named distribution
-    that must kept fixed rather than estimated. }
+\item{start}{A named list giving the initial values of parameters of the named distribution
+    or a function of data computing initial values and returning a named list.
+    This argument may be omitted (default) for some distributions for which reasonable 
+    starting values are computed (see the 'details' section of  \code{\link{mledist}}). }
+\item{fix.arg}{An optional named list giving the values of fixed parameters of the named distribution
+    or a function of data computing (fixed) parameter values and returning a named list. 
+    Parameters with fixed value are thus NOT estimated.}
 \item{optim.method}{ \code{"default"} or optimization method to pass to \code{\link{optim}}.  }
 \item{lower}{ Left bounds on the parameters for the \code{"L-BFGS-B"} method (see \code{\link{optim}}).  }
 \item{upper}{ Right bounds on the parameters for the \code{"L-BFGS-B"} method (see \code{\link{optim}}).  }
 \item{custom.optim}{a function carrying the optimization.}
+\item{silent}{A logical to remove or show warnings when bootstraping.}    
 \item{\dots}{further arguments passed to the \code{optim} or \code{custom.optim} function.}
 }
 
@@ -51,7 +54,8 @@ mgedist(data, distr, gof = "CvM", start = NULL, fix.arg = NULL,
     This function is not intended to be called directly but is internally called in
     \code{\link{fitdist}} and \code{\link{bootdist}}.
     
-    This function is intended to be used only with continuous distributions.
+    This function is intended to be used only with continuous distributions
+    and weighted maximum goodness-of-fit estimation is not allowed.
     
     NB: if your data values are particularly small or large, a scaling may be needed 
     before the optimization process. See example (4).
@@ -76,11 +80,13 @@ mgedist(data, distr, gof = "CvM", start = NULL, fix.arg = NULL,
         at the solution found or computed in the user-supplied optimization function. }
     \item{gof}{ the code of the goodness-of-fit distance maximized. }   
     \item{optim.function}{ the name of the optimization function used.  }
-    \item{loglik}{ the log-likelihood. }
+    \item{loglik}{ the log-likelihood value. }
     \item{fix.arg}{ the named list giving the values of parameters of the named distribution
         that must kept fixed rather than estimated by maximum likelihood or \code{NULL} 
         if there are no such parameters. }
-    
+    \item{optim.method}{when \code{optim} is used, the name of the algorithm used, 
+    \code{NULL} otherwise.}
+    \item{fix.arg.fun}{the function used to set the value of \code{fix.arg} or \code{NULL}.}
 }
 
 

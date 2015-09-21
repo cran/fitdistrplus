@@ -23,7 +23,7 @@
 ### 
 
 
-bootdist <- function (f, bootmethod="param", niter=1001)
+bootdist <- function (f, bootmethod="param", niter=1001, silent=TRUE)
 { 
     if (niter<10) 
         stop("niter must be an integer above 10")
@@ -47,18 +47,37 @@ bootdist <- function (f, bootmethod="param", niter=1001)
     
     #compute bootstrap estimates
     foncestim <- switch(f$method, "mle"=mledist, "qme"=qmedist, "mme"=mmedist, "mge"=mgedist)
-    start <- f$estimate
+    start <- as.list(f$estimate) #a named vector is no longer is accepted as starting values.
+    if(is.function(f$fix.arg.fun))
+      fix.arg <- f$fix.arg.fun
+    else 
+      fix.arg <- f$fix.arg
     if (is.null(f$dots))
-        func <- function(iter) {
-            res <- do.call(foncestim, list(data=rdata[, iter], distr=f$distname, start=start, fix.arg=f$fix.arg))
-            return(c(res$estimate, res$convergence))
-        }
-    else
-        func <- function(iter) {
-            res <- do.call(foncestim, c(list(data=rdata[, iter], distr=f$distname, start=start, fix.arg=f$fix.arg), f$dots))
-            return(c(res$estimate, res$convergence))
-        }
+    {    
+      func <- function(iter) {
+        res <- try(do.call(foncestim, list(data=rdata[, iter], distr=f$distname, start=start, fix.arg=fix.arg)), silent=silent)
+        if(inherits(res, "try-error"))
+          return(c(rep(NA, length(start)), 100))
+        else
+          return(c(res$estimate, res$convergence))
+      }
+    }else
+    {    
+      func <- function(iter) {
+        res <- try(do.call(foncestim, c(list(data=rdata[, iter], distr=f$distname, start=start, fix.arg=fix.arg), f$dots)), silent=silent)
+        if(inherits(res, "try-error"))
+          return(c(rep(NA, length(start)), 100))
+        else
+          return(c(res$estimate, res$convergence))
+        
+      }
+    }
+    owarn <- getOption("warn")
+    oerr <- getOption("show.error.messages")
+    options(warn=ifelse(silent, -1, 0), show.error.messages=!silent)
     resboot <- sapply(1:niter, func)
+    options(warn=owarn, show.error.messages=oerr)
+    
     rownames(resboot) <- c(names(start), "convergence")
     if (length(resboot[, 1])>2) {
         estim <- data.frame(t(resboot)[, -length(resboot[, 1])])
@@ -92,7 +111,7 @@ print.bootdist <- function(x, ...){
         cat("Parameter values obtained with parametric bootstrap \n")
     else
        cat("Parameter values obtained with nonparametric bootstrap \n")
-    print(x$estim, ...)    
+    print(head(x$estim), ...)    
     nconverg <- length(x$converg[x$converg==0])
     if (nconverg < length(x$converg))
     {
@@ -103,20 +122,31 @@ print.bootdist <- function(x, ...){
 
 }
 
-plot.bootdist <- function(x, ...){
+plot.bootdist <- function(x, main="Bootstrapped values of parameters", enhance=FALSE, 
+    trueval=NULL, rampcol=NULL, nbgrid = 100, nbcol = 100, ...){
     if (!inherits(x, "bootdist"))
         stop("Use only with 'bootdist' objects")
     if (dim(x$estim)[2]==1) {
-        stripchart(x$estim, method="jitter", 
+        stripchart(x$estim, method="jitter", main=main, 
             xlab="Bootstrapped values of the parameter", ...)
     }
     else {
+      if(!is.logical(enhance))
+        stop("wrong argument enhance for plot.bootdist.")
+      if (!enhance)
+      {
         if (dim(x$estim)[2]==2)
-            plot(x$estim, 
-            main="Bootstrapped values of parameters", ...)
-        else 
-            plot(x$estim, 
-            main="Bootstrapped values of parameters", ...)
+          plot(data.matrix(x$estim), main=main, ...)
+        else
+          pairs(data.matrix(x$estim), main=main, ...)
+      }
+      else 
+      {
+        if(is.null(rampcol))
+          rampcol <- c("green", "yellow", "orange", "red")
+        pairs4boot(x$estim, main=main, trueval=trueval, col4ramp = rampcol, 
+                   nbgrid = nbgrid, nbcol = nbcol, ...)
+      }
     }
 }
 

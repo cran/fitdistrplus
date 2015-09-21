@@ -40,6 +40,9 @@ denscomp <- function(ft, xlim, ylim, probability = TRUE, main, xlab, ylab, datap
     if(any(sapply(ft, function(x) !inherits(x, "fitdist"))))        
       stop("argument ft must be a list of 'fitdist' objects")
   }
+  # In the future developments, it will be necessary to check that all the fits share the same weights
+  if(!is.null(ft[[1]]$weights))
+    stop("denscomp is not yet available when using weights")
   
     
     nft <- length(ft)
@@ -59,7 +62,6 @@ denscomp <- function(ft, xlim, ylim, probability = TRUE, main, xlab, ylab, datap
                        "Histogram and theoretical frequencies")
     
     mydata <- ft[[1]]$data
-    
     if(missing(xlim))
     {
         xmin <- min(mydata)
@@ -70,7 +72,6 @@ denscomp <- function(ft, xlim, ylim, probability = TRUE, main, xlab, ylab, datap
         xmin <- xlim[1]
         xmax <- xlim[2]
     }
-
     
     verif.ftidata <- function(fti)
     {
@@ -81,12 +82,11 @@ denscomp <- function(ft, xlim, ylim, probability = TRUE, main, xlab, ylab, datap
     lapply(ft, verif.ftidata)
 
     n <- length(mydata)
-    sfin <- seq(xmin, xmax, by=(xmax-xmin)/100)
-	reshist <- hist(mydata, plot=FALSE)
+    sfin <- seq(xmin, xmax, length.out=101)
+	  reshist <- hist(mydata, plot=FALSE)
     scalefactor <- ifelse(probability, 1, n * diff(reshist$breaks))
 
-    
-	# computation of each fitted distribution
+	  # computation of each fitted distribution
     comput.fti <- function(i, ...)
     {
         fti <- ft[[i]]
@@ -97,15 +97,18 @@ denscomp <- function(ft, xlim, ylim, probability = TRUE, main, xlab, ylab, datap
         do.call(ddistname, c(list(x=sfin), as.list(para))) * scalefactor
     }
     fitteddens <- sapply(1:nft, comput.fti, ...)
+    if(NCOL(fitteddens) != nft || NROW(fitteddens) != length(sfin))
+      stop("problem when computing fitted densities.")
+  
     if (missing(ylim))
     {
         if(!probability)
             ylim <- c(0, max(reshist$counts))
         else
             ylim <- c(0, max(reshist$density))
-		ylim <- range(ylim, fitteddens)	
+		    ylim <- range(ylim, fitteddens)	
     }else
-		ylim <- range(ylim) #in case of users enter a bad ylim
+		    ylim <- range(ylim) #in case of users enter a bad ylim
     
     #main plotting
     reshist <- hist(mydata, main=main, xlab=xlab, ylab=ylab, xlim=xlim, 

@@ -12,42 +12,68 @@
 }
 
 \usage{
-bootdist(f, bootmethod="param", niter=1001)
+bootdist(f, bootmethod="param", niter=1001, silent=TRUE)
 \method{print}{bootdist}(x, \dots)
-\method{plot}{bootdist}(x, \dots)
+\method{plot}{bootdist}(x, main="Bootstrapped values of parameters", enhance=FALSE, 
+    trueval=NULL, rampcol=NULL, nbgrid = 100, nbcol = 100, \dots)
 \method{summary}{bootdist}(object, \dots)
 
 }
 
 \arguments{
 \item{f}{ An object of class \code{"fitdist"}, output of the \code{\link{fitdist}} function.}
-\item{bootmethod}{ A character string coding for the type of resampling : \code{"param"} for a parametric
-    resampling and \code{"nonparam"} for a nonparametric resampling of data.}
+\item{bootmethod}{ A character string coding for the type of resampling : \code{"param"} 
+  for a parametric resampling and \code{"nonparam"} for a nonparametric resampling of data.}
 \item{niter}{ The number of samples drawn by bootstrap.  }
+\item{silent}{A logical to remove or show warnings and errors when bootstraping.}
+
 \item{x}{ An object of class \code{"bootdist"}.  }
 \item{object}{ An object of class \code{"bootdist"}.  }
+\item{main}{an overall title for the plot: see \code{\link{title}},
+default to \code{"Bootstrapped values of parameters"}.}
+\item{enhance}{a logical to get an enhanced plot.}
+\item{trueval}{when relevant, a numeric vector with the true value of 
+parameters (for backfitting purposes).}
+\item{rampcol}{colors to interpolate; must be a valid argument to 
+\code{\link[grDevices]{colorRampPalette}()}.}
+\item{nbgrid}{Number of grid points in each direction. Can be scalar or a length-2 integer vector.}
+\item{nbcol}{an integer argument, the required number of colors}
 \item{\dots}{ Further arguments to be passed to generic methods }
+
 }
 
 \details{
-    Samples are drawn by parametric bootstrap (resampling from the distribution fitted by \code{\link{fitdist}}) or
-    nonparametric bootstrap (resampling with replacement from the data set). On each bootstrap sample the function 
+    Samples are drawn by parametric bootstrap (resampling from the distribution fitted by 
+    \code{\link{fitdist}}) or nonparametric bootstrap (resampling with replacement from the 
+    data set). On each bootstrap sample the function 
     \code{\link{mledist}}  (or \code{\link{mmedist}}, \code{\link{qmedist}}, \code{\link{mgedist}} 
-    according to the component \code{f$method} of the 
-    object of class \code{"fitdist"}) is used to estimate bootstrapped values of parameters. When that function fails
-    to converge, \code{NA} values are returned. Medians and 2.5 and 97.5 percentiles are computed by removing
-    \code{NA} values. 
-    The medians and the 95 percent confidence intervals of parameters (2.5 and 97.5 percentiles) are printed 
-    in the summary.
-    If inferior to the whole number of iterations, the number of iterations for which the function converges 
-    is also printed in the summary.
+    according to the component \code{f$method} of the object of class \code{"fitdist"}) is 
+    used to estimate bootstrapped values of parameters. When that function fails
+    to converge, \code{NA} values are returned. Medians and 2.5 and 97.5 percentiles are 
+    computed by removing \code{NA} values. 
+    The medians and the 95 percent confidence intervals of parameters (2.5 and 97.5 
+    percentiles) are printed in the summary.
+    If inferior to the whole number of iterations, the number of iterations for which 
+    the function converges is also printed in the summary.
     
-    The plot of an object of class \code{"bootdist"} consists in a scatterplot or a matrix of scatterplots
-    of the bootstrapped values of parameters.
+    By default (when \code{enhance=FALSE}), the plot of an object of class 
+    \code{"bootdist"} consists in a scatterplot or a matrix 
+    of scatterplots of the bootstrapped values of parameters.
     It uses the function \code{\link{stripchart}} when the fitted distribution
-    is characterized by only one parameter, and the function \code{\link{plot}} in other cases.
-    In these last cases, it provides
-    a representation of the joint uncertainty distribution of the fitted parameters.
+    is characterized by only one parameter, the function \code{\link{plot}} when there
+    are two paramters and the function \code{\link{pairs}} in other cases.
+    In these last cases, it provides a representation of the joint uncertainty distribution 
+    of the fitted parameters.
+    
+    When \code{enhance=TRUE}, a personalized plot version of \code{\link{pairs}} is used where
+    upper graphs are scatterplots and lower graphs are heatmap image using \code{\link{image}}
+    based on a kernel based estimator for the 2D density function (using \code{kde2d} from
+    MASS package).
+    Arguments \code{rampcol}, \code{nbgrid}, \code{nbcol} can be used to customize the plots.
+    Defautls values are \code{rampcol=c("green", "yellow", "orange", "red")}, \code{nbcol=100} 
+    (see \code{\link[grDevices]{colorRampPalette}()}), \code{nbgrid=100} (see \code{kde2d}).
+    In addition, when fitting parameters on simulated datasets for backtesting purposes, an
+    additional argument \code{trueval} can be used to plot a cross at the true value.
 }
 
 \value{ 
@@ -123,6 +149,7 @@ f1 <- fitdist(x1, "gamma")
 b1 <- bootdist(f1, niter=51)
 print(b1)
 plot(b1)
+plot(b1, enhance=TRUE)
 summary(b1)
 quantile(b1)
 

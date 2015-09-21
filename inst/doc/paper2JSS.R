@@ -200,7 +200,7 @@ cdfcomp(list(fdanish.ln.MLE, fdanish.ln.MME),
 getOption("SweaveHooks")[["fig"]]()
 library("actuar")
 fdanish.P.MLE <- fitdist(danishuni$Loss, "pareto", 
-  start=c(shape=10, scale=10), lower = 2+1e-6, upper = Inf)
+  start=list(shape=10, scale=10), lower = 2+1e-6, upper = Inf)
 memp <- function(x, order) sum(x^order)/length(x)
 fdanish.P.MME <- fitdist(danishuni$Loss, "pareto", 
     method="mme", order=1:2, 
@@ -220,10 +220,10 @@ cdfcomp(list(fdanish.P.MLE, fdanish.P.MME),
 ###################################################
 library("actuar")
 fdanish.P.MLE <- fitdist(danishuni$Loss, "pareto",  
-  start = c(shape = 10, scale = 10), lower = 2+1e-6, upper = Inf)
+  start = list(shape = 10, scale = 10), lower = 2+1e-6, upper = Inf)
 memp <- function(x, order) sum(x^order)/length(x)
 fdanish.P.MME <- fitdist(danishuni$Loss, "pareto", method = "mme", 
-  order = 1:2, memp = "memp", start = c(shape = 10, scale = 10), 
+  order = 1:2, memp = "memp", start = list(shape = 10, scale = 10), 
   lower = c(2+1e-6, 2+1e-6), upper = c(Inf, Inf))
 cdfcomp(list(fdanish.P.MLE, fdanish.P.MME), 
   legend = c("Pareto MLE", "Pareto MME"), 

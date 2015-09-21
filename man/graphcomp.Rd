@@ -16,9 +16,9 @@
 \usage{
 cdfcomp(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, main, xlab, ylab, 
     datapch, datacol, fitlty, fitcol, addlegend = TRUE, legendtext, 
-    xlegend = "bottomright", ylegend = NULL, horizontals = TRUE, 
-    verticals = FALSE, use.ppoints = TRUE, a.ppoints = 0.5, 
-    lines01 = FALSE, discrete, \dots)
+    xlegend = "bottomright", ylegend = NULL, 
+    horizontals = TRUE, verticals = FALSE, do.points = TRUE, 
+    use.ppoints = TRUE, a.ppoints = 0.5, lines01 = FALSE, discrete, \dots)
     
 denscomp(ft, xlim, ylim, probability = TRUE, main, xlab, ylab, datapch, 
     datacol, fitlty, fitcol, addlegend = TRUE, legendtext, xlegend = "topright", 
@@ -56,17 +56,20 @@ ppcomp(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, main, xlab, ylab,
 \item{addlegend}{If \code{TRUE}, a legend is added to the plot.}
 \item{legendtext}{A character or expression vector of length \eqn{\geq 1} to appear
     in the legend, see also \code{\link{legend}}.}
-\item{xlegend, ylegend}{The \eqn{x} and \eqn{y} co-ordinates to be used to position the legend.
-          They can be specified by keyword or in any way which is
+\item{xlegend, ylegend}{The \eqn{x} and \eqn{y} co-ordinates to be used to position 
+  the legend. They can be specified by keyword or in any way which is
           accepted by 'xy.coords': see \code{\link{legend}} for details.}
-\item{horizontals}{If \code{TRUE}, draws horizontal lines for the step empirical cdf function.
-    See also \code{\link{plot.stepfun}}.}
+\item{horizontals}{If \code{TRUE}, draws horizontal lines for the step empirical 
+  cdf function. See also \code{\link{plot.stepfun}}.}
+\item{do.points}{logical; if \code{TRUE}, also draw points at the x-locations. 
+  Default is true. For large dataset (n > 1e4), \code{do.points} is ignored and no
+  point is drawn.}
 \item{verticals}{If \code{TRUE}, draws also vertical lines for the empirical cdf function. 
     Only taken into account if \code{horizontals=TRUE}. }
 \item{use.ppoints}{If \code{TRUE}, probability points of the empirical distribution
     are defined using function \code{\link{ppoints}} as 
     \code{(1:n - a.ppoints)/(n - 2a.ppoints + 1)}.
-     If FALSE, 
+     If \code{FALSE}, 
     probability points are simply defined as \code{1:n / n}. This argument is ignored 
     for discrete data.}
 \item{a.ppoints}{If \code{use.ppoints=TRUE}, this is passed to function \code{\link{ppoints}}.}
@@ -88,23 +91,28 @@ ppcomp(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, main, xlab, ylab,
 }
 
 \details{
-    \code{cdfcomp} provides a plot of the empirical distribution and each fitted distribution 
-    in cdf, by default using the Hazen's rule
-    for the empirical distribution, 
-    with probability points defined as (1:n - 0.5)/n. If \code{discrete} is  \code{TRUE}    
-    probability points are always defined as (1:n)/n.
+    \code{cdfcomp} provides a plot of the empirical distribution and each fitted 
+    distribution in cdf, by default using the Hazen's rule
+    for the empirical distribution, with probability points defined as 
+    \code{(1:n - 0.5)/n}. If \code{discrete} is \code{TRUE} probability points 
+    are always defined as \code{(1:n)/n}. For large dataset (\code{n > 1e4}), no 
+    point is drawn but the line for \code{ecdf} is drawn instead.
+    Note that when \code{horizontals = FALSE, verticals = FALSE, do.points = FALSE},
+    no empirical point is drawn, only the fitted cdf is shown.
     
     \code{denscomp} provides a density plot of each fitted distribution
     with the histogram of the data (data are assumed continuous). 
     
     \code{ppcomp} provides a plot of the probabilities of each fitted distribution
-    (x-axis) against the empirical probabilities (y-axis) by default defined as (1:n - 0.5)/n
-    (data are assumed continuous). 
+    (x-axis) against the empirical probabilities (y-axis) by default defined as 
+    \code{(1:n - 0.5)/n} (data are assumed continuous). 
+    For large dataset (\code{n > 1e4}), lines are drawn instead of points.
     
     \code{qqcomp} provides a plot of the quantiles of each theoretical distribution (x-axis)
      against the empirical quantiles of the data (y-axis), by default defining
-     probability points as (1:n - 0.5)/n for theoretical quantile calculation 
+     probability points as \code{(1:n - 0.5)/n} for theoretical quantile calculation 
      (data are assumed continuous). 
+     For large dataset (\code{n > 1e4}), lines are drawn instead of points.
      
     By default a legend is added to these plots. Many graphical arguments are optional, 
     dedicated to personalize the plots, and fixed to default values if omitted.
@@ -117,7 +125,8 @@ ppcomp(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, main, xlab, ylab,
 
 
 \references{
-Delignette-Muller ML and Dutang C (2015), \emph{fitdistrplus: An R Package for Fitting Distributions}.
+Delignette-Muller ML and Dutang C (2015), 
+\emph{fitdistrplus: An R Package for Fitting Distributions}.
 Journal of Statistical Software, 64(4), 1-34.
 
 }

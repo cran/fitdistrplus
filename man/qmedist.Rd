@@ -10,7 +10,7 @@
 \usage{
 qmedist(data, distr, probs, start = NULL, fix.arg = NULL, qtype = 7, 
     optim.method = "default", lower = -Inf, upper = Inf, 
-    custom.optim = NULL, \dots)
+    custom.optim = NULL, weights = NULL, silent = TRUE, \dots)
 
 }
 
@@ -22,17 +22,23 @@ qmedist(data, distr, probs, start = NULL, fix.arg = NULL, qtype = 7,
 \item{probs}{A numeric vector of the probabilities for which the quantile matching is done.
     The length of this vector must be equal
     to the number of parameters to estimate.}  
-\item{start}{ A named list giving the initial values of parameters of the named distribution. 
-    This argument may be omitted for some distributions for which reasonable 
-    starting values are computed (see details).  }
-\item{fix.arg}{ An optional named list giving the values of parameters of the named distribution
-    that must kept fixed rather than estimated. }
+\item{start}{A named list giving the initial values of parameters of the named distribution
+    or a function of data computing initial values and returning a named list.
+    This argument may be omitted (default) for some distributions for which reasonable 
+    starting values are computed (see the 'details' section of  \code{\link{mledist}}). }
+\item{fix.arg}{An optional named list giving the values of fixed parameters of the named distribution
+    or a function of data computing (fixed) parameter values and returning a named list. 
+    Parameters with fixed value are thus NOT estimated.}
 \item{qtype}{The quantile type used by the R \code{\link{quantile}} function to 
     compute the empirical quantiles, (default 7 corresponds to the default quantile method in R).}
 \item{optim.method}{ \code{"default"} or optimization method to pass to \code{\link{optim}}.  }
 \item{lower}{ Left bounds on the parameters for the \code{"L-BFGS-B"} method (see \code{\link{optim}}).  }
 \item{upper}{ Right bounds on the parameters for the \code{"L-BFGS-B"} method (see \code{\link{optim}}).  }
 \item{custom.optim}{a function carrying the optimization.}
+\item{weights}{an optional vector of weights to be used in the fitting process. 
+    Should be \code{NULL} or a numeric vector. If non-\code{NULL}, 
+    weighted QME is used, otherwise ordinary QME.}
+\item{silent}{A logical to remove or show warnings when bootstraping.}        
 \item{\dots}{further arguments passed to the \code{optim} or \code{custom.optim} function.}
 }
 
@@ -41,6 +47,15 @@ qmedist(data, distr, probs, start = NULL, fix.arg = NULL, qtype = 7,
     sum of squared differences between observed and theoretical quantiles.
     The optimization process is the same as \code{\link{mledist}}, see the 'details' section 
     of  \code{\link{mledist}}.
+    
+    Optionally, a vector of \code{weights} can be used in the fitting process. 
+    By default (when \code{weigths=NULL}), ordinary QME is carried out, otherwise 
+    the specified weights are used to compute weighted quantiles used in the squared differences.
+    Weigthed quantiles are computed by \code{\link[Hmisc:wtd.stats]{wtd.quantile}} from the \code{Hmisc} package.
+    It is not yet possible to take into account weighths in functions plotdist, plot.fitdist, 
+    cdfcomp, denscomp, ppcomp, qqcomp, gofstat and descdist 
+    (developments planned in the future).
+
 
     This function is not intended to be called directly but is internally called in
     \code{\link{fitdist}} and \code{\link{bootdist}}.
@@ -69,7 +84,10 @@ qmedist(data, distr, probs, start = NULL, fix.arg = NULL, qtype = 7,
     \item{fix.arg}{ the named list giving the values of parameters of the named distribution
         that must kept fixed rather than estimated by maximum likelihood or \code{NULL} 
         if there are no such parameters. }
-    
+    \item{optim.method}{when \code{optim} is used, the name of the algorithm used, 
+    \code{NULL} otherwise.}    
+    \item{fix.arg.fun}{the function used to set the value of \code{fix.arg} or \code{NULL}.}
+    \item{weights}{the vector of weigths used in the estimation process or \code{NULL}.}
 }
 
 

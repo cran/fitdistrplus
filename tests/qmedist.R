@@ -66,4 +66,42 @@ fit2 <- qmedist(x, "norm2", probs=c(1/6, 1/4, 1/3, 1/2, 2/3),
 
 
 
+# (7) test error messages
+#
+
+dnorm3 <- qnorm3 <- function(x, a)
+  "NA"
+x <- rexp(10)
+
+#should get a one-line error 
+res <- qmedist(x, "norm3", start=list(a=1), probs=1/2)
+#as in 
+attr(try(log("a"), silent=TRUE), "condition")
+
+
+# (8) weighted QME
+#
+n <- 1e6
+n <- 1e2
+x <- rpois(n, 10)
+xtab <- table(x)
+xval <- sort(unique(x))
+f1 <- qmedist(x, "pois", start=list(lambda=mean(x)), lower=0, upper=100, probs=1/2) #, control=list(trace=1, REPORT=1)
+f2 <- qmedist(xval, "pois", weights=xtab, start=list(lambda=mean(x)), probs=1/2)
+
+f1$estimate
+f2$estimate #should be identical
+
+x <- rexp(n)
+f3 <- qmedist(x, "exp", probs=1/2)
+f4 <- qmedist(x, "exp", weights=c(rep(1, n/2), sqrt(1:(n/2))), probs=1/2)
+f3$estimate
+f4$estimate
+
+f3$loglik
+f4$loglik
+
+median(x)
+median(tail(x, 50))
+
 

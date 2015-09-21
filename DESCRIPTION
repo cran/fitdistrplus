@@ -1,11 +1,11 @@
 Package: fitdistrplus
 Title: Help to Fit of a Parametric Distribution to Non-Censored or
         Censored Data
-Version: 1.0-4
-Date: 2015-02-22
+Version: 1.0-5
+Date: 2015-09-14
 Authors@R: c(person("Marie Laure", "Delignette-Muller", role = c("aut", "cre"), email= "marielaure.delignettemuller@vetagro-sup.fr"),person("Christophe", "Dutang", role = "aut", email = "christophe.dutang@univ-lemans.fr"),person("Regis", "Pouillot", role = "ctb", email = "rpouillot@yahoo.fr"),person("Jean-Baptiste", "Denis", role = "ctb", email = "jbdenis@jouy.inra.fr"))
-Description: Extends the fitdistr function (of the MASS package) with several functions to help the fit of a parametric distribution to non-censored or censored data. Censored data may contain left censored, right censored and interval censored values, with several lower and upper bounds. In addition to maximum likelihood estimation method the package provides moment matching, quantile matching and maximum goodness-of-fit estimation methods (available only for non-censored data).
-Depends: R (>= 2.10.0)
+Description: Extends the fitdistr function (of the MASS package) with several functions to help the fit of a parametric distribution to non-censored or censored data. Censored data may contain left censored, right censored and interval censored values, with several lower and upper bounds. In addition to maximum likelihood estimation (MLE), the package provides moment matching (MME), quantile matching (QME) and maximum goodness-of-fit estimation (MGE) methods (available only for non-censored data). Weighted versions of MLE, MME and QME are available.
+Depends: R (>= 2.10.0), MASS, grDevices
 Imports: stats, survival
 Suggests: actuar, rgenoud, mc2d, gamlss.dist
 License: GPL (>= 2)
@@ -17,8 +17,8 @@ Author: Marie Laure Delignette-Muller [aut, cre],
 Maintainer: Marie Laure Delignette-Muller <marielaure.delignettemuller@vetagro-sup.fr>
 Repository: CRAN
 Repository/R-Forge/Project: riskassessment
-Repository/R-Forge/Revision: 304
-Repository/R-Forge/DateTimeStamp: 2015-02-23 07:31:59
-Date/Publication: 2015-02-23 17:20:39
-Packaged: 2015-02-23 07:45:42 UTC; rforge
+Repository/R-Forge/Revision: 357
+Repository/R-Forge/DateTimeStamp: 2015-09-17 10:09:34
+Date/Publication: 2015-09-21 11:47:51
 NeedsCompilation: no
+Packaged: 2015-09-19 12:15:37 UTC; rforge

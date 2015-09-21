@@ -41,6 +41,9 @@ qqcomp <- function(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, main, x
     if(any(sapply(ft, function(x) !inherits(x, "fitdist"))))        
       stop("argument ft must be a list of 'fitdist' objects")
   }
+  # In the future developments, it will be necessary to check that all the fits share the same weights
+  if(!is.null(ft[[1]]$weights))
+    stop("qqcomp is not yet available when using weights")
   
     
     nft <- length(ft)
@@ -72,7 +75,7 @@ qqcomp <- function(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, main, x
         obsp <- ppoints(n, a = a.ppoints)
     else
         obsp <- (1:n) / n
-    
+    largedata <- (n > 1e4)
     
 # computation of each fitted distribution
     comput.fti <- function(i, ...)
@@ -84,7 +87,9 @@ qqcomp <- function(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, main, x
         do.call(qdistname, c(list(p=obsp), as.list(para)))
     }
     fittedquant <- sapply(1:nft, comput.fti, ...)
-    
+    if(NCOL(fittedquant) != nft || NROW(fittedquant) != length(obsp))
+        stop("problem when computing fitted CDFs.")
+
     if(missing(xlim))
         xlim <- range(fittedquant)
     if(missing(ylim))
@@ -92,17 +97,25 @@ qqcomp <- function(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, main, x
 
     logxy <- paste(ifelse(xlogscale,"x",""), ifelse(ylogscale,"y",""), sep="")
     #main plotting
-    resquant <- plot(fittedquant[,1], sdata, main=main, xlab=xlab, ylab=ylab, log=logxy,
-            pch=fitpch[1], xlim=xlim, ylim=ylim, col=fitcol[1], ...)
+    if(!largedata)
+      resquant <- plot(fittedquant[,1], sdata, main=main, xlab=xlab, ylab=ylab, log=logxy,
+            pch=fitpch[1], xlim=xlim, ylim=ylim, col=fitcol[1], type="p", ...)
+    else
+      resquant <- plot(fittedquant[,1], sdata, main=main, xlab=xlab, ylab=ylab, log=logxy,
+                       xlim=xlim, ylim=ylim, col=fitcol[1], type="l", ...)
+
     #plot of fitted quantiles
-    if(nft > 1 && !ynoise)
+    if(nft > 1 && !ynoise && !largedata)
         for(i in 2:nft)
             points(fittedquant[,i], sdata, pch=fitpch[i], col=fitcol[i], ...)
-    if(nft > 1 && ynoise)
+    if(nft > 1 && ynoise && !largedata)
         for(i in 2:nft)
             points(fittedquant[,i], sdata*(1 + rnorm(n, 0, 0.01)), 
                    pch=fitpch[i], col=fitcol[i], ...)
-    
+    if(largedata)
+      for(i in 2:nft)
+        lines(fittedquant[,i], sdata, col=fitcol[i], ...)
+
     if(line01)
         abline(0, 1, lty=line01lty, col=line01col)
     
@@ -110,6 +123,9 @@ qqcomp <- function(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, main, x
     {
         if (missing(legendtext)) 
             legendtext <- paste("fit",1:nft)
-        legend(x=xlegend, y=ylegend, bty="n", legend=legendtext, pch=fitpch, col=fitcol, ...)
+        if(!largedata)
+          legend(x=xlegend, y=ylegend, bty="n", legend=legendtext, pch=fitpch, col=fitcol, ...)
+        else
+          legend(x=xlegend, y=ylegend, bty="n", legend=legendtext, col=fitcol, ...)  
     }
 }

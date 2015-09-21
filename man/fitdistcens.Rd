@@ -13,7 +13,8 @@
 }
 
 \usage{
-fitdistcens(censdata, distr, start=NULL, fix.arg=NULL, \dots)
+fitdistcens(censdata, distr, start=NULL, fix.arg=NULL, 
+  keepdata = TRUE, keepdata.nb=100, \dots)
 
 \method{print}{fitdistcens}(x, \dots)
 
@@ -45,11 +46,16 @@ fitdistcens(censdata, distr, start=NULL, fix.arg=NULL, \dots)
     must be defined, or directly the density function.}
 \item{start}{ A named list giving the initial values of parameters of the named distribution. 
     This argument may be omitted for some distributions for which reasonable 
-    starting values are computed (see details).  }
+    starting values are computed (see the 'details' section of  \code{\link{mledist}}).  }
 \item{fix.arg}{ An optional named list giving the values of parameters of the named distribution
     that must be kept fixed rather than estimated by maximum likelihood. }
 \item{x}{ an object of class \code{"fitdistcens"}.  }
 \item{object}{ an object of class \code{"fitdistcens"}.  }
+
+\item{keepdata}{a logical. If \code{TRUE}, dataset is returned, 
+otherwise only a sample subset is returned.}
+\item{keepdata.nb}{When \code{keepdata=FALSE}, the length of the subset returned.}
+
 \item{\dots}{ further arguments to be passed to generic functions,
     to the function \code{plotdistcens} in order to control the type of ecdf-plot used for censored data, 
     or to the function \code{mledist} 
@@ -64,16 +70,21 @@ fitdistcens(censdata, distr, start=NULL, fix.arg=NULL, \dots)
     and the "BFGS" method for distributions characterized by only one parameter. 
     The algorithm used in \code{\link{optim}} can be chosen or another optimization function
     can be specified using \dots argument (see \code{\link{mledist}} for details).
-    For the following named distributions, reasonable starting values will 
-    be computed if \code{start} is omitted : \code{"norm"}, \code{"lnorm"},
-    \code{"exp"} and \code{"pois"}, \code{"cauchy"}, \code{"gamma"}, \code{"logis"},
-    \code{"nbinom"} (parametrized by mu and size), \code{"geom"}, \code{"beta"} and \code{"weibull"}. 
-    Note that these starting 
-    values may not be good enough if the fit is poor. The function is not able to fit a uniform distribution.     
+    \code{start} may be omitted (i.e. \code{NULL}) for some classic distributions
+    (see the 'details' section of  \code{\link{mledist}}).
+        Note that when errors are raised by \code{optim}, it's a good idea to start by adding traces during
+    the optimization process by adding \code{control=list(trace=1, REPORT=1)} in \dots argument.
+
+    The function is not able to fit a uniform distribution.     
     With the parameter estimates, the function returns the log-likelihood and the standard errors of 
     the estimates calculated from the 
     Hessian at the solution found by \code{optim} or by the user-supplied function passed to mledist.
      
+    Weighted version of the estimation process is available for \code{method = "mle"}
+    by using \code{weights=\dots}. See the corresponding man page for details.
+    It is not yet possible to take into account weighths in functions plotdistcens, 
+    plot.fitdistcens and cdfcompcens 
+    (developments planned in the future).
 
 }
 
@@ -90,10 +101,18 @@ fitdistcens(censdata, distr, start=NULL, fix.arg=NULL, \dots)
     \item{censdata}{ the censored data set.}
     \item{distname}{ the name of the distribution.}
     \item{fix.arg}{ the named list giving the values of parameters of the named distribution
-    that must be kept fixed rather than estimated by maximum likelihood or NULL if there are no such parameters. }
+      that must be kept fixed rather than estimated by maximum likelihood or 
+      \code{NULL} if there are no such parameters. }
     \item{dots}{ the list of  further arguments passed in \dots to be used in \code{bootdistcens} to
-    control the optimization method used in iterative calls to \code{mledist} or NULL if no such arguments.}
+    control the optimization method used in iterative calls to \code{mledist} or 
+      \code{NULL} if no such arguments.}
+    \item{weights}{the vector of weigths used in the estimation process or \code{NULL}.}
     
+    By default (\code{keepdata = TRUE}), the returned object contains the data vector itself.
+    For large dataset purposes, we can remove the original dataset from the output by
+    setting \code{keepdata = FALSE}. In such a case, only \code{keepdata.nb} points (at most) 
+    are kept by random subsampling \code{keepdata.nb}-4 points from the dataset and 
+    adding the component-wise minimum and maximum.
     
     Generic functions:
 \describe{       
