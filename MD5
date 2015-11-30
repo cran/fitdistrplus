@@ -1,4 +1,4 @@
-30f0ec5e162de6c5647566faf31ae851 *DESCRIPTION
+854ec312112d812dc65c338a55de168d *DESCRIPTION
 886ef89486f2a1992fb67dd97ed91762 *NAMESPACE
 a8031aab35ef858d6318972f17312da0 *R/bootdist-graph.R
 d546dbdb477d9e31f0998601d3bf63fc *R/bootdist.R
@@ -22,7 +22,7 @@ e834ecd78468f84923cd64c273a40844 *R/mledist.R
 1bc9be1d2c0bf65c262c630c2c218698 *R/qqcomp.R
 e75a4d43940f2387014801736e77a32d *R/quantiles.R
 ade48e9788e36d4cb8bc4ac23f9f40f6 *R/util-checkparam.R
-69f04092afa0af8c4508d8d9a854992e *R/util-startarg.R
+74777812b661b7825f7732e74ef1303b *R/util-startarg.R
 6604bda627766a6387c4ed31c28044f4 *R/util-wtdstat.R
 d5402adb875f9d5ebcbccf381ea41240 *R/vcov.R
 84dd62923e1b7511f018ccdbefdb64ba *build/vignette.rds
@@ -35,17 +35,17 @@ d45e98371f6d599bf19d48825e87199d *data/danishuni.rda
 5b4247d0f90704ab24e50d71f0de8740 *data/smokedfish.rda
 e4a6f1c5234a8d508349c74ccacbf59c *data/toxocara.rda
 8adc6a30da9d0203a4833da2d4acf667 *inst/CITATION
-14be43ef3d63e7ceab8dfd52136d0498 *inst/NEWS
+8c2f6a85f720dcb8c73ef8f59fa83ec7 *inst/NEWS
 b7771909da1251ea77aa5429e2e33414 *inst/doc/paper2JSS.R
 e1abb287bd8cdbac1a59d0b022c33bbd *inst/doc/paper2JSS.Rnw
-2e9dc970da5fbe00f1065b104e6b1127 *inst/doc/paper2JSS.pdf
+55d0cf30061b75ebe0302d6916710e54 *inst/doc/paper2JSS.pdf
 97c8d844404abd8f65cc5e0c3c62e849 *man/bootdist.Rd
 ca66a52f368b746254064311b327cbcd *man/bootdistcens.Rd
 3c36e29dd68abc21562c607db9d78b82 *man/cdfcompcens.Rd
 698ae6d01786ecd65aad2536878cd2bb *man/danish.Rd
 963cfb3c94ab782b00235e97ded7ebcb *man/descdist.Rd
 41a46d942bff95e4379ea1480ec92a0d *man/endosulfan.Rd
-e06287b07006f714d77db377b94bcd96 *man/fitdist.Rd
+29d6470a16eaea7f62048a38095ed367 *man/fitdist.Rd
 173602319afdb6353de715904aac384b *man/fitdistcens.Rd
 9faa268955dfd31721d62bef465ce096 *man/fluazinam.Rd
 5ca5394f8a224a1aad48d4bc48b27770 *man/gofstat.Rd
@@ -80,5 +80,6 @@ d3c64fb604b6e03e0d9ff562ea3b5012 *tests/plotdist.R
 a3c2120987fd7b958a00977246ec699a *tests/qmedist.R
 f102f032f1d41af6d2b6605a526b1a20 *tests/qqcomp.R
 7b6192f0d0bfa4e7567eac96af57eb12 *tests/quantiledist.R
+7d1e7a2ada0542a3cad30c88f2420b90 *tests/test-startingvalues.R
 5ec28b3b4217fba82dd2d14d0477f2b5 *vignettes/jssfitdistrplus.bib
 e1abb287bd8cdbac1a59d0b022c33bbd *vignettes/paper2JSS.Rnw
