@@ -23,15 +23,29 @@
 ### 
 
 
-bootdist <- function (f, bootmethod="param", niter=1001, silent=TRUE)
+bootdist <- function (f, bootmethod="param", niter=1001, silent=TRUE, 
+                      parallel = c("no", "snow", "multicore"), ncpus)
 { 
     if (niter<10) 
         stop("niter must be an integer above 10")
-        bootmethod <- match.arg(bootmethod, c("param", "nonparam"))
-    
+    bootmethod <- match.arg(bootmethod, c("param", "nonparam"))
+
+    parallel <- match.arg(parallel, c("no", "snow", "multicore"))
+    if (parallel == "multicore" & .Platform$OS.type == "windows")
+    {
+        parallel <- "snow"
+        warning("As the multicore option is not supported on Windows it was replaced by snow")
+    }
+    if ((parallel == "snow" | parallel == "multicore") & missing(ncpus)) 
+        stop("You have to specify the number of available processors to parallelize 
+             the bootstrap")
+            
     if (!inherits(f, "fitdist"))
         stop("Use only with 'fitdist' objects")
-        
+     
+    if(!is.null(f$weights))
+    stop("Bootstrap is not yet available when using weights")
+    
     #simulate bootstrap data
     if (bootmethod == "param") { # parametric bootstrap
         rdistname <- paste("r", f$distname, sep="")
@@ -75,7 +89,21 @@ bootdist <- function (f, bootmethod="param", niter=1001, silent=TRUE)
     owarn <- getOption("warn")
     oerr <- getOption("show.error.messages")
     options(warn=ifelse(silent, -1, 0), show.error.messages=!silent)
-    resboot <- sapply(1:niter, func)
+    
+    # parallel or sequential computation
+    if (parallel != "no") 
+    {
+      if (parallel == "snow") type <- "PSOCK"
+      else if (parallel == "multicore") type <- "FORK"
+      clus <- parallel::makeCluster(ncpus, type = type)
+      resboot <- parallel::parSapply(clus, 1:niter, func)
+      parallel::stopCluster(clus)
+    }
+    else
+    {
+      resboot <- sapply(1:niter, func)
+    }
+    
     options(warn=owarn, show.error.messages=oerr)
     
     rownames(resboot) <- c(names(start), "convergence")

@@ -16,9 +16,9 @@
 \usage{
 cdfcomp(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, main, xlab, ylab, 
     datapch, datacol, fitlty, fitcol, addlegend = TRUE, legendtext, 
-    xlegend = "bottomright", ylegend = NULL, 
-    horizontals = TRUE, verticals = FALSE, do.points = TRUE, 
-    use.ppoints = TRUE, a.ppoints = 0.5, lines01 = FALSE, discrete, \dots)
+    xlegend = "bottomright", ylegend = NULL, horizontals = TRUE, 
+    verticals = FALSE, do.points = TRUE, use.ppoints = TRUE, a.ppoints = 0.5, 
+    lines01 = FALSE, discrete, add = FALSE, \dots)
     
 denscomp(ft, xlim, ylim, probability = TRUE, main, xlab, ylab, datapch, 
     datacol, fitlty, fitcol, addlegend = TRUE, legendtext, xlegend = "topright", 
@@ -88,6 +88,8 @@ ppcomp(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, main, xlab, ylab,
 \item{discrete}{If \code{TRUE}, the distributions are considered discrete.
   If missing, \code{discrete} is passed from the first object of class \code{"fitdist"} of 
   the list \code{ft}.}
+\item{add}{logical; if \code{TRUE} add to an already existing plot; if \code{FALSE} start 
+  a new plot.}  
 }
 
 \details{
@@ -119,7 +121,8 @@ ppcomp(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, main, xlab, ylab,
 }
 
 \seealso{ 
-    See \code{\link{plot}}, \code{\link{legend}}, \code{\link{ppoints}}, \code{\link{plot.stepfun}} 
+    See \code{\link{CIcdfplot}} and \code{\link{plot}}, \code{\link{legend}}, \code{\link{ppoints}}, 
+    \code{\link{plot.stepfun}} 
     for classic plotting functions and \code{\link{plotdist}}.  
 }
 
@@ -132,8 +135,7 @@ Journal of Statistical Software, 64(4), 1-34.
 }
 
 \author{ 
-Marie-Laure Delignette-Muller \email{marielaure.delignettemuller@vetagro-sup.fr} 
-and Christophe Dutang.
+Christophe Dutang and Marie-Laure Delignette-Muller.
 }
 
 \examples{

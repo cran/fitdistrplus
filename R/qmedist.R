@@ -24,7 +24,7 @@
 
 qmedist <- function (data, distr, probs, start=NULL, fix.arg=NULL, 
     qtype=7, optim.method="default", lower=-Inf, upper=Inf, custom.optim=NULL, 
-    weights=NULL, silent=TRUE, ...)
+    weights=NULL, silent=TRUE, gradient=NULL, ...)
     # data may correspond to a vector for non censored data or to
     # a dataframe of two columns named left and right for censored data 
 {
@@ -43,6 +43,8 @@ qmedist <- function (data, distr, probs, start=NULL, fix.arg=NULL,
 
     if (missing(probs))
         stop("missing probs argument for quantile matching estimation")
+    if(is.null(custom.optim))
+      optim.method <- match.arg(optim.method, c("default", "Nelder-Mead", "BFGS", "CG", "L-BFGS-B", "SANN", "Brent"))
 
     start.arg <- start #to avoid confusion with the start() function of stats pkg (check is done lines 87-100)
     if(is.vector(start.arg)) #backward compatibility
@@ -53,9 +55,12 @@ qmedist <- function (data, distr, probs, start=NULL, fix.arg=NULL,
     if(!is.null(weights))
     {
       if(any(weights < 0))
-        stop("weights should be a vector of numerics greater than 0")
+        stop("weights should be a vector of integers greater than 0")
+      if(!is.allint.w(weights))
+        stop("weights should be a vector of (strictly) positive integers")
       if(length(weights) != NROW(data))
         stop("weights should be a vector with a length equal to the observation number")
+      warning("weights are not taken into account in the default initial values")
     }
     
     if (is.vector(data)) {
@@ -63,35 +68,13 @@ qmedist <- function (data, distr, probs, start=NULL, fix.arg=NULL,
         if (!(is.numeric(data) & length(data)>1)) 
             stop("data must be a numeric vector of length greater than 1 for non censored data
             or a dataframe with two columns named left and right and more than one line for censored data")
-    }
-    else {
+    } else 
+    {
         cens <- TRUE
-        censdata <- data
-        if (!(is.vector(censdata$left) & is.vector(censdata$right) & length(censdata[,1])>1))
-        stop("data must be a numeric vector of length greater than 1 for non censored data
-        or a dataframe with two columns named left and right and more than one line for censored data")
-        pdistname<-paste("p",distname,sep="")
-        if (!exists(pdistname,mode="function"))
-            stop(paste("The ",pdistname," function must be defined to apply maximum likelihood to censored data"))
+        stop("Quantile matching estimation is not yet available for censored data.")
+    }
+    
 
-    }
-    
-    if (cens) {
-        # Definition of datasets lcens (left censored)=vector, rcens (right censored)= vector,
-        #   icens (interval censored) = dataframe with left and right 
-        # and ncens (not censored) = vector
-        lcens<-censdata[is.na(censdata$left),]$right
-        if (any(is.na(lcens)) )
-            stop("An observation cannot be both right and left censored, coded with two NA values")
-        rcens<-censdata[is.na(censdata$right),]$left
-        ncens<-censdata[censdata$left==censdata$right & !is.na(censdata$left) & 
-            !is.na(censdata$right),]$left
-        icens<-censdata[censdata$left!=censdata$right & !is.na(censdata$left) & 
-            !is.na(censdata$right),]
-        # Definition of a data set for calculation of starting values
-        data<-c(rcens,lcens,ncens,(icens$left+icens$right)/2)
-    }
-    
     # QME fit 
     # definition of starting/fixed values values
     argddistname <- names(formals(ddistname))
@@ -101,7 +84,7 @@ qmedist <- function (data, distr, probs, start=NULL, fix.arg=NULL,
       stop(chfixstt$txt)
     #unlist starting values as needed in optim()
     if(is.function(chfixstt$start.arg))
-      vstart <- chfixstt$start.arg(data)
+      vstart <- unlist(chfixstt$start.arg(data))
     else
       vstart <- unlist(chfixstt$start.arg)
     if(is.function(fix.arg)) #function
@@ -149,9 +132,6 @@ qmedist <- function (data, distr, probs, start=NULL, fix.arg=NULL,
       }
       fnobj <- function(par, fix.arg, obs, qdistnam, qtype)
         sum( sapply(probs, function(p) DIFF2Q(par, fix.arg, p, obs, qdistnam, qtype)) )
-    }else
-    {
-        stop("Quantile matching estimation is not yet available for censored data.")
     }
     
     # Function to calculate the loglikelihood to return
@@ -165,31 +145,98 @@ qmedist <- function (data, distr, probs, start=NULL, fix.arg=NULL,
         sum(weights * log(do.call(ddistnam, c(list(obs), as.list(par), as.list(fix.arg)) ) ) )
     }
     
-    # Choice of the optimization method    
-    if (optim.method == "default")
-    {
-        if(is.infinite(lower) && is.infinite(upper))
-        { 
-            if (length(vstart) > 1) 
-                meth <- "Nelder-Mead"
-            else 
-                meth <- "BFGS"
-        }else
-            meth <- "L-BFGS-B"
-    }else
-        meth <- optim.method
-        
+    
     owarn <- getOption("warn")
     # Try to minimize the stat distance using the base R optim function
     if(is.null(custom.optim))
     {
-        if (!cens)
+        hasbound <- any(is.finite(lower) | is.finite(upper))
+      
+        # Choice of the optimization method  
+        if (optim.method == "default")
         {
-            options(warn=ifelse(silent, -1, 0))
-            opttryerror <- try(opt <- optim(par=vstart, fn=fnobj, fix.arg=fix.arg, obs=data, qdistnam=qdistname,
-                qtype=qtype, hessian=TRUE, method=meth, lower=lower, upper=upper, ...), silent=TRUE)        
-        }else 
-            stop("Quantile matching estimation is not yet available for censored data.")
+          meth <- ifelse(length(vstart) > 1, "Nelder-Mead", "BFGS") 
+        }else
+          meth <- optim.method
+      
+        if(meth == "BFGS" && hasbound && is.null(gradient))
+        {
+          meth <- "L-BFGS-B"
+          txt1 <- "The BFGS method cannot be used with bounds without provided the gradient."
+          txt2 <- "The method is changed to L-BFGS-B."
+          warning(paste(txt1, txt2))
+        }
+        
+        options(warn=ifelse(silent, -1, 0))
+        #select optim or constrOptim
+        if(hasbound) #finite bounds are provided
+        {
+          if(!is.null(gradient))
+          {
+            opt.fun <- "constrOptim"
+          }else #gradient == NULL
+          {
+            if(meth == "Nelder-Mead")
+              opt.fun <- "constrOptim"
+            else if(meth %in% c("L-BFGS-B", "Brent"))
+              opt.fun <- "optim"
+            else
+            {
+              txt1 <- paste("The method", meth, "cannot be used by constrOptim() nor optim() without gradient and bounds.")
+              txt2 <- "Only optimization methods L-BFGS-B, Brent and Nelder-Mead can be used in such case."
+              stop(paste(txt1, txt2))
+            }
+          }
+          if(opt.fun == "constrOptim")
+          {
+            #recycle parameters
+            npar <- length(vstart) #as in optim() line 34
+            lower <- as.double(rep_len(lower, npar)) #as in optim() line 64
+            upper <- as.double(rep_len(upper, npar))
+            
+            # constraints are : Mat %*% theta >= Bnd, i.e. 
+            # +1 * theta[i] >= lower[i]; 
+            # -1 * theta[i] >= -upper[i]
+            
+            #select rows from the identity matrix
+            haslow <- is.finite(lower)
+            Mat <- diag(npar)[haslow, ]
+            #select rows from the opposite of the identity matrix
+            hasupp <- is.finite(upper)
+            Mat <- rbind(Mat, -diag(npar)[hasupp, ])
+            colnames(Mat) <- names(vstart)
+            rownames(Mat) <- paste0("constr", 1:NROW(Mat))
+            
+            #select the bounds
+            Bnd <- c(lower[is.finite(lower)], -upper[is.finite(upper)])
+            names(Bnd) <- paste0("constr", 1:length(Bnd))
+            
+            initconstr <- Mat %*% vstart - Bnd
+            if(any(initconstr < 0))
+              stop("Starting values must be in the feasible region.")
+            
+            opttryerror <- try(opt <- constrOptim(theta=vstart, f=fnobj, ui=Mat, ci=Bnd, grad=gradient,
+                    fix.arg=fix.arg, obs=data, qdistnam=qdistname, qtype=qtype, hessian=!is.null(gradient), 
+                    method=meth, ...), silent=TRUE)
+            
+            if(!inherits(opttryerror, "try-error"))
+              if(length(opt$counts) == 1) #appears when the initial point is a solution
+                opt$counts <- c(opt$counts, NA)
+            
+            
+          }else #opt.fun == "optim"
+          {
+            opttryerror <- try(opt <- optim(par=vstart, fn=fnobj, fix.arg=fix.arg, obs=data, gr=gradient,
+                  qdistnam=qdistname, qtype=qtype, hessian=TRUE, method=meth, lower=lower, upper=upper, ...), silent=TRUE)       
+          }
+          
+        }else #hasbound == FALSE
+        {
+          opt.fun <- "optim"
+          opttryerror <- try(opt <- optim(par=vstart, fn=fnobj, fix.arg=fix.arg, obs=data, gr=gradient,
+                  qdistnam=qdistname, qtype=qtype, hessian=TRUE, method=meth, lower=lower, upper=upper, ...), silent=TRUE)       
+        }
+        options(warn=owarn)
                 
         if (inherits(opttryerror,"try-error"))
         {
@@ -206,9 +253,9 @@ qmedist <- function (data, distr, probs, start=NULL, fix.arg=NULL,
         if(is.null(names(opt$par)))
           names(opt$par) <- names(vstart)
         res <- list(estimate = opt$par, convergence = opt$convergence, value = opt$value, 
-					hessian = opt$hessian, probs=probs, optim.function="optim", 
+					hessian = opt$hessian, probs=probs, optim.function=opt.fun, 
 					loglik=loglik(opt$par, fix.arg, data, ddistname), fix.arg=fix.arg,
-          optim.method=meth, weights = weights)		
+          optim.method=meth, weights = weights, counts=opt$counts, optim.message=opt$message)		
     }
     else # Try to minimize the stat distance using a user-supplied optim function 
     {
@@ -235,7 +282,7 @@ qmedist <- function (data, distr, probs, start=NULL, fix.arg=NULL,
         res <- list(estimate = opt$par, convergence = opt$convergence, value = opt$value, 
 					hessian = opt$hessian, probs=probs, optim.function=custom.optim, 
 					loglik=loglik(opt$par, fix.arg, data, ddistname), fix.arg=fix.arg, 
-          optim.method=NULL, weights = weights)		
+          optim.method=NULL, weights = weights, counts=opt$counts, optim.message=opt$message)		
     }   
     return(res)    
      

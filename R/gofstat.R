@@ -233,18 +233,18 @@ compute.gofstat.KSCvMAD <- function(sdata, n, distname, pdistname, estimate,
 			adtest <- ifelse(a2mod>0.757, "rejected", "not rejected")
 		}
 		else
-		# the following test does not correspond to MLE estimate  
-		# if (distname == "logis" & n>=5) {
-		#    a2mod <- ad*(1+0.25/n)
-		#    adtest <- ifelse(a2mod>0.66,"rejected","not rejected")
-		#}
-		# else
-		if (distname == "cauchy" & n>=5) {
-			interp <- approxfun(c(5,8,10,12,15,20,25,30,40,50,60,100),
-								c(1.77,3.2,3.77,4.14,4.25,4.05,3.57,3.09,2.48,2.14,1.92,1.52),
-								yright=1.225)
-			adtest <- ifelse(ad>interp(n), "rejected", "not rejected")
+		if (distname == "logis" & n>=5) {
+		   a2mod <- ad*(1+0.25/n)
+		   adtest <- ifelse(a2mod>0.66,"rejected","not rejected")
 		}
+		# else 
+		# the following test does not correspond to MLE estimate  
+		#   if (distname == "cauchy" & n>=5) {
+		# 	interp <- approxfun(c(5,8,10,12,15,20,25,30,40,50,60,100),
+		# 						c(1.77,3.2,3.77,4.14,4.25,4.05,3.57,3.09,2.48,2.14,1.92,1.52),
+		# 						yright=1.225)
+		# 	adtest <- ifelse(ad>interp(n), "rejected", "not rejected")
+		# }
 		else adtest <- "not computed"
 	}  # if (is.null(fix.arg)...)
 	else 
@@ -281,18 +281,18 @@ compute.gofstat.KSCvMAD <- function(sdata, n, distname, pdistname, estimate,
 			cvmtest <- ifelse(w2mod>0.124,"rejected","not rejected")
 		}
 		else
-		# the following test does not correspond to MLE estimate 
-		# if (distname == "logis" & n>=5) {
-		#     w2mod <- (n*cvm - 0.08)/(n - 1)
-		#     cvmtest <- ifelse(w2mod>0.098,"rejected","not rejected")
-		# }
-		# else
-		if (distname == "cauchy" & n>=5) {
-			interp <- approxfun(c(5,8,10,12,15,20,25,30,40,50,60,100),
-								c(0.393,0.703,0.833,0.896,0.904,0.835,0.726,0.615,0.460,0.381,0.330,0.2378),
-								yright=0.170)
-			cvmtest <- ifelse(cvm>interp(n),"rejected","not rejected")
+		if (distname == "logis" & n>=5) {
+		    w2mod <- (n*cvm - 0.08)/(n - 1)
+		    cvmtest <- ifelse(w2mod>0.098,"rejected","not rejected")
 		}
+		# else
+		# not with an MLE estimate in Stephens
+		# if (distname == "cauchy" & n>=5) {
+		# 	interp <- approxfun(c(5,8,10,12,15,20,25,30,40,50,60,100),
+		# 						c(0.393,0.703,0.833,0.896,0.904,0.835,0.726,0.615,0.460,0.381,0.330,0.2378),
+		# 						yright=0.170)
+		# 	cvmtest <- ifelse(cvm>interp(n),"rejected","not rejected")
+		# }
 		else cvmtest <- "not computed"
 	}  # if (is.null(fix.arg))
 	else 
@@ -386,34 +386,6 @@ print.gofstat.fitdist <- function(x, ...)
 			cat("The sample is too small to automatically define cells for Chi-squared test \n")
     }else # continuous distribution
     { 
-#		if(x$nbfit == 1)
-#		{
-#			cat("Kolmogorov-Smirnov statistic: ", x$ks,"\n")
-#			if (!is.null(x$kstest)) 
-#			{
-#				cat("Kolmogorov-Smirnov test: ",x$kstest,"\n")
-#				cat("   The result of this test may be too conservative as it  \n")
-#				cat("   assumes that the distribution parameters are known\n")
-#			}
-#			else
-#				cat("Kolmogorov-Smirnov test: not calculated \n")
-#			
-#			cat("Cramer-von Mises statistic: ",x$cvm,"\n")
-#			if (!is.null(x$cvmtest)) 
-#				cat("Cramer-von Mises test: ",x$cvmtest,"\n")
-#			else
-#				cat("Crame-von Mises test: not calculated \n")
-#			
-#			cat("Anderson-Darling statistic: ",x$ad,"\n")
-#			if (!is.null(x$adtest)) 
-#				cat("Anderson-Darling test: ",x$adtest,"\n")
-#			else
-#				cat("Anderson-Darling test: not calculated \n")
-#			
-#			cat("Aikake's Information Criterion: ", x$aic, "\n")
-#			cat("Bayesian Information Criterion: ", x$bic, "\n")
-#		}else
-#		{
 			cat("Goodness-of-fit statistics\n")
 			mm <- rbind(KS=x$ks, CvM=x$cvm, AD=x$ad)
 			rownames(mm) <- c("Kolmogorov-Smirnov statistic", "Cramer-von Mises statistic",

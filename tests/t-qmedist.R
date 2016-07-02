@@ -94,7 +94,7 @@ f2$estimate #should be identical
 
 x <- rexp(n)
 f3 <- qmedist(x, "exp", probs=1/2)
-f4 <- qmedist(x, "exp", weights=c(rep(1, n/2), sqrt(1:(n/2))), probs=1/2)
+f4 <- qmedist(x, "exp", weights=c(rep(1, n/2), round(sqrt(1:(n/2)))), probs=1/2)
 f3$estimate
 f4$estimate
 
@@ -105,3 +105,15 @@ median(x)
 median(tail(x, 50))
 
 
+#try non integer weights
+try(qmedist(x, "exp", weights=c(rep(1, n/2), sqrt(1:(n/2))), probs=1/2))
+
+# (9) test the component optim.message
+x <- rnorm(1000)
+#change parameter to obtain unsuccessful convergence
+qmedist(x, "norm", probs=1:2/3, control=list(maxit=2), start=list(mean=1e5, sd=1), optim.method="L-BFGS-B", lower=0)
+
+# (10) test bounds
+x <- rnorm(1000)
+qmedist(x, "norm", probs=1:2/3, optim.method="L-BFGS-B", lower=c(-Inf, 0)) #via optim
+qmedist(x, "norm", probs=1:2/3, optim.method="Nelder", lower=c(-Inf, 0)) #via constrOptim

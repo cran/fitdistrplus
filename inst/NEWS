@@ -1,5 +1,22 @@
 === fitdistrplus : Help to fit of a parametric distribution ===
 
+Version 1.0-7
+=============
+
+NEW FEATURES
+- keep the JSS vignette as a pdf.
+- start the FAQ vignette and add datasets (?dataFAQ) for it.
+- provide likelihood plot/surface/curve: llplot, llcurve, llsurface.
+- provide parallelization of bootstrap in bootdist and bootdistcens.
+- provide graphic of (e)cdf with bootstraped confidence interval/area: CIcdfplot.
+- allow the use of constrOptim() in mledist, mmedist, mgedist, qmedist functions.
+- add a possible pre-fitting procedure: prefit.
+
+BUG FIXES
+- add invisible() for all graphical functions.
+- bug fixed concerning the use of weights on censored data
+
+
 Version 1.0-6
 =============
 

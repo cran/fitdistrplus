@@ -6,7 +6,6 @@
 \alias{logLik.fitdist}
 \alias{vcov.fitdist}
 \alias{coef.fitdist}
-\alias{fitdistrplus}
 \title{ Fit of univariate distributions to non-censored data}
 
 \description{
@@ -139,11 +138,15 @@ fitdist(data, distr, method = c("mle", "mme", "qme", "mge"),
     the estimates calculated from the Hessian at the solution found by \code{optim} 
     or by the user-supplied function passed to mledist.
 
-    By default (\code{keepdata = TRUE}), the returned object contains the data vector itself.
-    For large dataset purposes, we can remove the original dataset from the output by
+    By default (\code{keepdata = TRUE}), the object returned by \code{fitdist} contains 
+    the data vector given in input.
+    When dealing with large datasets, we can remove the original dataset from the output by
     setting \code{keepdata = FALSE}. In such a case, only \code{keepdata.nb} points (at most) 
     are kept by random subsampling \code{keepdata.nb}-2 points from the dataset and 
-    adding the minimum and the maximum.
+    adding the minimum and the maximum. If combined with \code{\link{bootdist}}, and use with
+    non-parametric bootstrap be aware that bootstrap is performed on the subset
+    randomly selected in \code{fitdist}. Currently, the graphical comparisons of multiple fits 
+    is not available in this framework.
     
     Weighted version of the estimation process is available for \code{method = "mle", "mme", "qme"}
     by using \code{weights=\dots}. See the corresponding man page for details.
@@ -224,10 +227,14 @@ fitdist(data, distr, method = c("mle", "mme", "qme", "mge"),
 }
 
 \seealso{
+    See \code{\link{fitdistrplus}} for an overview of the package.
     See \code{\link{mledist}}, \code{\link{mmedist}}, \code{\link{qmedist}}, 
     \code{\link{mgedist}} for details on parameter estimation.
     See \code{\link{gofstat}} for goodness-of-fit statistics.
-    See \code{\link{plotdist}}, \code{\link{graphcomp}} for graphs.
+    See \code{\link{plotdist}}, \code{\link{graphcomp}}, \code{\link{CIcdfplot}} for graphs
+    (with or without uncertainty and/or multiple fits).
+    See \code{\link{llplot}} for (log-)likelihood plots in the
+    neighborhood of the fitted value.
     See \code{\link{bootdist}} for bootstrap procedures 
     and \code{\link{fitdistcens}} for censored-data fitting methods.
     See \code{\link{optim}} for base R optimization procedures.
@@ -253,8 +260,7 @@ Journal of Statistical Software, 64(4), 1-34.
 
 
 \author{ 
-Marie-Laure Delignette-Muller \email{marielaure.delignettemuller@vetagro-sup.fr} 
-and Christophe Dutang.
+Marie-Laure Delignette-Muller and Christophe Dutang.
 }
 
 \examples{
@@ -361,7 +367,7 @@ myoptimize <- function(fn, par, ...)
 }
 
 #call fitdist with a 'custom' optimization function
-res2 <- fitdist(mysample, dexp, start=mystart, custom.optim=myoptimize, 
+res2 <- fitdist(mysample, "exp", start=mystart, custom.optim=myoptimize, 
     interval=c(0, 100))
 
 #show the result

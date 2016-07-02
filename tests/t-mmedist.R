@@ -76,7 +76,7 @@ c(truestim=exp(mu+s2/2),
 	emp=mean(x3))
 
 c(truestim=exp(2*mu+s2)*(exp(s2)-1), 
-	jensen=as.numeric(exp(f1$estimate["meanlog"]+f1$estimate["sdlog"]^2/2)*(exp(f1$estimate["sdlog"]^2)-1)), 
+	jensen=as.numeric(exp(2*f1$estimate["meanlog"]+f1$estimate["sdlog"]^2)*(exp(f1$estimate["sdlog"]^2)-1)), 
 	emp=var(x3)*(n-1)/n)
 
 
@@ -108,6 +108,12 @@ fitdistrplus:::wtd.var(x1, w)
 
 
 mmedist(exp(x1), "lnorm", weights=w)$estimate
+
+#test non integer weights
+try(mmedist(x1, "norm", weights=rep(1/3, length(x1))))
+try(mmedist(1:10, "pois", weights=c(rep(1, 9), 1.001), start=list(lambda=mean(x))))
+try(mmedist(1:10, "pois", weights=c(rep(1, 9), 1.0000001), start=list(lambda=mean(x))))
+
 
 # (8) fit of a neg binom distribution with weighted moment matching estimation
 #
@@ -176,4 +182,19 @@ mmedist(x5, "zmgeom", order=1:2, memp=memp1, start=list(p1=mean(x5 == 0), p2=1/m
 mmedist(x5, "zmgeom", order=1:2, memp=memp2, start=list(p1=mean(x5 == 0), p2=1/mean(x5[x5 > 0])),  
         weights=w)$loglik
 
-
+# (10) bounds
+#
+if(any(installed.packages()[, "Package"] == "actuar"))
+{
+  require(actuar)
+  #simulate a sample
+  x4 <- rpareto(1000, 6, 2)
+  
+  #empirical raw moment
+  memp <- function(x, order)
+    mean(x^order)
+  
+  #fit
+  mmedist(x4, "pareto", order=c(1, 2), memp=memp, start=c(shape=10, scale=10), lower=1, upper=Inf, optim.method = "L-BFGS-B") #L-BFGS-B via optim
+  mmedist(x4, "pareto", order=c(1, 2), memp=memp, start=c(shape=10, scale=10), lower=1, upper=Inf, optim.method = "Nelder") #Nelder Mead via constrOptim
+}

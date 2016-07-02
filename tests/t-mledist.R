@@ -179,7 +179,7 @@ library(rgenoud)
 mygenoud <- function(fn, par, ...) 
 {
 	res <- genoud(fn, starting.values=par, ...)        
-	c(res, convergence=0)       
+	c(res, convergence=0, counts=NULL)       
 }
 
 
@@ -283,9 +283,12 @@ f2 <- mledist(xval, "pois", weights=xtab, start=list(lambda=mean(x)))
 f1$estimate
 f2$estimate #should be identical
 
-f2 <- try(mledist(unique(sort(x)), "pois", weights=1:3, start=list(lambda=mean(x))))
-
-
+#test discrete distrib
+f2 <- try(mledist(xval, "pois", weights=1:length(xval), start=list(lambda=mean(x))))
+#test non integer weights
+f2 <- try(mledist(xval, "pois", weights=rep(1/3, length(xval)), start=list(lambda=mean(x))))
+f2 <- try(mledist(1:10, "pois", weights=c(rep(1, 9), 1.001), start=list(lambda=mean(x))))
+f2 <- try(mledist(1:10, "pois", weights=c(rep(1, 9), 1.0000001), start=list(lambda=mean(x))))
 
 # (15) no convergence
 #
@@ -353,4 +356,24 @@ mledist(x3, "zmgeom", fix.arg=initp1, start=list(p2=1/2))[c("estimate", "fix.arg
 mledist(x4, "zmgeom", fix.arg=initp1, start=list(p2=1/2))[c("estimate", "fix.arg")]
 
 
+# (18) test the component optim.message
+x <- rnorm(1000)
+#change parameter to obtain unsuccessful convergence
+mledist(x, "norm", control=list(maxit=2), start=list(mean=1e5, sd=1), optim.method="L-BFGS-B", lower=0)
 
+
+# (19) management of bounds in optim/constrOptim
+x <- rexp(100)
+mledist(x, "exp") #optim, BFGS
+mledist(x, "exp", optim.method="Brent", lower=0, upper=100) #optim, Brent
+mledist(x, "exp", optim.method="Nelder-Mead") #optim, Nelder-Mead
+mledist(x, "exp", lower=0, optim.method="Nelder-Mead") #constrOptim, Nelder-Mead
+mledist(x, "exp", lower=0, optim.method="BFGS") #optim, L-BFGS-B
+
+
+x <- rbeta(100, 3/2, 7/3)
+mledist(x, "beta", optim.method="Nelder") #optim, Nelder-Mead
+mledist(x, "beta", lower=0, optim.method="Nelder-Mead") #constrOptim, Nelder-Mead
+#as the result of optim(c(-1.2,1), fr, method = "Nelder-Mead", hessian=TRUE, gr=NULL, lower=-Inf, upper=Inf) from optim() example
+
+mledist(x, "beta", lower=0, optim.method="BFGS") #optim, L-BFGS-B

@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="Marie Laure Delignette Muller, Christophe Dutang" />
+
+<meta name="date" content="2016-07-01" />
+
+<title>Frequently Asked Questions</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+
+
+<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Frequently Asked Questions</h1>
+<h4 class="author"><em>Marie Laure Delignette Muller, Christophe Dutang</em></h4>
+<h4 class="date"><em>2016-07-01</em></h4>
+
+
+<div id="TOC">
+<ul>
+<li><a href="#questions-regarding-distributions"><span class="toc-section-number">1</span> Questions regarding distributions</a><ul>
+<li><a href="#how-do-i-know-the-root-name-of-a-distribution"><span class="toc-section-number">1.1</span> How do I know the root name of a distribution?</a></li>
+<li><a href="#how-do-i-find-non-standard-distributions"><span class="toc-section-number">1.2</span> How do I find “non standard” distributions?</a></li>
+<li><a href="#how-do-i-set-or-find-initial-values-for-non-standard-distributions"><span class="toc-section-number">1.3</span> How do I set (or find) initial values for non standard distributions?</a></li>
+<li><a href="#is-it-possible-to-fit-a-distribution-with-at-least-3-parameters"><span class="toc-section-number">1.4</span> Is it possible to fit a distribution with at least 3 parameters?</a></li>
+<li><a href="#why-there-are-differences-between-mle-and-mme-for-the-lognormal-distribution"><span class="toc-section-number">1.5</span> Why there are differences between MLE and MME for the lognormal distribution?</a></li>
+<li><a href="#can-i-fit-a-distribution-with-positive-support-when-data-contains-negative-values"><span class="toc-section-number">1.6</span> Can I fit a distribution with positive support when data contains negative values?</a></li>
+<li><a href="#can-i-fit-a-finite-support-distribution-when-data-is-outside-that-support"><span class="toc-section-number">1.7</span> Can I fit a finite-support distribution when data is outside that support?</a></li>
+</ul></li>
+<li><a href="#questions-regarding-goodness-of-fit-tests-and-statistics"><span class="toc-section-number">2</span> Questions regarding goodness-of-fit tests and statistics</a><ul>
+<li><a href="#where-can-we-find-the-results-of-goodness-of-fit-tests"><span class="toc-section-number">2.1</span> Where can we find the results of goodness-of-fit tests ?</a></li>
+<li><a href="#is-it-reasonable-to-use-goodness-of-fit-tests-to-validate-the-fit-of-a-distribution"><span class="toc-section-number">2.2</span> Is it reasonable to use goodness-of-fit tests to validate the fit of a distribution ?</a><ul>
+<li><a href="#should-i-reject-a-distribution-because-a-goodness-of-fit-test-rejects-it"><span class="toc-section-number">2.2.1</span> Should I reject a distribution because a goodness-of-fit test rejects it ?</a></li>
+<li><a href="#should-i-accept-a-distribution-because-goodness-of-fit-tests-do-not-reject-it"><span class="toc-section-number">2.2.2</span> Should I accept a distribution because goodness-of-fit tests do not reject it ?</a></li>
+</ul></li>
+<li><a href="#why-all-goodness-of-fit-tests-are-not-available-for-every-distribution"><span class="toc-section-number">2.3</span> Why all goodness-of-fit tests are not available for every distribution ?</a></li>
+<li><a href="#how-can-we-use-goodness-of-fit-statistics-to-compare-the-fit-of-different-distributions-on-a-same-data-set"><span class="toc-section-number">2.4</span> How can we use goodness-of-fit statistics to compare the fit of different distributions on a same data set ?</a></li>
+<li><a href="#can-we-use-a-test-to-compare-the-fit-of-two-distributions-on-a-same-data-set"><span class="toc-section-number">2.5</span> Can we use a test to compare the fit of two distributions on a same data set ?</a></li>
+<li><a href="#can-we-get-goodness-of-fit-statistics-for-a-fit-on-censored-data"><span class="toc-section-number">2.6</span> Can we get goodness-of-fit statistics for a fit on censored data ?</a></li>
+</ul></li>
+<li><a href="#questions-regarding-optimization-procedures"><span class="toc-section-number">3</span> Questions regarding optimization procedures</a><ul>
+<li><a href="#how-to-choose-optimization-method"><span class="toc-section-number">3.1</span> How to choose optimization method?</a></li>
+<li><a href="#the-optimization-algorithm-stops-with-error-code-100.-what-shall-i-do"><span class="toc-section-number">3.2</span> The optimization algorithm stops with error code 100. What shall I do?</a></li>
+<li><a href="#why-distribution-with-a-log-argument-may-converge-better"><span class="toc-section-number">3.3</span> Why distribution with a <code>log</code> argument may converge better?</a></li>
+<li><a href="#what-to-do-when-there-is-a-scaling-issue"><span class="toc-section-number">3.4</span> What to do when there is a scaling issue?</a></li>
+<li><a href="#how-do-i-set-bounds-on-parameters-when-optimizing"><span class="toc-section-number">3.5</span> How do I set bounds on parameters when optimizing?</a><ul>
+<li><a href="#setting-bounds-for-scale-parameters"><span class="toc-section-number">3.5.1</span> Setting bounds for scale parameters</a></li>
+<li><a href="#setting-bounds-for-shape-parameters"><span class="toc-section-number">3.5.2</span> Setting bounds for shape parameters</a></li>
+<li><a href="#setting-bounds-for-probability-parameters"><span class="toc-section-number">3.5.3</span> Setting bounds for probability parameters</a></li>
+<li><a href="#setting-bounds-for-boundary-parameters"><span class="toc-section-number">3.5.4</span> Setting bounds for boundary parameters</a></li>
+</ul></li>
+<li><a href="#how-works-quantile-matching-estimation-for-discrete-distributions"><span class="toc-section-number">3.6</span> How works quantile matching estimation for discrete distributions?</a></li>
+</ul></li>
+<li><a href="#questions-regarding-uncertainty"><span class="toc-section-number">4</span> Questions regarding uncertainty</a><ul>
+<li><a href="#can-we-compute-marginal-confidence-intervals-on-parameter-estimates-from-their-reported-standard-error"><span class="toc-section-number">4.1</span> Can we compute marginal confidence intervals on parameter estimates from their reported standard error ?</a></li>
+<li><a href="#how-can-we-compute-confidence-intervals-on-quantiles-from-the-fit-of-a-distribution"><span class="toc-section-number">4.2</span> How can we compute confidence intervals on quantiles from the fit of a distribution ?</a></li>
+<li><a href="#how-can-we-compute-confidence-intervals-on-any-function-of-the-parameters-of-the-fitted-distribution"><span class="toc-section-number">4.3</span> How can we compute confidence intervals on any function of the parameters of the fitted distribution ?</a></li>
+</ul></li>
+</ul>
+</div>
+
+<div id="questions-regarding-distributions" class="section level1">
+<h1><span class="header-section-number">1</span> Questions regarding distributions</h1>
+<div id="how-do-i-know-the-root-name-of-a-distribution" class="section level2">
+<h2><span class="header-section-number">1.1</span> How do I know the root name of a distribution?</h2>
+<p>The root name of a probability distribution is the <code>name</code> which is used the <code>d</code>, <code>p</code>, <code>q</code>, <code>r</code> functions. For base R distributions, the root names are given in R-intro : <a href="https://cran.r-project.org/doc/manuals/R-intro.html#Probability-distributions" class="uri">https://cran.r-project.org/doc/manuals/R-intro.html#Probability-distributions</a>. For example, you must use <code>&quot;pois&quot;</code> for the Poisson distribution and <strong>not</strong> <code>&quot;poisson&quot;</code>.</p>
+</div>
+<div id="how-do-i-find-non-standard-distributions" class="section level2">
+<h2><span class="header-section-number">1.2</span> How do I find “non standard” distributions?</h2>
+<p>For non-standard distributions, you can either find a package implementing them or define by yourself. A comprehensive list of non-standard distributions is given in the Distributions task view <a href="https://cran.r-project.org/web/views/Distributions.html" class="uri">https://cran.r-project.org/web/views/Distributions.html</a>. Here are some two examples of user-defined distributions. A third example (shifted exponential) is given in FAQ 3.5.4.</p>
+<ul>
+<li>The Gumbel distribution</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dgumbel &lt;-<span class="st"> </span>function(x, a, b) <span class="dv">1</span>/b*<span class="kw">exp</span>((a-x)/b)*<span class="kw">exp</span>(-<span class="kw">exp</span>((a-x)/b))
+pgumbel &lt;-<span class="st"> </span>function(q, a, b) <span class="kw">exp</span>(-<span class="kw">exp</span>((a-q)/b))
+qgumbel &lt;-<span class="st"> </span>function(p, a, b) a-b*<span class="kw">log</span>(-<span class="kw">log</span>(p))
+<span class="kw">data</span>(groundbeef)
+fitgumbel &lt;-<span class="st"> </span><span class="kw">fitdist</span>(groundbeef$serving, <span class="st">&quot;gumbel&quot;</span>, <span class="dt">start=</span><span class="kw">list</span>(<span class="dt">a=</span><span class="dv">10</span>, <span class="dt">b=</span><span class="dv">10</span>))</code></pre></div>
+<ul>
+<li>The zero-modified geometric distribution</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dzmgeom &lt;-<span class="st"> </span>function(x, p1, p2) p1 *<span class="st"> </span>(x ==<span class="st"> </span><span class="dv">0</span>) +<span class="st"> </span>(<span class="dv">1</span>-p1)*<span class="kw">dgeom</span>(x<span class="dv">-1</span>, p2)
+pzmgeom &lt;-<span class="st"> </span>function(q, p1, p2) p1 *<span class="st"> </span>(q &gt;=<span class="st"> </span><span class="dv">0</span>) +<span class="st"> </span>(<span class="dv">1</span>-p1)*<span class="kw">pgeom</span>(q<span class="dv">-1</span>, p2)
+rzmgeom &lt;-<span class="st"> </span>function(n, p1, p2) 
+{
+  u &lt;-<span class="st"> </span><span class="kw">rbinom</span>(n, <span class="dv">1</span>, <span class="dv">1</span>-p1) <span class="co">#prob to get zero is p1</span>
+  u[u !=<span class="st"> </span><span class="dv">0</span>] &lt;-<span class="st"> </span><span class="kw">rgeom</span>(<span class="kw">sum</span>(u !=<span class="st"> </span><span class="dv">0</span>), p2)+<span class="dv">1</span>
+  u
+}
+x2 &lt;-<span class="st"> </span><span class="kw">rzmgeom</span>(<span class="dv">1000</span>, <span class="dv">1</span>/<span class="dv">2</span>, <span class="dv">1</span>/<span class="dv">10</span>)
+<span class="kw">fitdist</span>(x2, <span class="st">&quot;zmgeom&quot;</span>, <span class="dt">start=</span><span class="kw">list</span>(<span class="dt">p1=</span><span class="dv">1</span>/<span class="dv">2</span>, <span class="dt">p2=</span><span class="dv">1</span>/<span class="dv">2</span>))</code></pre></div>
+</div>
+<div id="how-do-i-set-or-find-initial-values-for-non-standard-distributions" class="section level2">
+<h2><span class="header-section-number">1.3</span> How do I set (or find) initial values for non standard distributions?</h2>
+<p>As documented, we provide initial values for the following distributions: <code>&quot;norm&quot;</code>, <code>&quot;lnorm&quot;</code>, <code>&quot;exp&quot;</code>, <code>&quot;pois&quot;</code>, <code>&quot;cauchy&quot;</code>, <code>&quot;gamma</code>“, <code>&quot;logis&quot;</code>, <code>&quot;nbinom&quot;</code>, <code>&quot;geom&quot;</code>, <code>&quot;beta&quot;</code>, <code>&quot;weibull&quot;</code> from the <code>stats</code> package; <code>&quot;invgamma&quot;</code>, <code>&quot;llogis&quot;</code>, <code>&quot;invweibull&quot;</code>, <code>&quot;pareto1&quot;</code>, <code>&quot;pareto&quot;</code> from the <code>actuar</code> package.</p>
+<p>Look first at statistics and probability books such as</p>
+<ul>
+<li>different volumes of N. L. Johnson, S. Kotz and N. Balakrishnan books, e.g. <strong>Continuous Univariate Distributions, Vol. 1</strong>,<br />
+</li>
+<li><strong>Thesaurus of univariate discrete probability distributions</strong> by G. Wimmer and G. Altmann.<br />
+</li>
+<li><strong>Statistical Distributions</strong> by M. Evans, N. Hastings, B. Peacock.<br />
+</li>
+<li><strong>Distributional Analysis with L-moment Statistics using the R Environment for Statistical Computing</strong> by W. Asquith.</li>
+</ul>
+<p>If not available, find initial values by equalling theoretical and empirical quartiles. The graphical function <code>plotdist()</code> and <code>plotdistcens()</code> can also be used to assess the suitability of starting values : by an iterative manual process you can move parameter values so as to obtain a distribution that roughly fits the data and take these parameter values as starting values for the real fit. You may also consider the <code>prefit()</code> function to find initial values especially in case where parameters are constrained.</p>
+</div>
+<div id="is-it-possible-to-fit-a-distribution-with-at-least-3-parameters" class="section level2">
+<h2><span class="header-section-number">1.4</span> Is it possible to fit a distribution with at least 3 parameters?</h2>
+<p>Yes, an example with the Burr distribution is detailed in the JSS paper. We reproduce it very quickly here.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(<span class="st">&quot;endosulfan&quot;</span>)
+<span class="kw">library</span>(<span class="st">&quot;actuar&quot;</span>)
+fendo.B &lt;-<span class="st"> </span><span class="kw">fitdist</span>(endosulfan$ATV, <span class="st">&quot;burr&quot;</span>, <span class="dt">start =</span> <span class="kw">list</span>(<span class="dt">shape1 =</span> <span class="fl">0.3</span>, <span class="dt">shape2 =</span> <span class="dv">1</span>, <span class="dt">rate =</span> <span class="dv">1</span>))
+<span class="kw">summary</span>(fendo.B)</code></pre></div>
+<pre><code>## Fitting of the distribution ' burr ' by maximum likelihood 
+## Parameters : 
+##        estimate Std. Error
+## shape1    0.206     0.0561
+## shape2    1.540     0.3188
+## rate      1.497     0.4683
+## Loglikelihood:  -520   AIC:  1046   BIC:  1054 
+## Correlation matrix:
+##        shape1 shape2   rate
+## shape1  1.000 -0.900 -0.727
+## shape2 -0.900  1.000  0.588
+## rate   -0.727  0.588  1.000</code></pre>
+</div>
+<div id="why-there-are-differences-between-mle-and-mme-for-the-lognormal-distribution" class="section level2">
+<h2><span class="header-section-number">1.5</span> Why there are differences between MLE and MME for the lognormal distribution?</h2>
+<p>We recall that the lognormal distribution function is given by <span class="math display">\[
+F_X(x) =  \Phi\left(\frac{\log(x)-\mu}{\sigma} \right),
+\]</span> where <span class="math inline">\(\Phi\)</span> denotes the distribution function of the standard normal distribution. We know that <span class="math inline">\(E(X) = \exp\left( \mu+\frac{1}{2} \sigma^2 \right)\)</span> and <span class="math inline">\(Var(X) = \exp\left( 2\mu+\sigma^2\right) (e^{\sigma^2} -1)\)</span>. The MME is obtained by inverting the previous formulas, whereas the MLE has the following explicit solution <span class="math display">\[
+\hat\mu_{MLE} = \frac{1}{n}\sum_{i=1}^n \log(x_i),~~
+\hat\sigma^2_{MLE} = \frac{1}{n}\sum_{i=1}^n (\log(x_i) - \hat\mu_{MLE})^2.
+\]</span> Let us fit a sample by MLE and MME. The fit looks particularly good in both cases.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x3 &lt;-<span class="st"> </span><span class="kw">rlnorm</span>(<span class="dv">1000</span>)
+f1 &lt;-<span class="st"> </span><span class="kw">fitdist</span>(x3, <span class="st">&quot;lnorm&quot;</span>, <span class="dt">method=</span><span class="st">&quot;mle&quot;</span>) 
+f2 &lt;-<span class="st"> </span><span class="kw">fitdist</span>(x3, <span class="st">&quot;lnorm&quot;</span>, <span class="dt">method=</span><span class="st">&quot;mme&quot;</span>)
+<span class="kw">par</span>(<span class="dt">mfrow=</span><span class="dv">1</span>:<span class="dv">2</span>)
+<span class="kw">cdfcomp</span>(<span class="kw">list</span>(f1, f2), <span class="dt">do.points=</span><span class="ot">FALSE</span>, <span class="dt">xlogscale =</span> <span class="ot">TRUE</span>, <span class="dt">main =</span> <span class="st">&quot;CDF plot&quot;</span>)
+<span class="kw">denscomp</span>(<span class="kw">list</span>(f1, f2), <span class="dt">demp=</span><span class="ot">TRUE</span>, <span class="dt">main =</span> <span class="st">&quot;Density plot&quot;</span>)</code></pre></div>
+<p><img src="data:image/png;base64,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" alt /><!-- --></p>
+<p>Let us compare the theoretical moments (mean and variance) given the fitted values (<span class="math inline">\(\hat\mu,\hat\sigma\)</span>), that is <span class="math display">\[
+E(X) = \exp\left( \hat\mu+\frac{1}{2} \hat\sigma^2 \right),
+Var(X) = \exp\left( 2\hat\mu+\hat\sigma^2\right) (e^{\hat\sigma^2} -1).
+\]</span></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">c</span>(<span class="st">&quot;E(X) by MME&quot;</span>=<span class="kw">as.numeric</span>(<span class="kw">exp</span>(f2$estimate[<span class="st">&quot;meanlog&quot;</span>]+f2$estimate[<span class="st">&quot;sdlog&quot;</span>]^<span class="dv">2</span>/<span class="dv">2</span>)), 
+    <span class="st">&quot;E(X) by MLE&quot;</span>=<span class="kw">as.numeric</span>(<span class="kw">exp</span>(f1$estimate[<span class="st">&quot;meanlog&quot;</span>]+f1$estimate[<span class="st">&quot;sdlog&quot;</span>]^<span class="dv">2</span>/<span class="dv">2</span>)), 
+    <span class="st">&quot;empirical&quot;</span>=<span class="kw">mean</span>(x3))</code></pre></div>
+<pre><code>## E(X) by MME E(X) by MLE   empirical 
+##        1.61        1.60        1.61</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">c</span>(<span class="st">&quot;Var(X) by MME&quot;</span>=<span class="kw">as.numeric</span>(<span class="kw">exp</span>(<span class="dv">2</span>*f2$estimate[<span class="st">&quot;meanlog&quot;</span>]+f2$estimate[<span class="st">&quot;sdlog&quot;</span>]^<span class="dv">2</span>)*(<span class="kw">exp</span>(f2$estimate[<span class="st">&quot;sdlog&quot;</span>]^<span class="dv">2</span>)-<span class="dv">1</span>)), 
+    <span class="st">&quot;Var(X) by MLE&quot;</span>=<span class="kw">as.numeric</span>(<span class="kw">exp</span>(<span class="dv">2</span>*f1$estimate[<span class="st">&quot;meanlog&quot;</span>]+f1$estimate[<span class="st">&quot;sdlog&quot;</span>]^<span class="dv">2</span>)*(<span class="kw">exp</span>(f1$estimate[<span class="st">&quot;sdlog&quot;</span>]^<span class="dv">2</span>)-<span class="dv">1</span>)), 
+    <span class="st">&quot;empirical&quot;</span>=<span class="kw">var</span>(x3))</code></pre></div>
+<pre><code>## Var(X) by MME Var(X) by MLE     empirical 
+##          4.30          4.36          4.30</code></pre>
+<p>From a MLE point of view, a lognormal sample <span class="math inline">\(x_1,\dots,x_n\)</span> is equivalent to handle a normal sample <span class="math inline">\(\log(x_1),\dots,\log(x_n)\)</span>. However, it is well know by the Jensen inequality that <span class="math inline">\(E(X) = E(\exp(\log(X))) \geq \exp(E(\log(X)))\)</span> implying the MME estimates provides better moment estimates than with MLE.</p>
+</div>
+<div id="can-i-fit-a-distribution-with-positive-support-when-data-contains-negative-values" class="section level2">
+<h2><span class="header-section-number">1.6</span> Can I fit a distribution with positive support when data contains negative values?</h2>
+<p>The answer is no: you cannot fit a distribution with positive support (say gamma distribution) when data contains negative values.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1234</span>)
+x &lt;-<span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">100</span>, <span class="dt">mean =</span> <span class="dv">1</span>, <span class="dt">sd =</span> <span class="fl">0.5</span>)
+(<span class="kw">try</span>(<span class="kw">fitdist</span>(x, <span class="st">&quot;exp&quot;</span>)))</code></pre></div>
+<pre><code>## [1] &quot;Error in start.arg.default(data10, distr = distname) : \n  values must be positive to fit an exponential  distribution\n&quot;
+## attr(,&quot;class&quot;)
+## [1] &quot;try-error&quot;
+## attr(,&quot;condition&quot;)
+## &lt;simpleError in start.arg.default(data10, distr = distname): values must be positive to fit an exponential  distribution&gt;</code></pre>
+<p>It is irrelevant to do such fit. If you really need to use that distribution, you have two options: either to remove negative values (not recommended) or to shift the data.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">fitdist</span>(x[x &gt;=<span class="st"> </span><span class="dv">0</span>], <span class="st">&quot;exp&quot;</span>)</code></pre></div>
+<pre><code>## Fitting of the distribution ' exp ' by maximum likelihood 
+## Parameters:
+##      estimate Std. Error
+## rate     1.06      0.107</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">fitdist</span>(x -<span class="st"> </span><span class="kw">min</span>(x), <span class="st">&quot;exp&quot;</span>)</code></pre></div>
+<pre><code>## Fitting of the distribution ' exp ' by maximum likelihood 
+## Parameters:
+##      estimate Std. Error
+## rate    0.914     0.0914</code></pre>
+</div>
+<div id="can-i-fit-a-finite-support-distribution-when-data-is-outside-that-support" class="section level2">
+<h2><span class="header-section-number">1.7</span> Can I fit a finite-support distribution when data is outside that support?</h2>
+<p>The answer is no: you cannot fit a distribution with finite-support (say beta distribution) when data is outside <span class="math inline">\([0,1]\)</span>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1234</span>)
+x &lt;-<span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">100</span>, <span class="dt">mean =</span> <span class="fl">0.5</span>, <span class="dt">sd =</span> <span class="fl">0.25</span>)
+(<span class="kw">try</span>(<span class="kw">fitdist</span>(x, <span class="st">&quot;beta&quot;</span>)))</code></pre></div>
+<pre><code>## [1] &quot;Error in start.arg.default(data10, distr = distname) : \n  values must be in [0-1] to fit a beta distribution\n&quot;
+## attr(,&quot;class&quot;)
+## [1] &quot;try-error&quot;
+## attr(,&quot;condition&quot;)
+## &lt;simpleError in start.arg.default(data10, distr = distname): values must be in [0-1] to fit a beta distribution&gt;</code></pre>
+<p>It is irrelevant to do such fit. If you really need to use that distribution, you have two options: either to remove impossible values (not recommended) or to shift/scale the data.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">fitdist</span>(x[x &gt;<span class="st"> </span><span class="dv">0</span> &amp;<span class="st"> </span>x &lt;<span class="st"> </span><span class="dv">1</span>], <span class="st">&quot;beta&quot;</span>)</code></pre></div>
+<pre><code>## Fitting of the distribution ' beta ' by maximum likelihood 
+## Parameters:
+##        estimate Std. Error
+## shape1     2.08      0.288
+## shape2     2.50      0.352</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">fitdist</span>((x -<span class="st"> </span><span class="kw">min</span>(x)*<span class="fl">1.01</span>) /<span class="st"> </span>(<span class="kw">max</span>(x) *<span class="st"> </span><span class="fl">1.01</span> -<span class="st"> </span><span class="kw">min</span>(x) *<span class="st"> </span><span class="fl">1.01</span>), <span class="st">&quot;beta&quot;</span>)</code></pre></div>
+<pre><code>## Fitting of the distribution ' beta ' by maximum likelihood 
+## Parameters:
+##        estimate Std. Error
+## shape1     1.77      0.236
+## shape2     2.17      0.296</code></pre>
+</div>
+</div>
+<div id="questions-regarding-goodness-of-fit-tests-and-statistics" class="section level1">
+<h1><span class="header-section-number">2</span> Questions regarding goodness-of-fit tests and statistics</h1>
+<div id="where-can-we-find-the-results-of-goodness-of-fit-tests" class="section level2">
+<h2><span class="header-section-number">2.1</span> Where can we find the results of goodness-of-fit tests ?</h2>
+<p>Results of goodness-of-fit tests are not printed but are given in the object returned by <code>gofstat()</code> and you can have access to them as described in the example below. Nevertheless, p-values are not given for every test. For Anderson-Darling (ad), Cramer von Mises (cvm) and Kolomogorov (ks), only the decision (rejection of H0 or not) is given, when available (see FAQ 2.3 for more details).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1234</span>)
+x &lt;-<span class="st"> </span><span class="kw">rgamma</span>(<span class="dt">n =</span> <span class="dv">100</span>, <span class="dt">shape =</span> <span class="dv">2</span>, <span class="dt">scale =</span> <span class="dv">1</span>)
+<span class="co"># fit of the good distribution</span>
+fgamma &lt;-<span class="st"> </span><span class="kw">fitdist</span>(x, <span class="st">&quot;gamma&quot;</span>)
+<span class="co"># fit of a bad distribution</span>
+fexp &lt;-<span class="st"> </span><span class="kw">fitdist</span>(x, <span class="st">&quot;exp&quot;</span>)
+g &lt;-<span class="st"> </span><span class="kw">gofstat</span>(<span class="kw">list</span>(fgamma, fexp), <span class="dt">fitnames =</span> <span class="kw">c</span>(<span class="st">&quot;gamma&quot;</span>, <span class="st">&quot;exp&quot;</span>))
+<span class="kw">denscomp</span>(<span class="kw">list</span>(fgamma, fexp), <span class="dt">legendtext =</span> <span class="kw">c</span>(<span class="st">&quot;gamma&quot;</span>, <span class="st">&quot;exp&quot;</span>))</code></pre></div>
+<p><img src="data:image/png;base64,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" alt /><!-- --></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># results of the tests</span>
+## chi square test (with corresponding table with theoretical and observed counts)
+g$chisqpvalue</code></pre></div>
+<pre><code>##    gamma      exp 
+## 1.89e-01 7.73e-05</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">g$chisqtable</code></pre></div>
+<pre><code>##           obscounts theo gamma theo exp
+## &lt;= 0.5483         9      10.06    23.66
+## &lt;= 0.8122         9       8.82     9.30
+## &lt;= 0.9592         9       5.27     4.68
+## &lt;= 1.368          9      14.63    11.37
+## &lt;= 1.523          9       5.24     3.74
+## &lt;= 1.701          9       5.73     3.97
+## &lt;= 1.94           9       7.09     4.82
+## &lt;= 2.381          9      11.08     7.50
+## &lt;= 2.842          9       9.00     6.29
+## &lt;= 3.801          9      11.93     9.28
+## &gt; 3.801          10      11.16    15.40</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Anderson-Darling test
+g$adtest</code></pre></div>
+<pre><code>##          gamma            exp 
+## &quot;not rejected&quot;     &quot;rejected&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Cramer von  Mises test
+g$cvmtest</code></pre></div>
+<pre><code>##          gamma            exp 
+## &quot;not rejected&quot;     &quot;rejected&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Kolmogorov-Smirnov test
+g$kstest</code></pre></div>
+<pre><code>##          gamma            exp 
+## &quot;not rejected&quot;     &quot;rejected&quot;</code></pre>
+</div>
+<div id="is-it-reasonable-to-use-goodness-of-fit-tests-to-validate-the-fit-of-a-distribution" class="section level2">
+<h2><span class="header-section-number">2.2</span> Is it reasonable to use goodness-of-fit tests to validate the fit of a distribution ?</h2>
+<p>In the first versions of fitdistrplus, when they were available, the results of the GOF tests (AD, KS, CvM) were automatically printed. We decided to suppress this automatic printing when we realized that some users had some difficulties to interpret the results of those tests and sometimes misused them.</p>
+<p>Goodness-of-fit tests often appear as objective tools to decide wether a fitted distribution well describes a data set. <strong>But they are not !</strong> It would not be reasonable at all to reject a distribution just because a goodness-of-fit test rejects it (see FAQ 2.2.1). And it would not be reasonable at all any more to validate a distribution because goodness-of-fit tests do not reject it (see FAQ 2.2.2).</p>
+<p>A fitted distribution should be evaluated using graphical methods (goodness-of-fit graphs automatically provided in our package by plotting the result of the fit (output of <code>fitdist()</code> or <code>fitdistcens()</code> and the complementary graphs that help to compare different fits - see <code>?graphcomp</code>). We really think it is the most appropriate way to evaluate the adequacy of a fit and we are not the only ones to recommend it. You can find the same type of recommendations in reference books :</p>
+<ul>
+<li><strong>Probabilistic techniques in exposure assessment - a handbook dealing with variability and uncertainty in models and inputs</strong> by A.C. Cullen and H.C. Frey.<br />
+</li>
+<li><strong>Application of uncertainty analysis to ecological risks of pesticides</strong> by W.J. Warren-Hicks and A. Hart.<br />
+</li>
+<li><strong>Statistical inference</strong> by G. Casella and R.L. Berger</li>
+<li><strong>Loss models: from data to decision</strong> by S.A. Klugman and H.H. Panjer and G.E. Willmot</li>
+</ul>
+<p>Moreover, the selection of a distribution should also be driven by knowledge of underlying processes when available. For example when a variable cannot be negative, one would be very cautious while fitting a normal distribution, that potentially gives negative values, even if the observed data of this variable seem well fitted by a normal distribution.</p>
+<div id="should-i-reject-a-distribution-because-a-goodness-of-fit-test-rejects-it" class="section level3">
+<h3><span class="header-section-number">2.2.1</span> Should I reject a distribution because a goodness-of-fit test rejects it ?</h3>
+<p>No it would not be reasonable at all to reject a distribution just because a goodness-of-fit test rejects it, especially in the case of big samples. In the real life, as soon as you have a sufficient amount of data, you will reject the fitted distribution. We know that a model cannot perfectly describe real data, and generally the true question is to find the better distribution among a pool of simple parametric distributions to describe the data, so to compare different models (see FAQ 2.4 and 2.5 for corresponding questions).</p>
+<p>To illustre this point let us comment the example presented below. We drew two samples from the same Poisson distribution with a mean parameter equal to 100. In many applications, for this value of its parameter, the Poisson distribution would be considered to be well approximated by a normal distribution. Testing the fit (here using a Kolmogorov-Smirnov test ) of the normal distribution on a sample of 100 observations would not reject the normal fit, while testing it on a sample of 10000 observations would reject it, while both samples come from the same distribution.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1234</span>)
+x1 &lt;-<span class="st"> </span><span class="kw">rpois</span>(<span class="dt">n =</span> <span class="dv">100</span>, <span class="dt">lambda =</span> <span class="dv">100</span>)
+f1 &lt;-<span class="st"> </span><span class="kw">fitdist</span>(x1, <span class="st">&quot;norm&quot;</span>)
+g1 &lt;-<span class="st"> </span><span class="kw">gofstat</span>(f1)
+g1$kstest</code></pre></div>
+<pre><code>##     1-mle-norm 
+## &quot;not rejected&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x2 &lt;-<span class="st"> </span><span class="kw">rpois</span>(<span class="dt">n =</span> <span class="dv">10000</span>, <span class="dt">lambda =</span> <span class="dv">100</span>)
+f2 &lt;-<span class="st"> </span><span class="kw">fitdist</span>(x2, <span class="st">&quot;norm&quot;</span>)
+g2 &lt;-<span class="st"> </span><span class="kw">gofstat</span>(f2)
+g2$kstest</code></pre></div>
+<pre><code>## 1-mle-norm 
+## &quot;rejected&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="dv">1</span>:<span class="dv">2</span>)
+<span class="kw">denscomp</span>(f1, <span class="dt">demp =</span> <span class="ot">TRUE</span>, <span class="dt">addlegend =</span> <span class="ot">FALSE</span>, <span class="dt">main =</span> <span class="st">&quot;small sample&quot;</span>)
+<span class="kw">denscomp</span>(f2, <span class="dt">demp =</span> <span class="ot">TRUE</span>, <span class="dt">addlegend =</span> <span class="ot">FALSE</span>, <span class="dt">main =</span> <span class="st">&quot;big sample&quot;</span>)</code></pre></div>
+<p><img src="data:image/png;base64,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" alt /><!-- --></p>
+</div>
+<div id="should-i-accept-a-distribution-because-goodness-of-fit-tests-do-not-reject-it" class="section level3">
+<h3><span class="header-section-number">2.2.2</span> Should I accept a distribution because goodness-of-fit tests do not reject it ?</h3>
+<p>No, it would not be reasonable at all to validate a distribution because goodness-of-fit tests do not reject it. Like all the other hypothesis tests, goodness-of-fit tests lack of statistical power when the sample size is not so high. And the different goodness-of-fit tests are not equally sensitive to different types of deviation between empirical and fitted distributions. For example the Kolmogorov-Smirnov test is sensitive when distributions differ in a global fashion near the centre of the distribution. The Anderson-Darling test will be more sensitive when distributions differ in their tails, and the Cramer von Mises will be more sensitive when there are small but repetitive differences between empirical and theoretical distribution functions.</p>
+<p>The sensitivity of a chi square test will depend on the definition of classes, and even if we propose a default definition of classes when the user does not provide classes, this choice is not obvious and could impact the results of the test. This test is more appropriate when data are discrete, even if they are modelled by a continuous distribution, as in the following example. Two samples of respective sizes 500 and 50 are drawn from a Poisson distribution of mean parameter equal to 1 (not a sufficiently high value to consider that the Poisson distribution could be approximated by a normal one). Using a Kolmogorov-Smirnov test, for the small sample the normal fit is rejected only for the bigger sample. It is not rejected with the smaller sample even if the fit could be rejected after a simple visual confrontation of the distributions. In that particular case, the chi square test with classes defined by default would have rejected te normal fit for both samples.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1234</span>)
+x3 &lt;-<span class="st"> </span><span class="kw">rpois</span>(<span class="dt">n =</span> <span class="dv">500</span>, <span class="dt">lambda =</span> <span class="dv">1</span>)
+f3 &lt;-<span class="st"> </span><span class="kw">fitdist</span>(x3, <span class="st">&quot;norm&quot;</span>)
+g3 &lt;-<span class="st"> </span><span class="kw">gofstat</span>(f3)
+g3$kstest</code></pre></div>
+<pre><code>## 1-mle-norm 
+## &quot;rejected&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x4 &lt;-<span class="st"> </span><span class="kw">rpois</span>(<span class="dt">n =</span> <span class="dv">50</span>, <span class="dt">lambda =</span> <span class="dv">1</span>)
+f4 &lt;-<span class="st"> </span><span class="kw">fitdist</span>(x4, <span class="st">&quot;norm&quot;</span>)
+g4 &lt;-<span class="st"> </span><span class="kw">gofstat</span>(f4)
+g4$kstest</code></pre></div>
+<pre><code>##     1-mle-norm 
+## &quot;not rejected&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="dv">1</span>:<span class="dv">2</span>)
+<span class="kw">denscomp</span>(f3, <span class="dt">addlegend =</span> <span class="ot">FALSE</span>, <span class="dt">main =</span> <span class="st">&quot;big sample&quot;</span>) 
+<span class="kw">denscomp</span>(f4, <span class="dt">addlegend =</span> <span class="ot">FALSE</span>, <span class="dt">main =</span> <span class="st">&quot;small sample&quot;</span>)</code></pre></div>
+<p><img src="data:image/png;base64,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" alt /><!-- --></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">g3$chisqtable</code></pre></div>
+<pre><code>##      obscounts theocounts
+## &lt;= 0     180.0       80.3
+## &lt;= 1     187.0      163.5
+## &lt;= 2      87.0      168.1
+## &lt;= 3      32.0       73.4
+## &gt; 3       14.0       14.7</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">g3$chisqpvalue</code></pre></div>
+<pre><code>## [1] 7.11e-42</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">g4$chisqtable</code></pre></div>
+<pre><code>##      obscounts theocounts
+## &lt;= 0     14.00       5.46
+## &lt;= 1     15.00      14.23
+## &lt;= 2     15.00      18.09
+## &gt; 2       6.00      12.22</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">g4$chisqpvalue</code></pre></div>
+<pre><code>## [1] 3.57e-05</code></pre>
+</div>
+</div>
+<div id="why-all-goodness-of-fit-tests-are-not-available-for-every-distribution" class="section level2">
+<h2><span class="header-section-number">2.3</span> Why all goodness-of-fit tests are not available for every distribution ?</h2>
+<p>The Chi-squared test is available for any distribution but one must be conscious that its result depends on the definition of cells in which observed data are grouped, and a correct definition is not possible with a too small sample.</p>
+<p>Concerning the Kolmogorov-Smirnov test, it is proposed for any continuous distribution, but with a critical value corresponding to the comparison of the empirical distribution to a fully specified distribution. As the distribution is not fully known for a fitted distribution, the result of this test is subject to caution, but there is no general asymptotic theory for the Kolmogorov-Smirnov statistics in case of a fitted distribution.</p>
+<p>Such an asymptotic theory was proposed for quadratic statistics for some distributions (Anderson-Darling, Cramer von Mises). The reference book we used on this subject (<strong>Tests based on edf statistics</strong> by Stephens MA in <strong>Goodness-of-fit techniques</strong> by D’Agostino RB and Stephens MA) proposes critical values of those statistics for a some classical distributions (exponential, gamma, Weibull, logistic, Cauchy, normal and lognormal). But the asymptotic theory about these statistics also depends on the way the parameters are estimated. And as they were not estimated by maximum likelihood for Cauchy, normal and lognormal distributions in the results reported by Stephens, we only propose the results of the Anderson-Darling and Cramer von Mises using those results for exponential, gamma, Weibull, logistic distributions.</p>
+<p>The user can refer to the cited books and use the proposed formula to estimate the parameters of Cauchy, normal and lognormal distributions and apply the tests using critical values given in the book. R packages <code>goftest</code> and <code>ADGofTest</code> could also be explored by users who would like to apply Anderson-Darling and Cramer von Mises tests on other distributions. But at this time we are not sure that the case where parameters are unknown (estimated by maximum likelihood) is tackled in those two packages.</p>
+<p>Concerning the development of our package, rather than develoing further more goodness-of-fit tests we made the choice to develop graphical tools to help to appreciate the quality of a fit and to compare the fits of different distributions on a same data set (see FAQ 2.2 for argumentation).</p>
+</div>
+<div id="how-can-we-use-goodness-of-fit-statistics-to-compare-the-fit-of-different-distributions-on-a-same-data-set" class="section level2">
+<h2><span class="header-section-number">2.4</span> How can we use goodness-of-fit statistics to compare the fit of different distributions on a same data set ?</h2>
+<p>Goodness-of-fit statistics based on the empirical distribution function (Kolmogorov-Smirnov, Anderson-Darling and Cramer von Mises) may be used to measure a distance between the fitted distribution and the empirical distribution. So if one wants to compare the fit of various distributions on the same data set, the smaller are those statistics the better. the Kolmogorov-Smirnov statistics will be sensitive when distributions differ in a global fashion near the centre of the distribution while the Anderson-Darling statistics will be more sensitive when distributions differ in their tails, and the Cramer von Mises statistics will be more sensitive when there are small but repetitive differences between empirical and theoretical distribution functions.</p>
+<p>But as mentioned in the main vignette of our package, the use of the Anderson-Darling to compare the fit of different distributions is subject to caution due to the the weighting of the quadratic distance between fitted and empirical distribution functions that depends on the parametric distribution. Moreover, statistics based on the empirical distribution function do not penalize distributions with a greater number of parameters and as those are generally more flexible, this could induce over-fitting.</p>
+<p>Goodness-fo-fit statistics based on information criteria (AIC, BIC) correspond to deviance penalized by the complexity of the model (the number of parameters of the distribution), and so the smaller the better. As more generic statistics, they are not adapted to focus on a part of the fitted distribution, but they take into account the complexity of the distribution and thus could help to prevent overfitting.</p>
+</div>
+<div id="can-we-use-a-test-to-compare-the-fit-of-two-distributions-on-a-same-data-set" class="section level2">
+<h2><span class="header-section-number">2.5</span> Can we use a test to compare the fit of two distributions on a same data set ?</h2>
+<p>In our package we did not implement such a test but for <strong>two nested distributions</strong> (when one is a special case of the other one, e.g. exponential and gamma distributions) a likelihood ratio test can be easily implemented using the loglikelihood provided by <code>fitdist</code> or <code>fitdistcens</code>. Denoting <span class="math inline">\(L\)</span> the maximum likelihood obtained with the complete distribution and <span class="math inline">\(L_0\)</span> the one obtained with the simplified distribution, when the sample size increases, <span class="math inline">\(- 2 ln(\frac{L_0}{L}) = 2 ln(L) - 2 ln(L_0)\)</span> tends to a Chi squared distribution degrees of freedom equal to the difference on the numbers of parameters characterizing the <strong>two nested distributions</strong>. You will find below an example of such a test.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1234</span>)
+g &lt;-<span class="st"> </span><span class="kw">rgamma</span>(<span class="dv">100</span>, <span class="dt">shape =</span> <span class="dv">2</span>, <span class="dt">rate =</span> <span class="dv">1</span>)
+(f &lt;-<span class="st"> </span><span class="kw">fitdist</span>(g, <span class="st">&quot;gamma&quot;</span>))</code></pre></div>
+<pre><code>## Fitting of the distribution ' gamma ' by maximum likelihood 
+## Parameters:
+##       estimate Std. Error
+## shape    2.025      0.266
+## rate     0.997      0.149</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(f0 &lt;-<span class="st"> </span><span class="kw">fitdist</span>(g, <span class="st">&quot;exp&quot;</span>))</code></pre></div>
+<pre><code>## Fitting of the distribution ' exp ' by maximum likelihood 
+## Parameters:
+##      estimate Std. Error
+## rate    0.492     0.0492</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">L &lt;-<span class="st"> </span><span class="kw">logLik</span>(f)
+k &lt;-<span class="st"> </span><span class="kw">length</span>(f$estimate) <span class="co"># number of parameters of the complete distribution</span>
+L0 &lt;-<span class="st"> </span><span class="kw">logLik</span>(f0)
+k0 &lt;-<span class="st"> </span><span class="kw">length</span>(f0$estimate) <span class="co"># number of parameters of the simplified distribution</span>
+(stat &lt;-<span class="st"> </span><span class="dv">2</span>*L -<span class="st"> </span><span class="dv">2</span>*L0)</code></pre></div>
+<pre><code>## [1] 23.9</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(critical_value &lt;-<span class="st"> </span><span class="kw">qchisq</span>(<span class="fl">0.95</span>, <span class="dt">df =</span> k -<span class="st"> </span>k0))</code></pre></div>
+<pre><code>## [1] 3.84</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(rejected &lt;-<span class="st"> </span>stat &gt;<span class="st"> </span>critical_value)</code></pre></div>
+<pre><code>## [1] TRUE</code></pre>
+<p>Such a test can also be used for fits on censored data.</p>
+</div>
+<div id="can-we-get-goodness-of-fit-statistics-for-a-fit-on-censored-data" class="section level2">
+<h2><span class="header-section-number">2.6</span> Can we get goodness-of-fit statistics for a fit on censored data ?</h2>
+<p>Function <code>gofstat</code> is not yet proposed in our package for fits on censored data but to develop one is among one of our objectives in the future. Published works on goodness-of-fit statistics based on the empirical distribution function for censored data generally focused on data containing only one type of censoring (e.g. right censored data in survival data). Build such statistics in the general case, with data containing in the same time (right, left and interval censoring), remains tricky.</p>
+<p>Nevertheless, it is possible for any type of censored data, to use information criteria (AIC and BIC given in the summary of an object of class <code>fitdistcens</code>) to compare the fits of various distributions to a same data set.</p>
+</div>
+</div>
+<div id="questions-regarding-optimization-procedures" class="section level1">
+<h1><span class="header-section-number">3</span> Questions regarding optimization procedures</h1>
+<div id="how-to-choose-optimization-method" class="section level2">
+<h2><span class="header-section-number">3.1</span> How to choose optimization method?</h2>
+<p>If you want to perform optimization without bounds, <code>optim()</code> is used. You can try the derivative-free method Nelder-Mead and the Hessian-free method BFGS. If you want to perform optimization with bounds, only two methods are available without providing the gradient of the objective function: Nelder-Mead via <code>constrOptim()</code> and bounded BFGS via <code>optim()</code>. In both cases, see the help of <code>mledist()</code> and the vignette on optimization algorithms.</p>
+</div>
+<div id="the-optimization-algorithm-stops-with-error-code-100.-what-shall-i-do" class="section level2">
+<h2><span class="header-section-number">3.2</span> The optimization algorithm stops with error code 100. What shall I do?</h2>
+<p>First, add traces by adding <code>control=list(trace=1, REPORT=1)</code>. Second, try to set bounds for parameters. Third, find better starting values (see FAQ 1.3).</p>
+</div>
+<div id="why-distribution-with-a-log-argument-may-converge-better" class="section level2">
+<h2><span class="header-section-number">3.3</span> Why distribution with a <code>log</code> argument may converge better?</h2>
+<p>Say, we study the shifted lognormal distribution defined by the following density <span class="math display">\[
+f(x) = \frac{1}{x \sigma \sqrt{2 \pi}} \exp\left(- \frac{(\ln (x+\delta)- \mu)^2}{2\sigma^2}\right) 
+\]</span> for <span class="math inline">\(x&gt;-\delta\)</span> where <span class="math inline">\(\mu\)</span> is a location parameter, <span class="math inline">\(\sigma\)</span> a scale parameter and <span class="math inline">\(\delta\)</span> a boundary parameter. Let us fit this distribution on the dataset <code>y</code> by MLE. We define two functions for the densities with and without a <code>log</code> argument.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dshiftlnorm &lt;-<span class="st"> </span>function(x, mean, sigma, shift, <span class="dt">log =</span> <span class="ot">FALSE</span>) <span class="kw">dlnorm</span>(x+shift, mean, sigma, <span class="dt">log=</span>log)
+pshiftlnorm &lt;-<span class="st"> </span>function(q, mean, sigma, shift, <span class="dt">log.p =</span> <span class="ot">FALSE</span>) <span class="kw">plnorm</span>(q+shift, mean, sigma, <span class="dt">log.p=</span>log.p)
+qshiftlnorm &lt;-<span class="st"> </span>function(p, mean, sigma, shift, <span class="dt">log.p =</span> <span class="ot">FALSE</span>) <span class="kw">qlnorm</span>(p, mean, sigma, <span class="dt">log.p=</span>log.p)-shift
+dshiftlnorm_no &lt;-<span class="st"> </span>function(x, mean, sigma, shift) <span class="kw">dshiftlnorm</span>(x, mean, sigma, shift)
+pshiftlnorm_no &lt;-<span class="st"> </span>function(q, mean, sigma, shift) <span class="kw">pshiftlnorm</span>(q, mean, sigma, shift)</code></pre></div>
+<p>We now optimize the minus log-likelihood.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(dataFAQlog1)
+y &lt;-<span class="st"> </span>dataFAQlog1
+D &lt;-<span class="st"> </span><span class="dv">1</span>-<span class="kw">min</span>(y)
+f0 &lt;-<span class="st"> </span><span class="kw">fitdist</span>(y+D, <span class="st">&quot;lnorm&quot;</span>)
+start &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">mean=</span><span class="kw">as.numeric</span>(f0$estimate[<span class="st">&quot;meanlog&quot;</span>]),  
+              <span class="dt">sigma=</span><span class="kw">as.numeric</span>(f0$estimate[<span class="st">&quot;sdlog&quot;</span>]), <span class="dt">shift=</span>D)
+<span class="co"># works with BFGS, but not Nelder-Mead</span>
+f &lt;-<span class="st"> </span><span class="kw">fitdist</span>(y, <span class="st">&quot;shiftlnorm&quot;</span>, <span class="dt">start=</span>start, <span class="dt">optim.method=</span><span class="st">&quot;BFGS&quot;</span>)
+<span class="kw">summary</span>(f)</code></pre></div>
+<pre><code>## Fitting of the distribution ' shiftlnorm ' by maximum likelihood 
+## Parameters : 
+##       estimate Std. Error
+## mean    -1.386    0.02401
+## sigma    0.071    0.00192
+## shift    0.248    0.00598
+## Loglikelihood:  8299   AIC:  -16591   BIC:  -16573 
+## Correlation matrix:
+##         mean  sigma  shift
+## mean   1.000 -0.885  0.999
+## sigma -0.885  1.000 -0.886
+## shift  0.999 -0.886  1.000</code></pre>
+<p>If we don’t use the <code>log</code> argument, the algorithms stalls.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">f2 &lt;-<span class="st"> </span><span class="kw">try</span>(<span class="kw">fitdist</span>(y, <span class="st">&quot;shiftlnorm_no&quot;</span>, <span class="dt">start=</span>start, <span class="dt">optim.method=</span><span class="st">&quot;BFGS&quot;</span>))</code></pre></div>
+<pre><code>## &lt;simpleError in optim(par = vstart, fn = fnobj, fix.arg = fix.arg, obs = data,     gr = gradient, ddistnam = ddistname, hessian = TRUE, method = meth,     lower = lower, upper = upper, ...): non-finite finite-difference value [2]&gt;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">attr</span>(f2, <span class="st">&quot;condition&quot;</span>))</code></pre></div>
+<pre><code>## &lt;simpleError in fitdist(y, &quot;shiftlnorm_no&quot;, start = start, optim.method = &quot;BFGS&quot;): the function mle failed to estimate the parameters, 
+##                 with the error code 100
+## &gt;</code></pre>
+<p>Indeed the algorithm stops because at the following value, the log-likelihood is infinite.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum</span>(<span class="kw">log</span>(<span class="kw">dshiftlnorm_no</span>(y, <span class="fl">0.16383978</span>, <span class="fl">0.01679231</span>, <span class="fl">1.17586600</span> )))</code></pre></div>
+<pre><code>## [1] -Inf</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">log</span>(<span class="kw">prod</span>(<span class="kw">dshiftlnorm_no</span>(y, <span class="fl">0.16383978</span>, <span class="fl">0.01679231</span>, <span class="fl">1.17586600</span> )))</code></pre></div>
+<pre><code>## [1] -Inf</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum</span>(<span class="kw">dshiftlnorm</span>(y, <span class="fl">0.16383978</span>, <span class="fl">0.01679231</span>, <span class="fl">1.17586600</span>, <span class="ot">TRUE</span> ))</code></pre></div>
+<pre><code>## [1] 7761</code></pre>
+<p>There is something wrong in the computation.</p>
+<p>Only the R-base implementation using <code>log</code> argument seems reliable. This happens the C-base implementation of <code>dlnorm</code> takes care of the log value. In the file <code>../src/nmath/dlnorm.c</code> in the R sources, we find the C code for <code>dlnorm</code></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">double <span class="kw">dlnorm</span>(double x, double meanlog, double sdlog, int give_log)
+{
+    double y;
+
+<span class="co">#ifdef IEEE_754</span>
+    if (<span class="kw">ISNAN</span>(x) ||<span class="st"> </span><span class="kw">ISNAN</span>(meanlog) ||<span class="st"> </span><span class="kw">ISNAN</span>(sdlog))
+    return x +<span class="st"> </span>meanlog +<span class="st"> </span>sdlog;
+<span class="co">#endif</span>
+    if(sdlog &lt;=<span class="st"> </span><span class="dv">0</span>) {
+    if(sdlog &lt;<span class="st"> </span><span class="dv">0</span>) ML_ERR_return_NAN;
+    /<span class="er">/</span><span class="st"> </span>sdlog ==<span class="st"> </span><span class="dv">0</span> :
+<span class="st">    </span><span class="kw">return</span> (<span class="kw">log</span>(x) ==<span class="st"> </span>meanlog) ? ML_POSINF :<span class="st"> </span>R_D__0;
+    }
+    if(x &lt;=<span class="st"> </span><span class="dv">0</span>) return R_D__0;
+
+    y =<span class="st"> </span>(<span class="kw">log</span>(x) -<span class="st"> </span>meanlog) /<span class="st"> </span>sdlog;
+    <span class="kw">return</span> (give_log ?
+        -(M_LN_SQRT_2PI   +<span class="st"> </span><span class="fl">0.5</span> *<span class="st"> </span>y *<span class="st"> </span>y +<span class="st"> </span><span class="kw">log</span>(x *<span class="st"> </span>sdlog)) :
+<span class="st">        </span>M_1_SQRT_2PI *<span class="st"> </span><span class="kw">exp</span>(-<span class="fl">0.5</span> *<span class="st"> </span>y *<span class="st"> </span>y)  /<span class="st">  </span>(x *<span class="st"> </span>sdlog));
+    /<span class="er">*</span><span class="st"> </span>M_1_SQRT_2PI =<span class="st"> </span><span class="dv">1</span> /<span class="st"> </span><span class="kw">sqrt</span>(<span class="dv">2</span> *<span class="st"> </span>pi) *<span class="er">/</span>
+
+}</code></pre></div>
+<p>In the last four lines with the logical condtion <code>give_log?</code>, we see how the <code>log</code> argument is handled:</p>
+<ul>
+<li>when log=TRUE, we use <span class="math inline">\(-(\log(\sqrt{2\pi}) + y^2/2+\log(x\sigma))\)</span></li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">-(M_LN_SQRT_2PI   +<span class="st"> </span><span class="fl">0.5</span> *<span class="st"> </span>y *<span class="st"> </span>y +<span class="st"> </span><span class="kw">log</span>(x *<span class="st"> </span>sdlog))</code></pre></div>
+<ul>
+<li>when log=FALSE, we use <span class="math inline">\(\sqrt{2\pi} *\exp( y^2/2)/(x\sigma))\)</span> (and then the logarithm outside <code>dlnorm</code>)</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">M_1_SQRT_2PI *<span class="st"> </span><span class="kw">exp</span>(-<span class="fl">0.5</span> *<span class="st"> </span>y *<span class="st"> </span>y)  /<span class="st">  </span>(x *<span class="st"> </span>sdlog)<span class="er">)</span></code></pre></div>
+<p>Note that the constant <span class="math inline">\(\log(\sqrt{2\pi})\)</span> is pre-computed in the C macro <code>M_LN_SQRT_2PI</code>.</p>
+<p>In order to sort out this problem, we use the <code>constrOptim</code> wrapping <code>optim</code> to take into account linear constraints. This allows also to use other optimization methods than L-BFGS-B (low-memory BFGS bounded) used in optim.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">f2 &lt;-<span class="st"> </span><span class="kw">fitdist</span>(y, <span class="st">&quot;shiftlnorm&quot;</span>, <span class="dt">start=</span>start, <span class="dt">lower=</span><span class="kw">c</span>(-<span class="ot">Inf</span>, <span class="dv">0</span>, -<span class="kw">min</span>(y)), <span class="dt">optim.method=</span><span class="st">&quot;Nelder-Mead&quot;</span>)
+<span class="kw">summary</span>(f2)</code></pre></div>
+<pre><code>## Fitting of the distribution ' shiftlnorm ' by maximum likelihood 
+## Parameters : 
+##       estimate Std. Error
+## mean   -1.3873         NA
+## sigma   0.0711         NA
+## shift   0.2481         NA
+## Loglikelihood:  8299   AIC:  -16591   BIC:  -16573 
+## Correlation matrix:
+## [1] NA</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">cbind</span>(<span class="dt">BFGS=</span>f$estimate, <span class="dt">NelderMead=</span>f2$estimate))</code></pre></div>
+<pre><code>##         BFGS NelderMead
+## mean  -1.386    -1.3873
+## sigma  0.071     0.0711
+## shift  0.248     0.2481</code></pre>
+<p>Another possible would be to perform all computations with higher precision arithmetics as implemented in the package <code>Rmpfr</code> using the MPFR library.</p>
+</div>
+<div id="what-to-do-when-there-is-a-scaling-issue" class="section level2">
+<h2><span class="header-section-number">3.4</span> What to do when there is a scaling issue?</h2>
+<p>Let us consider a dataset which has particular small values.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(dataFAQscale1)
+<span class="kw">head</span>(dataFAQscale1)</code></pre></div>
+<pre><code>## [1] -0.007077 -0.000947 -0.001898 -0.000475 -0.001902 -0.000476</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(dataFAQscale1)</code></pre></div>
+<pre><code>##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+## -0.00708 -0.00143 -0.00047 -0.00031  0.00096  0.00428</code></pre>
+<p>The only way to sort out is to multiply the dataset by a large value.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">for(i in <span class="dv">6</span>:<span class="dv">0</span>)
+<span class="kw">cat</span>(<span class="dv">10</span>^i, <span class="kw">try</span>(<span class="kw">mledist</span>(dataFAQscale1*<span class="dv">10</span>^i, <span class="st">&quot;cauchy&quot;</span>)$estimate), <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)</code></pre></div>
+<pre><code>## 1e+06 -290 1194 
+## 1e+05 -29 119 
+## 10000 -2.9 11.9 
+## 1000 -0.29 1.19 
+## 100 -0.029 0.119 
+## 10 -0.0029 0.0119 
+## &lt;simpleError in optim(par = vstart, fn = fnobj, fix.arg = fix.arg, obs = data,     gr = gradient, ddistnam = ddistname, hessian = TRUE, method = meth,     lower = lower, upper = upper, ...): non-finite finite-difference value [2]&gt;
+## 1 NA NA</code></pre>
+<p>Let us consider a dataset which has particular large values.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(dataFAQscale2)
+<span class="kw">head</span>(dataFAQscale2)</code></pre></div>
+<pre><code>## [1] 1.40e+09 1.41e+09 1.43e+09 1.44e+09 1.49e+09 1.57e+09</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(dataFAQscale2)</code></pre></div>
+<pre><code>##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+## 1.40e+09 1.58e+09 2.24e+09 2.55e+09 3.39e+09 4.49e+09</code></pre>
+<p>The only way to sort out is to multiply the dataset by a small value.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">for(i in <span class="dv">0</span>:<span class="dv">5</span>)
+<span class="kw">cat</span>(<span class="dv">10</span>^(-<span class="dv">2</span>*i), <span class="kw">try</span>(<span class="kw">mledist</span>(dataFAQscale2*<span class="dv">10</span>^(-<span class="dv">2</span>*i), <span class="st">&quot;cauchy&quot;</span>)$estimate), <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)</code></pre></div>
+<pre><code>## 1 2.03e+09 6.59e+08 
+## 0.01 20283641 6594932 
+## 1e-04 202836 65949 
+## 1e-06 2028 659 
+## 1e-08 20.3 6.59 
+## 1e-10 0.203 0.0659</code></pre>
+</div>
+<div id="how-do-i-set-bounds-on-parameters-when-optimizing" class="section level2">
+<h2><span class="header-section-number">3.5</span> How do I set bounds on parameters when optimizing?</h2>
+<div id="setting-bounds-for-scale-parameters" class="section level3">
+<h3><span class="header-section-number">3.5.1</span> Setting bounds for scale parameters</h3>
+<p>Consider the normal distribution <span class="math inline">\(\mathcal{N}(\mu, \sigma^2)\)</span> defined by the density <span class="math display">\[
+f(x) = \frac{1}{\sqrt{2\pi\sigma^2}}\exp\left(-\frac{(x-\mu)^2}{2\sigma^2}\right),
+x\in\mathbb{R},
+\]</span> where <span class="math inline">\(\mu\)</span> is a location parameter such that <span class="math inline">\(\mu\in\mathbb{R}\)</span>, <span class="math inline">\(\sigma^2\)</span> is a scale parameter such that <span class="math inline">\(\sigma^2&gt;0\)</span>. Therefore when optimizing the log-likelihood or the squared differences or the GoF statistics. Setting a lower bound for the scale parameter is easy with <code>fitdist</code>: just use the <code>lower</code> argument.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1234</span>)
+x &lt;-<span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">1000</span>, <span class="dv">1</span>, <span class="dv">2</span>)
+<span class="kw">fitdist</span>(x, <span class="st">&quot;norm&quot;</span>, <span class="dt">lower=</span><span class="kw">c</span>(-<span class="ot">Inf</span>, <span class="dv">0</span>))</code></pre></div>
+<pre><code>## Fitting of the distribution ' norm ' by maximum likelihood 
+## Parameters:
+##      estimate Std. Error
+## mean    0.947         NA
+## sd      1.994         NA</code></pre>
+</div>
+<div id="setting-bounds-for-shape-parameters" class="section level3">
+<h3><span class="header-section-number">3.5.2</span> Setting bounds for shape parameters</h3>
+<p>Consider the Burr distribution <span class="math inline">\(\mathcal B(\mu, \sigma^2)\)</span> defined by the density <span class="math display">\[
+f(x) = \frac{a b (x/s)^b}{x [1 + (x/s)^b]^{a + 1}},
+x\in\mathbb{R},
+\]</span> where <span class="math inline">\(a,b\)</span> are shape parameters such that <span class="math inline">\(a,b&gt;0\)</span>, <span class="math inline">\(s\)</span> is a scale parameter such that <span class="math inline">\(s&gt;0\)</span>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span><span class="kw">rburr</span>(<span class="dv">1000</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)
+<span class="kw">fitdist</span>(x, <span class="st">&quot;burr&quot;</span>, <span class="dt">lower=</span><span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>), <span class="dt">start=</span><span class="kw">list</span>(<span class="dt">shape1 =</span> <span class="dv">1</span>, <span class="dt">shape2 =</span> <span class="dv">1</span>, 
+  <span class="dt">rate =</span> <span class="dv">1</span>))</code></pre></div>
+<pre><code>## Fitting of the distribution ' burr ' by maximum likelihood 
+## Parameters:
+##        estimate Std. Error
+## shape1    0.969         NA
+## shape2    2.051         NA
+## rate      3.180         NA</code></pre>
+</div>
+<div id="setting-bounds-for-probability-parameters" class="section level3">
+<h3><span class="header-section-number">3.5.3</span> Setting bounds for probability parameters</h3>
+<p>Consider the geometric distribution <span class="math inline">\(\mathcal G(p)\)</span> defined by the mass probability function <span class="math display">\[
+f(x) = p(1-p)^x,
+x\in\mathbb{N},
+\]</span> where <span class="math inline">\(p\)</span> is a probability parameter such that <span class="math inline">\(p\in[0,1]\)</span>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span><span class="kw">rgeom</span>(<span class="dv">1000</span>, <span class="dv">1</span>/<span class="dv">4</span>)
+<span class="kw">fitdist</span>(x, <span class="st">&quot;geom&quot;</span>, <span class="dt">lower=</span><span class="dv">0</span>, <span class="dt">upper=</span><span class="dv">1</span>)</code></pre></div>
+<pre><code>## Fitting of the distribution ' geom ' by maximum likelihood 
+## Parameters:
+##      estimate Std. Error
+## prob    0.242    0.00666</code></pre>
+</div>
+<div id="setting-bounds-for-boundary-parameters" class="section level3">
+<h3><span class="header-section-number">3.5.4</span> Setting bounds for boundary parameters</h3>
+<p>Consider the shifted exponential distribution <span class="math inline">\(\mathcal E(\mu,\lambda)\)</span> defined by the mass probability function <span class="math display">\[
+f(x) = \lambda \exp(-\lambda(x-\mu)),
+x&gt;\mu,
+\]</span> where <span class="math inline">\(\lambda\)</span> is a scale parameter such that <span class="math inline">\(\lambda&gt;0\)</span>, <span class="math inline">\(\mu\)</span> is a boundary (or shift) parameter such that <span class="math inline">\(\mu\in\mathbb{R}\)</span>. When optimizing the log-likelihood, the boundary constraint is <span class="math display">\[
+\forall i=1,\dots,n, x_i&gt;\mu
+\Rightarrow
+\min_{i=1,\dots,n} x_i &gt; \mu
+\Leftrightarrow 
+\mu &gt; -\min_{i=1,\dots,n} x_i.
+\]</span> Note that when optimizing the squared differences or the GoF statistics, this constraint may not be necessary. Let us do it in R.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dsexp &lt;-<span class="st"> </span>function(x, rate, shift)
+  <span class="kw">dexp</span>(x-shift, <span class="dt">rate=</span>rate)
+psexp &lt;-<span class="st"> </span>function(x, rate, shift)
+  <span class="kw">pexp</span>(x-shift, <span class="dt">rate=</span>rate)
+rsexp &lt;-<span class="st"> </span>function(n, rate, shift)
+  <span class="kw">rexp</span>(n, <span class="dt">rate=</span>rate)+shift
+x &lt;-<span class="st"> </span><span class="kw">rsexp</span>(<span class="dv">1000</span>, <span class="dv">1</span>/<span class="dv">4</span>, <span class="dv">1</span>)
+<span class="kw">fitdist</span>(x, <span class="st">&quot;sexp&quot;</span>, <span class="dt">start=</span><span class="kw">list</span>(<span class="dt">rate=</span><span class="dv">1</span>, <span class="dt">shift=</span><span class="dv">0</span>), <span class="dt">lower=</span> <span class="kw">c</span>(<span class="dv">0</span>, -<span class="kw">min</span>(x)))</code></pre></div>
+<pre><code>## Fitting of the distribution ' sexp ' by maximum likelihood 
+## Parameters:
+##       estimate Std. Error
+## rate     0.248         NA
+## shift    1.005         NA</code></pre>
+</div>
+</div>
+<div id="how-works-quantile-matching-estimation-for-discrete-distributions" class="section level2">
+<h2><span class="header-section-number">3.6</span> How works quantile matching estimation for discrete distributions?</h2>
+<p>Let us consider the geometric distribution with values in <span class="math inline">\(\{0,1,2,3,\dots\}\)</span>. The probability mass function, the cumulative distribution function and the quantile function are <span class="math display">\[
+P(X=x)= p (1-p)^{\lfloor x\rfloor},
+F_X(x) = 1- (1-p)^{\lfloor x\rfloor},
+F_X^{-1}(q) = \left\lfloor\frac{\log(1-q)}{\log(1-p)}\right\rfloor.
+\]</span> Due to the integer part (floor function), both the distribution function and the quantile function are step functions.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">pgeom</span>(<span class="dv">0</span>:<span class="dv">3</span>, <span class="dt">prob=</span><span class="dv">1</span>/<span class="dv">2</span>)</code></pre></div>
+<pre><code>## [1] 0.500 0.750 0.875 0.938</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">qgeom</span>(<span class="kw">c</span>(<span class="fl">0.3</span>, <span class="fl">0.6</span>, <span class="fl">0.9</span>), <span class="dt">prob=</span><span class="dv">1</span>/<span class="dv">2</span>)</code></pre></div>
+<pre><code>## [1] 0 1 3</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">par</span>(<span class="dt">mar=</span><span class="kw">c</span>(<span class="dv">4</span>,<span class="dv">4</span>,<span class="dv">2</span>,<span class="dv">1</span>), <span class="dt">mfrow=</span><span class="dv">1</span>:<span class="dv">2</span>)
+<span class="kw">curve</span>(<span class="kw">pgeom</span>(x, <span class="dt">prob=</span><span class="dv">1</span>/<span class="dv">2</span>), <span class="dv">0</span>, <span class="dv">10</span>, <span class="dt">n=</span><span class="dv">301</span>, <span class="dt">main=</span><span class="st">&quot;c.d.f.&quot;</span>)
+<span class="kw">curve</span>(<span class="kw">qgeom</span>(x, <span class="dt">prob=</span><span class="dv">1</span>/<span class="dv">2</span>), <span class="dv">0</span>, <span class="dv">1</span>, <span class="dt">n=</span><span class="dv">301</span>, <span class="dt">main=</span><span class="st">&quot;q.f.&quot;</span>)</code></pre></div>
+<p><img src="data:image/png;base64,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" alt /><!-- --></p>
+<p>Now we study the QME for the geometric distribution. Since we have only one parameter, we choose one probabiliy, <span class="math inline">\(p=1/2\)</span>. The theoretical median is the following integer <span class="math display">\[
+F_X^{-1}(1/2) = \left\lfloor\frac{\log(1/2)}{\log(1-p)}\right\rfloor.
+\]</span> Note that the theoretical median for a discrete distribution is an integer. Empirically, the median may not be an integer. Indeed for an even length dataset, the empirical median is <span class="math display">\[
+q_{n,1/2} = \frac{x_{n/2}^\star + x_{n/2+1}^\star}{2},
+\]</span> where <span class="math inline">\(x_{1}^\star&lt;\dots&lt;x_{n}^\star\)</span> is the sorted sample, which is not an integer value if <span class="math inline">\(x_{n/2}^\star + x_{n/2+1}^\star\)</span> is not an even number. However for an odd length dataset, the empirical median is an integer <span class="math inline">\(q_{n,1/2}=x_{(n+1)/2}^\star\)</span>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>)
+<span class="kw">median</span>(x[-<span class="dv">1</span>]) <span class="co">#sample size 10</span></code></pre></div>
+<pre><code>## [1] 0.5</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">median</span>(x) <span class="co">#sample size 11</span></code></pre></div>
+<pre><code>## [1] 0</code></pre>
+<p>Therefore, a first issue arises: if the median is not an integer, it is impossible to match exactly the empirical median with the theoretical quantile.</p>
+<p>Furthermore, the second issue is the non-uniqueness of the solution. Admitting matching <span class="math inline">\(q_{n,1/2}\)</span> is an integer, QME aims to find some <span class="math inline">\(p\)</span> such that <span class="math display">\[
+\left\lfloor\frac{\log(1/2)}{\log(1-p)}\right\rfloor = q_{n,1/2}
+\Leftrightarrow 
+q_{n,1/2} \leq \frac{\log(1/2)}{\log(1-p)} &lt; q_{n,1/2} +1.
+\]</span> Let us plot the squared differences <span class="math inline">\((F_X^{-1}(1/2) - q_{n,1/2})^2\)</span>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span><span class="kw">rgeom</span>(<span class="dv">100</span>, <span class="dv">1</span>/<span class="dv">3</span>)
+L2 &lt;-<span class="st"> </span>function(p)
+  (<span class="kw">qgeom</span>(<span class="dv">1</span>/<span class="dv">2</span>, p) -<span class="st"> </span><span class="kw">median</span>(x))^<span class="dv">2</span>
+<span class="kw">L2</span>(<span class="dv">1</span>/<span class="dv">3</span>) <span class="co">#theoretical value</span></code></pre></div>
+<pre><code>## [1] 0</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">curve</span>(<span class="kw">L2</span>(x), <span class="fl">0.10</span>, <span class="fl">0.95</span>, <span class="dt">xlab=</span><span class="kw">expression</span>(p), <span class="dt">ylab=</span><span class="kw">expression</span>(<span class="kw">L2</span>(p)), <span class="dt">main=</span><span class="st">&quot;squared differences&quot;</span>, <span class="dt">n=</span><span class="dv">301</span>)</code></pre></div>
+<p><img src="data:image/png;base64,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" alt /><!-- --></p>
+<p>Any value between [1/3, 5/9] minimizes the squared differences. Therefore, <code>fitdist()</code> may be sensitive to the chosen initial value with deterministic optimization algorithm.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">fitdist</span>(x, <span class="st">&quot;geom&quot;</span>, <span class="dt">method=</span><span class="st">&quot;qme&quot;</span>, <span class="dt">probs=</span><span class="dv">1</span>/<span class="dv">2</span>, <span class="dt">start=</span><span class="kw">list</span>(<span class="dt">prob=</span><span class="dv">1</span>/<span class="dv">2</span>), <span class="dt">control=</span><span class="kw">list</span>(<span class="dt">trace=</span><span class="dv">1</span>, <span class="dt">REPORT=</span><span class="dv">1</span>))</code></pre></div>
+<pre><code>## initial  value 1.000000 
+## iter   2 value 0.000000
+## iter   2 value 0.000000
+## iter   2 value 0.000000
+## final  value 0.000000 
+## converged</code></pre>
+<pre><code>## Fitting of the distribution ' geom ' by matching quantiles 
+## Parameters:
+##      estimate
+## prob     0.34</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">fitdist</span>(x, <span class="st">&quot;geom&quot;</span>, <span class="dt">method=</span><span class="st">&quot;qme&quot;</span>, <span class="dt">probs=</span><span class="dv">1</span>/<span class="dv">2</span>, <span class="dt">start=</span><span class="kw">list</span>(<span class="dt">prob=</span><span class="dv">1</span>/<span class="dv">20</span>), <span class="dt">control=</span><span class="kw">list</span>(<span class="dt">trace=</span><span class="dv">1</span>, <span class="dt">REPORT=</span><span class="dv">1</span>))</code></pre></div>
+<pre><code>## initial  value 144.000000 
+## iter   1 value 144.000000
+## final  value 144.000000 
+## converged</code></pre>
+<pre><code>## Fitting of the distribution ' geom ' by matching quantiles 
+## Parameters:
+##      estimate
+## prob     0.05</code></pre>
+<p>The solution is to use a stochastic algorithm such as simulated annealing (SANN).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">fitdist</span>(x, <span class="st">&quot;geom&quot;</span>, <span class="dt">method=</span><span class="st">&quot;qme&quot;</span>, <span class="dt">probs=</span><span class="dv">1</span>/<span class="dv">2</span>, <span class="dt">optim.method=</span><span class="st">&quot;SANN&quot;</span>, <span class="dt">start=</span><span class="kw">list</span>(<span class="dt">prob=</span><span class="dv">1</span>/<span class="dv">20</span>))</code></pre></div>
+<pre><code>## Fitting of the distribution ' geom ' by matching quantiles 
+## Parameters:
+##      estimate
+## prob    0.362</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">fitdist</span>(x, <span class="st">&quot;geom&quot;</span>, <span class="dt">method=</span><span class="st">&quot;qme&quot;</span>, <span class="dt">probs=</span><span class="dv">1</span>/<span class="dv">2</span>, <span class="dt">optim.method=</span><span class="st">&quot;SANN&quot;</span>, <span class="dt">start=</span><span class="kw">list</span>(<span class="dt">prob=</span><span class="dv">1</span>/<span class="dv">2</span>))</code></pre></div>
+<pre><code>## Fitting of the distribution ' geom ' by matching quantiles 
+## Parameters:
+##      estimate
+## prob    0.473</code></pre>
+<p>Let us consider the Poisson distribution defined by the following mass probability and the cumulative distribution functions <span class="math display">\[
+P(X=k)=\frac{\lambda^k}{k!}\exp(-\lambda),~
+F_X(x) = \exp(-\lambda)\sum_{k=0}^{\lfloor x \rfloor}\frac{\lambda^k}{k!},~
+x\geq 0.
+\]</span> The quantile function <span class="math inline">\(F_X^{-1}(p)=\inf(x, F_X(x)\geq p)\)</span> simplifies to <span class="math display">\[
+F_X^{-1}(p) = i \text{ such that } \sum_{k=0}^{i-1} P(X=k) \leq p &lt; \sum_{k=0}^{i} P(X=k).
+\]</span> Again, the quantile function is a step function <span class="math display">\[
+F_X^{-1}(p) =  
+\left\{ \begin{array}{ll}
+0 &amp; \text{if } p &lt; P(X=0) \\
+1 &amp; \text{if } P(X=0) \leq p &lt; P(X=0)+P(X=1) \\
+2 &amp; \text{if } P(X=0)+P(X=1) \leq p &lt; P(X=0)+P(X=1)+P(X=2) \\
+\dots \\
+i &amp; \text{if } \sum_{k=0}^{i-1} P(X=k) \leq p &lt; \sum_{k=0}^{i} P(X=k) \\
+\dots \\
+\end{array} \right.
+\]</span></p>
+<p>Again, the squared differences is a step function <span class="math inline">\((F_X^{-1}(1/2) - q_{n,1/2})^2\)</span>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">par</span>(<span class="dt">mar=</span><span class="kw">c</span>(<span class="dv">4</span>,<span class="dv">4</span>,<span class="dv">2</span>,<span class="dv">1</span>))
+x &lt;-<span class="st"> </span><span class="kw">rpois</span>(<span class="dv">100</span>, <span class="dt">lambda=</span><span class="fl">7.5</span>)
+L2 &lt;-<span class="st"> </span>function(lam)
+  (<span class="kw">qpois</span>(<span class="dv">1</span>/<span class="dv">2</span>, <span class="dt">lambda =</span> lam) -<span class="st"> </span><span class="kw">median</span>(x))^<span class="dv">2</span>
+<span class="kw">curve</span>(<span class="kw">L2</span>(x), <span class="dv">6</span>, <span class="dv">9</span>, <span class="dt">xlab=</span><span class="kw">expression</span>(lambda), <span class="dt">ylab=</span><span class="kw">expression</span>(<span class="kw">L2</span>(lambda)), <span class="dt">main=</span><span class="st">&quot;squared differences&quot;</span>, <span class="dt">n=</span><span class="dv">201</span>)</code></pre></div>
+<p><img src="data:image/png;base64,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" alt /><!-- --></p>
+<p>Therefore, using <code>fitdist()</code> may be sensitive to the chosen initial value.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">fitdist</span>(x, <span class="st">&quot;pois&quot;</span>, <span class="dt">method=</span><span class="st">&quot;qme&quot;</span>, <span class="dt">probs=</span><span class="dv">1</span>/<span class="dv">2</span>, <span class="dt">start=</span><span class="kw">list</span>(<span class="dt">lambda=</span><span class="dv">2</span>))</code></pre></div>
+<pre><code>## Fitting of the distribution ' pois ' by matching quantiles 
+## Parameters:
+##        estimate
+## lambda        2</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">fitdist</span>(x, <span class="st">&quot;pois&quot;</span>, <span class="dt">method=</span><span class="st">&quot;qme&quot;</span>, <span class="dt">probs=</span><span class="dv">1</span>/<span class="dv">2</span>, <span class="dt">optim.method=</span><span class="st">&quot;SANN&quot;</span>, <span class="dt">start=</span><span class="kw">list</span>(<span class="dt">lambda=</span><span class="dv">2</span>))</code></pre></div>
+<pre><code>## Fitting of the distribution ' pois ' by matching quantiles 
+## Parameters:
+##        estimate
+## lambda     7.32</code></pre>
+</div>
+</div>
+<div id="questions-regarding-uncertainty" class="section level1">
+<h1><span class="header-section-number">4</span> Questions regarding uncertainty</h1>
+<div id="can-we-compute-marginal-confidence-intervals-on-parameter-estimates-from-their-reported-standard-error" class="section level2">
+<h2><span class="header-section-number">4.1</span> Can we compute marginal confidence intervals on parameter estimates from their reported standard error ?</h2>
+<p>In statistics, deriving marginal confidence intervals on MLE parameter estimates using the approximation of their standard errors (calculated from the hessian) is a quite common procedure. It is based on the wald approximation which stands that when the sample size <span class="math inline">\(n\)</span> is sufficiently high, the marginal <span class="math inline">\(95\%\)</span> confidence on the ith component <span class="math inline">\(\theta_i\)</span> of a model parameter <span class="math inline">\(\theta\)</span> estimated by maximum likelihood (estimate denoted <span class="math inline">\(\hat \theta\)</span>) can be approximated by : <span class="math inline">\(\hat \theta_i \pm 1.96 \times SE(\hat \theta_i )\)</span> with <span class="math inline">\(SE(\hat \theta_i )\)</span> the ith term of the diagonal of the covariance matrix of the estimates (<span class="math inline">\(V_{ii}\)</span>). <span class="math inline">\(V\)</span> is generally approximated by the inverse of the Fisher information matrix (<span class="math inline">\(I(\hat \theta)\)</span>). The Fisher information matrix corresponds to the opposite of the hessian matrix evaluated on the MLE estimate. Let us recall that the hessian matrix is defined by <span class="math inline">\(H_{ij}(y, \theta) = \frac{\partial^2 L(y, \theta)}{\partial \theta_i \partial \theta_j}\)</span> with <span class="math inline">\(L(y, \theta)\)</span> the loglikelihod function for data <span class="math inline">\(y\)</span> and parameter <span class="math inline">\(\theta\)</span>.</p>
+<p>Before using this approximation, one must keep in mind that its validity does not only depend on the sample size. It also strongly depends on the data, of the distribution, and also on the parameterization of the distribution. For this reason we recommend potential users of the Wald approximation to compare the results to the ones obtained using the bootstrap procedure (see below) before using this approximation. A look at the loglikelihood contours is also interesting as the Wald approximation assumes elliptical contours. <strong>In a more general context, we recommend the use of bootstrap to compute confidence intervals on parameters or on any function of those parameters.</strong></p>
+<p>Below you will find two examples, one for which Wald confidence intervals seem correct and one for which they give wrong results, with parameter values even outside their possible range (negative rate bound for the gamma distribution).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1234</span>)
+n &lt;-<span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">30</span>, <span class="dt">mean =</span> <span class="dv">10</span>, <span class="dt">sd =</span> <span class="dv">2</span>)
+fn &lt;-<span class="st"> </span><span class="kw">fitdist</span>(n, <span class="st">&quot;norm&quot;</span>)
+bn &lt;-<span class="st"> </span><span class="kw">bootdist</span>(fn)
+bn$CI</code></pre></div>
+<pre><code>##      Median 2.5% 97.5%
+## mean   9.41 8.78 10.02
+## sd     1.73 1.33  2.15</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fn$estimate +<span class="st"> </span><span class="kw">cbind</span>(<span class="st">&quot;estimate&quot;</span>=<span class="st"> </span><span class="dv">0</span>, <span class="st">&quot;2.5%&quot;</span>=<span class="st"> </span>-<span class="fl">1.96</span>*fn$sd, <span class="st">&quot;97.5%&quot;</span>=<span class="st"> </span><span class="fl">1.96</span>*fn$sd)</code></pre></div>
+<pre><code>##      estimate 2.5% 97.5%
+## mean     9.41 8.77 10.04
+## sd       1.78 1.33  2.22</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">llplot</span>(fn, <span class="dt">back.col =</span> <span class="ot">FALSE</span>)</code></pre></div>
+<p><img src="data:image/png;base64,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" alt /><!-- --></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1234</span>)
+g &lt;-<span class="st"> </span><span class="kw">rgamma</span>(<span class="dv">30</span>, <span class="dt">shape =</span> <span class="fl">0.1</span>, <span class="dt">rate =</span> <span class="dv">10</span>)
+fg &lt;-<span class="st"> </span><span class="kw">fitdist</span>(g, <span class="st">&quot;gamma&quot;</span>)
+bg &lt;-<span class="st"> </span><span class="kw">bootdist</span>(fg)
+bg$CI</code></pre></div>
+<pre><code>##        Median   2.5%   97.5%
+## shape  0.0923 0.0636   0.145
+## rate  30.0782 9.6306 146.660</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fg$estimate +<span class="st"> </span><span class="kw">cbind</span>(<span class="st">&quot;estimate&quot;</span>=<span class="st"> </span><span class="dv">0</span>, <span class="st">&quot;2.5%&quot;</span>=<span class="st"> </span>-<span class="fl">1.96</span>*fg$sd, <span class="st">&quot;97.5%&quot;</span>=<span class="st"> </span><span class="fl">1.96</span>*fg$sd)</code></pre></div>
+<pre><code>##       estimate    2.5%  97.5%
+## shape   0.0882  0.0553  0.121
+## rate   24.2965 -6.3504 54.944</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">llplot</span>(fg, <span class="dt">back.col =</span> <span class="ot">FALSE</span>)</code></pre></div>
+<p><img src="data:image/png;base64,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" alt /><!-- --></p>
+</div>
+<div id="how-can-we-compute-confidence-intervals-on-quantiles-from-the-fit-of-a-distribution" class="section level2">
+<h2><span class="header-section-number">4.2</span> How can we compute confidence intervals on quantiles from the fit of a distribution ?</h2>
+<p>The <code>quantile()</code> function can be used to calculate any quantile from a fitted distribution when it is called with an object of class <code>fitdist</code> or <code>fitdistcens</code> as the first argument. When called with an object of class <code>bootdist</code> or <code>bootdistcens</code> as the first argument, quantiles are returned accompanied with a confidence interval calculated using the bootstraped sample of parameters. Moreover, you can use the <code>CIcdfplot()</code> function to plot the fitted distribution as a CDF curve surrounded by a band corresponding to pointwise intervals on the quantiles. See an example below on censored data corresponding to 72-hour acute salinity tolerance (LC50values) of rivermarine invertebrates.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(salinity)
+log10LC50 &lt;-<span class="kw">log10</span>(salinity)
+fit &lt;-<span class="st"> </span><span class="kw">fitdistcens</span>(log10LC50, <span class="st">&quot;norm&quot;</span>)
+<span class="co"># Bootstrap </span>
+bootsample &lt;-<span class="st"> </span><span class="kw">bootdistcens</span>(fit, <span class="dt">niter =</span> <span class="dv">101</span>)
+#### We used only 101 iterations in that example to limit the calculation time but
+#### in practice you should take at least 1001 bootstrap iterations
+<span class="co"># Calculation of the quantile of interest (here the 5 percent hazard concentration)</span>
+(HC5 &lt;-<span class="st"> </span><span class="kw">quantile</span>(bootsample, <span class="dt">probs =</span> <span class="fl">0.05</span>))</code></pre></div>
+<pre><code>## (original) estimated quantiles for each specified probability (censored data)
+##          p=0.05
+## estimate   1.12
+## Median of bootstrap estimates
+##          p=0.05
+## estimate   1.13
+## 
+## two-sided 95 % CI of each quantile
+##        p=0.05
+## 2.5 %    1.04
+## 97.5 %   1.19</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># visualizing pointwise confidence intervals on other quantiles</span>
+<span class="kw">CIcdfplot</span>(bootsample, <span class="dt">CI.output =</span> <span class="st">&quot;quantile&quot;</span>, <span class="dt">CI.fill =</span> <span class="st">&quot;pink&quot;</span>, <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="fl">0.5</span>,<span class="dv">2</span>), <span class="dt">main =</span> <span class="st">&quot;&quot;</span>)</code></pre></div>
+<p><img src="data:image/png;base64,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" alt /><!-- --></p>
+</div>
+<div id="how-can-we-compute-confidence-intervals-on-any-function-of-the-parameters-of-the-fitted-distribution" class="section level2">
+<h2><span class="header-section-number">4.3</span> How can we compute confidence intervals on any function of the parameters of the fitted distribution ?</h2>
+<p>The bootstrap sample of parameter estimates can be used to calculate a bootstrap sample of any variable defined as a function of the parameters of the fitted distribution. From such a bootstrap sample you can easily compute a conidence interval using percentiles. Below is an example that uses the bootstrap sample of parameters from the previous example (FAQ 4.2) to calculate a 95 percent confidence interval on the Potentially Affected Portion (PAF) of species at a given exposure to salinity (fixed to 1.2 in log10 in this example).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">exposure &lt;-<span class="st"> </span><span class="fl">1.2</span>
+<span class="co"># Bootstrap sample of the PAF at this exposure</span>
+PAF &lt;-<span class="st"> </span><span class="kw">pnorm</span>(exposure, <span class="dt">mean =</span> bootsample$estim$mean, <span class="dt">sd =</span> bootsample$estim$sd)
+<span class="co"># confidence interval from 2.5 and 97.5 percentiles</span>
+<span class="kw">quantile</span>(PAF, <span class="dt">probs =</span> <span class="kw">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</code></pre></div>
+<pre><code>##   2.5%  97.5% 
+## 0.0541 0.1633</code></pre>
+<p>For more complex calculations especially to tranfer uncertainty within a quantitative risk assessment, we recommend the use of the package <code>mc2d</code> which aims at making such calculations easy and which gives extensive examples of use of such bootstrap samples of parameters estimated using functions of the package <code>fitdistrplus</code>.</p>
+</div>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

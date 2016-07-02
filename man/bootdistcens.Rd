@@ -12,7 +12,8 @@
 }
 
 \usage{
-bootdistcens(f, niter = 1001, silent=TRUE)
+bootdistcens(f, niter = 1001, silent = TRUE, 
+      parallel = c("no", "snow", "multicore"), ncpus)
 \method{print}{bootdistcens}(x, \dots)
 \method{plot}{bootdistcens}(x, \dots)
 \method{summary}{bootdistcens}(object, \dots)
@@ -23,6 +24,11 @@ bootdistcens(f, niter = 1001, silent=TRUE)
 \item{f}{ An object of class \code{"fitdistcens"}, output of the \code{\link{fitdistcens}} function.}
 \item{niter}{ The number of samples drawn by bootstrap.}
 \item{silent}{A logical to remove or show warnings and errors when bootstraping.}
+\item{parallel}{The type of parallel operation to be used, \code{"snow"} or \code{"multicore"}
+  (the second one not being available on Windows),
+  or \code{"no"} if no parallel operation.}
+\item{ncpus}{Number of processes to be used in parallel operation : 
+  typically one would fix it to the number of available CPUs.}
 
 \item{x}{ An object of class \code{"bootdistcens"}.}
 \item{object}{ An object of class \code{"bootdistcens"}.}
@@ -45,6 +51,11 @@ bootdistcens(f, niter = 1001, silent=TRUE)
     is characterized by only one parameter, and the function \code{\link{plot}} in other cases.
     In these last cases, it provides
     a representation of the joint uncertainty distribution of the fitted parameters.
+    
+        It is possible to accelerate the bootstrap using parallelization. We recommend you to
+    use \code{parallel = "multicore"}, or \code{parallel = "snow"} if you work on Windows,
+    and to fix \code{ncpus} to the number of available processors.
+
 }
 
 \value{ 
@@ -82,9 +93,12 @@ Generic functions:
         
 
 \seealso{ 
-    \code{\link{fitdistcens}}, \code{\link{mledist}} and  \code{\link{quantile.bootdistcens}} 
+    See \code{\link{fitdistrplus}} for an overview of the package.
+    \code{\link{fitdistcens}}, \code{\link{mledist}}, \code{\link{quantile.bootdistcens}} 
     for another generic function to calculate 
-    quantiles from the fitted distribution and its bootstrap results.
+    quantiles from the fitted distribution and its bootstrap results
+    and \code{\link{CIcdfplot}} for adding confidence intervals on quantiles
+    to a CDF plot of the fitted distribution.
 }
 
 \references{ 
@@ -97,7 +111,7 @@ Journal of Statistical Software, 64(4), 1-34.
 
 
 \author{ 
-Marie-Laure Delignette-Muller \email{marielaure.delignettemuller@vetagro-sup.fr}.
+Marie-Laure Delignette-Muller and Christophe Dutang.
 }
 
 %\note{  }
@@ -119,6 +133,7 @@ b1
 summary(b1)
 plot(b1)
 quantile(b1)
+CIcdfplot(b1, CI.output = "quantile")
 
 # (2) Estimation of the mean of the normal distribution 
 # by maximum likelihood with the standard deviation fixed at 1 
@@ -131,6 +146,32 @@ b1b <- bootdistcens(f1b, niter = 101)
 summary(b1b)
 plot(b1b)
 quantile(b1b)
+
+# (3) comparison of sequential and parallel versions of bootstrap
+# to be tried with a greater number of iterations (1001 or more)
+#
+\dontrun{
+niter <- 1001
+data(fluazinam)
+d1 <-log10(fluazinam)
+f1 <- fitdistcens(d1, "norm")
+
+# sequential version
+ptm <- proc.time()
+summary(bootdistcens(f1, niter = niter))
+proc.time() - ptm
+
+# parallel version using snow
+require(parallel)
+ptm <- proc.time()
+summary(bootdistcens(f1, niter = niter, parallel = "snow", ncpus = 4))
+proc.time() - ptm
+
+# parallel version using multicore (not available on Windows)
+ptm <- proc.time()
+summary(bootdistcens(f1, niter = niter, parallel = "multicore", ncpus = 4))
+proc.time() - ptm
+}
 
 }
 
