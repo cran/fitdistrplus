@@ -31,7 +31,7 @@ For example, you must use `"pois"` for the Poisson distribution and **not** `"po
 For non-standard distributions, you can either find a package
 implementing them or define by yourself. 
 A comprehensive list of non-standard distributions is given in the Distributions task view
-https://cran.r-project.org/web/views/Distributions.html.
+https://CRAN.R-project.org/view=Distributions.
 Here are some two examples of user-defined distributions. A third example (shifted exponential) is given in FAQ 3.5.4.
 
 * The Gumbel distribution
@@ -163,6 +163,111 @@ options: either to remove impossible values (not recommended) or to shift/scale 
 fitdist(x[x > 0 & x < 1], "beta")
 fitdist((x - min(x)*1.01) / (max(x) * 1.01 - min(x) * 1.01), "beta")
 ```
+
+
+## Can I fit truncated  distributions?
+The answer is yes: but the fitting procedure must be carried out carefully.
+Let $X$ be the original untruncated random variable. The truncated variable is
+the conditionnal random variable
+$Y = X ~\vert~ l< X <u$ with $l<u$ the lower and upper bounds.
+The cdf of $Y$ is $F_Y(y)=\frac{F_X(x) - F_X(l)}{F_X(u)-F_X(l)}$.
+There is a density (w.r.t. the Lebesgues measure) given by
+$$
+f_Y(y) = 
+\left\{\begin{array}{ll}
+\frac{f_X(x)}{F_X(u)-F_X(l)} & \text{if }  l < x < u \\
+0 & \text{otherwise }\\
+\end{array}\right.
+$$
+
+```{r, message=FALSE, fig.height=4, fig.width=8}
+dtexp <- function(x, rate, low, upp)
+{
+  PU <- pexp(upp, rate=rate)
+  PL <- pexp(low, rate=rate)
+  dexp(x, rate) / (PU-PL) * (x >= low) * (x <= upp) 
+}
+ptexp <- function(q, rate, low, upp)
+{
+  PU <- pexp(upp, rate=rate)
+  PL <- pexp(low, rate=rate)
+  (pexp(q, rate)-PL) / (PU-PL) * (q >= low) * (q <= upp) + 1 * (q > upp)
+}
+n <- 200
+x <- rexp(n); x <- x[x > .5 & x < 3]
+f1 <- fitdist(x, "texp", method="mle", start=list(rate=3), fix.arg=list(low=min(x), upp=max(x)))
+f2 <- fitdist(x, "texp", method="mle", start=list(rate=3), fix.arg=list(low=.5, upp=3))
+gofstat(list(f1, f2))
+cdfcomp(list(f1, f2), do.points = FALSE, xlim=c(0, 3.5))
+```
+
+## Can I fit truncated inflated distributions?
+The answer is yes: but the fitting procedure must be carried out carefully.
+Let $X$ be the original untruncated random variable. The truncated variable is
+$Y = \max(\min(X, u), l)$ with $l<u$ the lower and upper bounds.
+The cdf of $Y$ is $F_Y(y)=F_X(y)1_{u>y>l} + 1_{y>u}$.
+There is no density (w.r.t. the Lebesgues measure) since
+there are two probability masses $P(Y=l)= P(X\leq l)>0$ and $P(Y=u)=P(X>u)>0$.
+However, the density function with respect to the measure 
+$m(x)= \delta_l(x)+\delta_u(x)+\lambda(x)$ is
+$$
+f_Y(y) = 
+\left\{\begin{array}{ll}
+F_X(l) & \text{if } y=l \\
+f_X(y) & \text{if } l<y<u \\
+1-F_X(u) & \text{if } y=u \\
+\end{array}\right.
+$$
+Let $\theta$ be the parameter of the untruncated distribution. 
+Since the  likelihood can be factorized, the maximization can be done separately
+$$
+L(l, \theta, u) = 1_{\forall i, l\leq y_i\leq u} \prod_{i=1, y_i=l}^n F_X(l, \theta)
+\times \prod_{i=1,l<y_i<u}^n f_X(y_i, \theta)
+\times \prod_{i=1,y_i=u}^n (1-F_X(u, \theta)),
+$$
+Furthermore, using $\forall i, l\leq y_i\leq u\Leftrightarrow l\leq \min_i y_i\leq \max_i y_i\leq u$,
+the likelihood is zero for $l>\min_i y_i$ or $u<\max_i y_i$
+and increasing with respect to $l$ in $]-\infty, \min_i y_i]$
+and decreasing with respect to $u$ in $[\max_i y_i,+\infty[$.
+So the maximum of $L$ is reached at $l=\min_i y_i$ and $u=\max_i y_i$.
+<!--i.e.~the MLE is $\hat l=\min_i Y_i$ and $\hat u=\max_i Y_i$,-->
+The MLE of $\theta$ is then obtained by maximizing the log-likelihood $\log(L(l, \theta, u))$
+with $u=\max_i Y_i$ and $l=\min_i Y_i$.
+
+Let us illustrate truncated distribution with the truncated exponential distribution.
+The log-likelihood is particularly bad-shaped.
+```{r, message=FALSE, fig.height=4, fig.width=8}
+dtiexp <- function(x, rate, low, upp)
+{
+  PU <- pexp(upp, rate=rate, lower.tail = FALSE)
+  PL <- pexp(low, rate=rate)
+  dexp(x, rate) * (x >= low) * (x <= upp) + PL * (x == low) + PU * (x == upp)
+}
+ptiexp <- function(q, rate, low, upp)
+  pexp(q, rate) * (q >= low) * (q <= upp) + 1 * (q > upp)
+n <- 100; x <- pmax(pmin(rexp(n), 3), .5)
+# the loglikelihood has a discontinous point at the solution
+par(mar=c(4,4,2,1), mfrow=1:2)
+llcurve(x, "tiexp", plot.arg="low", fix.arg = list(rate=2, upp=5), min.arg=0, max.arg=.5, lseq=200)
+llcurve(x, "tiexp", plot.arg="upp", fix.arg = list(rate=2, low=0), min.arg=3, max.arg=4, lseq=200)
+```
+
+The first method directly maximizes the log-likelihood $L(l, \theta, u)$; the second
+method maximizes the log-likelihood $L(\theta)$ assuming that $u=\hat u$ and $l=\hat l$ are known.
+Inside $[0.5,3]$, the CDF are correctly estimated in both methods but the first method
+does not succeed to estimate the true value of the bounds $l,u$.
+```{r, fig.height=4, fig.width=6}
+(f1 <- fitdist(x, "tiexp", method="mle", start=list(rate=3, low=0, upp=20)))
+(f2 <- fitdist(x, "tiexp", method="mle", start=list(rate=3), fix.arg=list(low=min(x), upp=max(x))))
+gofstat(list(f1, f2))
+cdfcomp(list(f1, f2), do.points = FALSE, addlegend=FALSE, xlim=c(0, 3.5))
+curve(ptiexp(x, 1, .5, 3), add=TRUE, col="blue", lty=3)
+legend("bottomright", lty=1:3, col=c("red", "green", "blue", "black"), 
+        leg=c("full MLE", "MLE fixed arg", "true CDF", "emp. CDF"))
+```
+
+
+
 
 
 # Questions regarding goodness-of-fit tests and statistics
@@ -315,7 +420,9 @@ Concerning the Kolmogorov-Smirnov test, it is proposed for any
 continuous distribution, but with a critical value corresponding to the comparison of the empirical distribution
 to a fully specified distribution. As the distribution is not fully known for a fitted distribution, the
 result of this test is subject to caution, but there is no general asymptotic theory for the Kolmogorov-Smirnov
-statistics in case of a fitted distribution.
+statistics in case of a fitted distribution. Nevertheless, one can use Monte Carlo
+methods to conduct Kolmgorov-Smirnov goodness-of-fit tests in cases when
+the sample is used to estimate model parameters. Such a method is implemented in the R package `KScorrect` for a variety of continuous distributions.
 
 Such an asymptotic theory was proposed for quadratic statistics for some distributions 
 (Anderson-Darling, Cramer von Mises). The reference book we used on this subject 
@@ -346,7 +453,7 @@ to appreciate the quality of a fit and to compare the fits of different distribu
 Goodness-of-fit statistics based on the empirical distribution function  (Kolmogorov-Smirnov, Anderson-Darling
 and Cramer von Mises) may be used to measure a distance between the fitted distribution and the empirical
 distribution. So if one wants to compare the fit of various distributions on the same data set, the smaller are 
-those statistics the better. the Kolmogorov-Smirnov statistics will be sensitive when distributions differ in a global 
+those statistics the better. The Kolmogorov-Smirnov statistics will be sensitive when distributions differ in a global 
 fashion near the centre of the distribution while the Anderson-Darling statistics will be more sensitive when distributions 
 differ in their tails, and the Cramer von Mises statistics will be more sensitive when there are small but repetitive differences 
 between empirical and theoretical distribution functions. 
@@ -856,3 +963,51 @@ a quantitative risk assessment,
 we recommend the use of the package `mc2d` which aims at making such calculations
 easy and which gives extensive examples of use of such bootstrap samples of 
 parameters estimated using functions of the package `fitdistrplus`.
+
+# How to personalize plots 
+
+## Can I personalize the default plot given for an object of class `fitdist` or `fitdistcens`?
+
+The default plot given by using the `plot()` function on an object of class `fitdist` or `fitdistcens` is hard to personalize. Indeed this plot was designed only to give a quick 
+overview of the fit, not to be used as a graph in a manuscript or a formal presentation. 
+To personalize some of (or all) the goodness-of-fit plots, you should rather use specific graphical 
+functions, `denscomp`, `cdfcomp`, `ppcomp`, `qqcomp` or `cdfcompcens` (see how in the following paragraphs).
+
+## How to personalize goodness-of-fit plots ?
+
+The default plot of an object of class `fitdist` can be easily reproduced and personalized 
+using `denscomp`, `cdfcomp`, `ppcomp` and `qqcomp`.
+
+```{r, fig.height=6, fig.width=6, warning = FALSE}
+data(groundbeef)
+serving <- groundbeef$serving
+fit <- fitdist(serving, "gamma")
+par(mfrow = c(2,2), mar = c(4, 4, 1, 1))
+denscomp(fit, addlegend = FALSE, main = "", xlab = "serving sizes (g)", fitcol = "orange")
+qqcomp(fit, addlegend = FALSE, main = "", fitpch = 16, fitcol = "grey", line01lty = 2)
+cdfcomp(fit, addlegend = FALSE, main = "", xlab = "serving sizes (g)", fitcol = "orange", lines01 = TRUE)
+ppcomp(fit, addlegend = FALSE, main = "", fitpch = 16, fitcol = "grey", line01lty = 2)
+```
+
+In a similar way, the default plot of an object of class `fitdistcens` can be easily personalized 
+using `cdfcompcens`.
+
+## Is it possible to obtain `ggplot2` plots ?
+
+An argument `plotstyle` was added to functions `denscomp`, `cdfcomp`, `ppcomp`, `qqcomp`
+to enable the generation of plots using the `ggplot2` package. This argument by default 
+fixed at "graphics" must simply be fixed at "ggplot" for this purpose, as in the following example. In that latter case the graphical functions return a graphic object that can be further personalized using `ggplot2` functions.
+
+```{r, fig.height= 4, fig.width= 6, warning = FALSE}
+library(ggplot2)
+fitW <- fitdist(serving, "weibull")
+fitln <- fitdist(serving, "lnorm")
+fitg <- fitdist(serving, "gamma")
+dcomp <- denscomp(list(fitW, fitln, fitg), legendtext = c("Weibull", "lognormal", "gamma"),
+    xlab = "serving sizes (g)", xlim = c(0, 250), 
+    fitcol = c("red", "green", "orange"), fitlty = 1, 
+    xlegend = "topright", plotstyle = "ggplot", addlegend = FALSE)
+dcomp + ggplot2::theme_minimal() + ggplot2::ggtitle("Ground beef fits")
+```
+
+We plan to include the argument `plotstyle` to other functions of the `fitdistrplus` package in a next future.
