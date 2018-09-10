@@ -1,14 +1,14 @@
 Package: fitdistrplus
 Title: Help to Fit of a Parametric Distribution to Non-Censored or
         Censored Data
-Version: 1.0-9
+Version: 1.0-11
 Authors@R: c(person("Marie-Laure", "Delignette-Muller", role = "aut", email = "marielaure.delignettemuller@vetagro-sup.fr"),
              person("Christophe", "Dutang", role = "aut", email = "christophe.dutang@ensimag.fr"),
              person("Regis", "Pouillot", role = "ctb", email = "rpouillot@yahoo.fr"),
              person("Jean-Baptiste", "Denis", role = "ctb", email = "jbdenis@jouy.inra.fr"),
-             person("Aurélie", "Siberchicot", role = c("aut", "cre"), email = "aurelie.siberchicot@univ-lyon1.fr"))
-Description: Extends the fitdistr() function (of the MASS package) with several functions to help the fit of a parametric distribution to non-censored or censored data. Censored data may contain left censored, right censored and interval censored values, with several lower and upper bounds. In addition to maximum likelihood estimation (MLE), the package provides moment matching (MME), quantile matching (QME) and maximum goodness-of-fit estimation (MGE) methods (available only for non-censored data). Weighted versions of MLE, MME and QME are available.
-Depends: R (>= 3.2.0), MASS, grDevices, survival, methods
+             person("Aurelie", "Siberchicot", role = c("aut", "cre"), email = "aurelie.siberchicot@univ-lyon1.fr"))
+Description: Extends the fitdistr() function (of the MASS package) with several functions to help the fit of a parametric distribution to non-censored or censored data. Censored data may contain left censored, right censored and interval censored values, with several lower and upper bounds. In addition to maximum likelihood estimation (MLE), the package provides moment matching (MME), quantile matching (QME) and maximum goodness-of-fit estimation (MGE) methods (available only for non-censored data). Weighted versions of MLE, MME and QME are available. See e.g. Casella & Berger (2002). Statistical inference. Pacific Grove.
+Depends: R (>= 3.2.0), MASS, grDevices, survival, methods, npsurv
 Imports: stats
 Suggests: actuar, rgenoud, mc2d, gamlss.dist, knitr, knitcitations,
         ggplot2, GeneralizedHyperbolic
@@ -26,12 +26,12 @@ Author: Marie-Laure Delignette-Muller [aut],
   Christophe Dutang [aut],
   Regis Pouillot [ctb],
   Jean-Baptiste Denis [ctb],
-  Aurélie Siberchicot [aut, cre]
-Maintainer: Aurélie Siberchicot <aurelie.siberchicot@univ-lyon1.fr>
+  Aurelie Siberchicot [aut, cre]
+Maintainer: Aurelie Siberchicot <aurelie.siberchicot@univ-lyon1.fr>
 Repository: CRAN
 Repository/R-Forge/Project: riskassessment
-Repository/R-Forge/Revision: 513
-Repository/R-Forge/DateTimeStamp: 2017-03-24 09:40:25
-Date/Publication: 2017-03-24 14:25:38 UTC
+Repository/R-Forge/Revision: 592
+Repository/R-Forge/DateTimeStamp: 2018-09-10 08:46:15
+Date/Publication: 2018-09-10 15:10:12 UTC
 NeedsCompilation: no
-Packaged: 2017-03-24 09:46:33 UTC; rforge
+Packaged: 2018-09-10 09:11:31 UTC; rforge

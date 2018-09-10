@@ -24,7 +24,7 @@
 
 mmedist <- function (data, distr, order, memp, start=NULL, fix.arg=NULL,
     optim.method="default", lower=-Inf, upper=Inf, custom.optim=NULL, 
-    weights=NULL, silent=TRUE, gradient=NULL, ...) 
+    weights=NULL, silent=TRUE, gradient=NULL, checkstartfix=FALSE, ...) 
 {
     if (!is.character(distr)) 
       stop("distr must be a character string naming a distribution")
@@ -39,6 +39,8 @@ mmedist <- function (data, distr, order, memp, start=NULL, fix.arg=NULL,
     
     mdistname <- paste("m", distname, sep="")
     ddistname <- paste("d", distname, sep="")
+    argddistname <- names(formals(ddistname))
+    
     if(is.null(custom.optim))
       optim.method <- match.arg(optim.method, c("default", "Nelder-Mead", "BFGS", "CG", "L-BFGS-B", "SANN", "Brent"))
     
@@ -61,6 +63,16 @@ mmedist <- function (data, distr, order, memp, start=NULL, fix.arg=NULL,
     }
     if (!(is.numeric(data) & length(data)>1)) 
         stop("data must be a numeric vector of length greater than 1")
+    
+    if(is.null(weights))
+    {  
+      loglik <- function(par, fix.arg, obs, ddistnam) 
+        sum(log(do.call(ddistnam, c(list(obs), as.list(par), as.list(fix.arg)) ) ) )
+    }else
+    {
+      loglik <- function(par, fix.arg, obs, ddistnam) 
+        sum(weights * log(do.call(ddistnam, c(list(obs), as.list(par), as.list(fix.arg)) ) ) )
+    }
     
     if(meth == "closed formula")
     {
@@ -136,38 +148,51 @@ mmedist <- function (data, distr, order, memp, start=NULL, fix.arg=NULL,
             scale <- sqrt(3*v)/pi
             estimate<-c(location=m, scale=scale)
             order <- 1:2            
-       }
+        }
+		    if (exists(ddistname)) loglikval <- loglik(estimate, fix.arg, data, ddistname)  else loglikval <- NULL
         res <- list(estimate=estimate, convergence=0, value=NULL, hessian=NULL,
-                    optim.function=NULL, order=order, memp=NULL, counts=NULL,
-                    optim.message=NULL)
-		    opt.meth <- fix.arg.fun <- NULL
+                    optim.function=NULL, opt.meth=NULL, fix.arg=NULL, fix.arg.fun=NULL,
+                    weights=weights, counts=NULL, optim.message=NULL, 
+                    loglik= loglikval, method=meth, order=order, memp=NULL)
 		    
     }else #an optimimisation has to be done, where fix.arg and start can be a function
     {
-        start.arg <- start #to avoid confusion with the start() function of stats pkg (check is done lines 87-100)
-        if(is.vector(start.arg)) #backward compatibility
-          start.arg <- as.list(start.arg)
+        if(is.vector(start)) #backward compatibility
+          start <- as.list(start)
         
-        # definition of starting/fixed values values
-        argmdistname <- names(formals(mdistname))
-        chfixstt <- checkparam(start.arg=start.arg, fix.arg=fix.arg, argdistname=argmdistname, 
-                               errtxt=NULL, data10=head(data, 10), distname=distname)
-        if(!chfixstt$ok)
-          stop(chfixstt$txt)
-        #unlist starting values as needed in optim()
-        if(is.function(chfixstt$start.arg))
-          vstart <- unlist(chfixstt$start.arg(data))
-        else
-          vstart <- unlist(chfixstt$start.arg)
-        if(is.function(fix.arg)) #function
-        { 
-          fix.arg.fun <- fix.arg
-          fix.arg <- fix.arg(data)
-        }else
+        if(!checkstartfix) #pre-check has not been done by fitdist() or bootdist()
+        {
+          cat("checkstartfix is carried out\n")
+          # manage starting/fixed values: may raise errors or return two named list
+          arg_startfix <- manageparam(start.arg=start, fix.arg=fix.arg, obs=data, 
+                                      distname=distname)
+          
+          #check inconsistent parameters
+          hasnodefaultval <- sapply(formals(ddistname), is.name)
+          arg_startfix <- checkparamlist(arg_startfix$start.arg, arg_startfix$fix.arg, 
+                                         argddistname, hasnodefaultval)
+          #arg_startfix contains two names list (no longer NULL nor function)  
+          
+          #set fix.arg.fun
+          if(is.function(fix.arg))
+            fix.arg.fun <- fix.arg
+          else
+            fix.arg.fun <- NULL
+        }else #pre-check has been done by fitdist() or bootdist()
+        {
+          arg_startfix <- list(start.arg=start, fix.arg=fix.arg)
           fix.arg.fun <- NULL
-        #otherwise fix.arg is a named list or NULL
+        }
         
-        # end of the definition of starting/fixed values
+        #unlist starting values as needed in optim()
+        vstart <- unlist(arg_startfix$start.arg)
+        #sanity check
+        if(is.null(vstart))
+          stop("Starting values could not be NULL with checkstartfix=TRUE")
+        
+        #erase user value
+        #(cannot coerce to vector as there might be different modes: numeric, character...)
+        fix.arg <- arg_startfix$fix.arg
         
         if(length(vstart) != length(order))
             stop("wrong dimension for the moment order to match")
@@ -336,8 +361,11 @@ mmedist <- function (data, distr, order, memp, start=NULL, fix.arg=NULL,
             if(is.null(names(opt$par)))
               names(opt$par) <- names(vstart)
             res <- list(estimate = opt$par, convergence = opt$convergence, value = opt$value, 
-                        hessian = opt$hessian, optim.function=opt.fun, order=order, 
-                        memp=memp, counts=opt$counts, optim.message=opt$message)  
+                    hessian = opt$hessian, optim.function=opt.fun, optim.method=opt.meth,
+                    fix.arg=fix.arg, fix.arg.fun=fix.arg.fun, weights=weights, 
+                    counts=opt$counts, optim.message=opt$message, 
+                    loglik=ifelse(exists(ddistname), loglik(opt$par, fix.arg, data, ddistname), NULL),
+                    method=meth, order=order, memp=memp)  
             
         }else # Try to minimize the stat distance using a user-supplied optim function 
         {
@@ -363,32 +391,19 @@ mmedist <- function (data, distr, order, memp, start=NULL, fix.arg=NULL,
                 warnings("The customized optimization function failed to converge, with the error code ",
                          opt$convergence)
             }
-            
+            if(is.null(names(opt$par)))
+              names(opt$par) <- names(vstart)
+            argdot <- list(...)
+            method.cust <- argdot$method
             res <- list(estimate = opt$par, convergence = opt$convergence, value = opt$value, 
-                        hessian = opt$hessian, optim.function=custom.optim, order=order, 
-                        memp=memp, counts=opt$counts, optim.message=opt$message)  
-            
+                    hessian = opt$hessian, optim.function=custom.optim, optim.method=method.cust,
+                    fix.arg=fix.arg, fix.arg.fun=fix.arg.fun, weights=weights, 
+                    counts=opt$counts, optim.message=opt$message, 
+                    loglik=ifelse(exists(ddistname), loglik(opt$par, fix.arg, data, ddistname), NULL),
+                    method=meth, order=order, memp=memp)  
         }   
         
     }
-    
-    if(is.null(weights))
-    {  
-      loglik <- function(par, fix.arg, obs, ddistnam) 
-        sum(log(do.call(ddistnam, c(list(obs), as.list(par), as.list(fix.arg)) ) ) )
-    }else
-    {
-      loglik <- function(par, fix.arg, obs, ddistnam) 
-        sum(weights * log(do.call(ddistnam, c(list(obs), as.list(par), as.list(fix.arg)) ) ) )
-    }
-    if(exists(ddistname))
-        loglik <- loglik(res$estimate, fix.arg, data, ddistname)
-    else
-        loglik <- NULL
-    
-    res <- c(res, fix.arg=fix.arg, loglik=loglik, method=meth, optim.method=opt.meth, 
-             fix.arg.fun=fix.arg.fun, list(weights = weights))
-    
     return(res)
 }
 

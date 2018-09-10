@@ -25,7 +25,8 @@
 ### the mle function of the stat package.
 
 mledist <- function (data, distr, start=NULL, fix.arg=NULL, optim.method="default", 
-    lower=-Inf, upper=Inf, custom.optim=NULL, weights=NULL, silent=TRUE, gradient=NULL, ...)
+    lower=-Inf, upper=Inf, custom.optim=NULL, weights=NULL, silent=TRUE, gradient=NULL, 
+    checkstartfix=FALSE, ...)
     # data may correspond to a vector for non censored data or to
     # a dataframe of two columns named left and right for censored data 
 {
@@ -34,6 +35,7 @@ mledist <- function (data, distr, start=NULL, fix.arg=NULL, optim.method="defaul
     else 
         distname <- distr
     ddistname <- paste("d", distname, sep="")
+    argddistname <- names(formals(ddistname))
     
     if (!exists(ddistname, mode="function"))
         stop(paste("The ", ddistname, " function must be defined"))
@@ -74,45 +76,50 @@ mledist <- function (data, distr, start=NULL, fix.arg=NULL, optim.method="defaul
     }
     
     if (cens) {
-        # Definition of datasets lcens (left censored)=vector, rcens (right censored)= vector, 
-        #   icens (interval censored) = dataframe with left and right 
-        # and ncens (not censored) = vector
-        irow.lcens <- is.na(censdata$left) # rows corresponding to lcens data
-        lcens <- censdata[irow.lcens, ]$right
-        if (any(is.na(lcens)) )
-            stop("An observation cannot be both right and left censored, coded with two NA values")
-        irow.rcens <- is.na(censdata$right)  # rows corresponding to rcens data
-        rcens <- censdata[irow.rcens, ]$left
-        irow.ncens <- censdata$left==censdata$right & !is.na(censdata$left) & 
-                      !is.na(censdata$right)  # rows corresponding to ncens data
-        ncens<-censdata[irow.ncens, ]$left
-        irow.icens <- censdata$left!=censdata$right & !is.na(censdata$left) & 
-          !is.na(censdata$right)  # rows corresponding to icens data
-        icens<-censdata[irow.icens, ]
-        # Definition of a data set for calculation of starting values
-        data<-c(rcens, lcens, ncens, (icens$left+icens$right)/2)
+        #format data for calculation of starting values and fitting process
+        dataformat <- cens2pseudo(censdata)
+        data <- dataformat$pseudo
+        rcens <- dataformat$rcens; lcens <- dataformat$lcens 
+        icens <- dataformat$icens; ncens <- dataformat$ncens
+        
+        irow <- cens2idxrow(censdata)
+        irow.rcens <- irow$rcens; irow.lcens <- irow$lcens
+        irow.icens <- irow$icens; irow.ncens <- irow$ncens
     }
     
-    # definition of starting/fixed values values
-    argddistname <- names(formals(ddistname))
-    chfixstt <- checkparam(start.arg=start.arg, fix.arg=fix.arg, argdistname=argddistname, 
-                           errtxt=NULL, data10=head(data, 10), distname=distname)
-    if(!chfixstt$ok)
-      stop(chfixstt$txt)
-    #unlist starting values as needed in optim()
-    if(is.function(chfixstt$start.arg))
-      vstart <- unlist(chfixstt$start.arg(data))
-    else
-      vstart <- unlist(chfixstt$start.arg)
-    if(is.function(fix.arg)) #function
-    { 
-      fix.arg.fun <- fix.arg
-      fix.arg <- fix.arg(data)
-    }else
+    if(!checkstartfix) #pre-check has not been done by fitdist() or bootdist()
+    {
+      # manage starting/fixed values: may raise errors or return two named list
+      arg_startfix <- manageparam(start.arg=start, fix.arg=fix.arg, obs=data, 
+                                  distname=distname)
+      
+      #check inconsistent parameters
+      hasnodefaultval <- sapply(formals(ddistname), is.name)
+      arg_startfix <- checkparamlist(arg_startfix$start.arg, arg_startfix$fix.arg, 
+                                     argddistname, hasnodefaultval)
+      #arg_startfix contains two names list (no longer NULL nor function)  
+      
+      #set fix.arg.fun
+      if(is.function(fix.arg))
+        fix.arg.fun <- fix.arg
+      else
+        fix.arg.fun <- NULL
+    }else #pre-check has been done by fitdist<cens>() or bootdist<cens>()
+    {
+      arg_startfix <- list(start.arg=start, fix.arg=fix.arg)
       fix.arg.fun <- NULL
-    #otherwise fix.arg is a named list or NULL
+    }
     
-    # end of the definition of starting/fixed values   
+    #unlist starting values as needed in optim()
+    vstart <- unlist(arg_startfix$start.arg)
+    #sanity check
+    if(is.null(vstart))
+      stop("Starting values could not be NULL with checkstartfix=TRUE")
+    
+    #erase user value
+    #(cannot coerce to vector as there might be different modes: numeric, character...)
+    fix.arg <- arg_startfix$fix.arg
+    
     
     ############# closed-form formula for uniform distribution ##########
     if(distname == "unif")
@@ -150,18 +157,18 @@ mledist <- function (data, distr, start=NULL, fix.arg=NULL, optim.method="defaul
       argpdistname<-names(formals(pdistname))
         if (("log" %in% argddistname) & ("log.p" %in% argpdistname))
             fnobjcens <- function(par, fix.arg, rcens, lcens, icens, ncens, ddistnam, pdistnam)
-                -sum(do.call(ddistnam, c(list(x=ncens), as.list(par), as.list(fix.arg), list(log=TRUE)))) -
-                sum(do.call(pdistnam, c(list(q=lcens), as.list(par), as.list(fix.arg), list(log=TRUE)))) -
-                sum(do.call(pdistnam, c(list(q=rcens), as.list(par), as.list(fix.arg), list(lower.tail=FALSE), list(log=TRUE)))) -
-                sum(log(do.call(pdistnam, c(list(q=icens$right), as.list(par), as.list(fix.arg))) - # without log=TRUE here
-                do.call(pdistnam, c(list(q=icens$left), as.list(par), as.list(fix.arg))) )) # without log=TRUE here
+                -sum(do.call(ddistnam, c(list(ncens), as.list(par), as.list(fix.arg), list(log=TRUE)))) -
+                sum(do.call(pdistnam, c(list(lcens), as.list(par), as.list(fix.arg), list(log=TRUE)))) -
+                sum(do.call(pdistnam, c(list(rcens), as.list(par), as.list(fix.arg), list(lower.tail=FALSE), list(log=TRUE)))) -
+                sum(log(do.call(pdistnam, c(list(icens$right), as.list(par), as.list(fix.arg))) - # without log=TRUE here
+                do.call(pdistnam, c(list(icens$left), as.list(par), as.list(fix.arg))) )) # without log=TRUE here
         else
             fnobjcens <- function(par, fix.arg, rcens, lcens, icens, ncens, ddistnam, pdistnam)
-                -sum(log(do.call(ddistnam, c(list(x=ncens), as.list(par), as.list(fix.arg))))) -
-                sum(log(do.call(pdistnam, c(list(q=lcens), as.list(par), as.list(fix.arg))))) -
-                sum(log(1-do.call(pdistnam, c(list(q=rcens), as.list(par), as.list(fix.arg))))) -
-                sum(log(do.call(pdistnam, c(list(q=icens$right), as.list(par), as.list(fix.arg))) - 
-                do.call(pdistnam, c(list(q=icens$left), as.list(par), as.list(fix.arg))) ))
+                -sum(log(do.call(ddistnam, c(list(ncens), as.list(par), as.list(fix.arg))))) -
+                sum(log(do.call(pdistnam, c(list(lcens), as.list(par), as.list(fix.arg))))) -
+                sum(log(1-do.call(pdistnam, c(list(rcens), as.list(par), as.list(fix.arg))))) -
+                sum(log(do.call(pdistnam, c(list(icens$right), as.list(par), as.list(fix.arg))) - 
+                do.call(pdistnam, c(list(icens$left), as.list(par), as.list(fix.arg))) ))
     }else if(!cens && !is.null(weights))
     {
         fnobj <- function(par, fix.arg, obs, ddistnam) {
@@ -171,11 +178,11 @@ mledist <- function (data, distr, start=NULL, fix.arg=NULL, optim.method="defaul
     {
       fnobjcens <- function(par, fix.arg, rcens, lcens, icens, ncens, ddistnam, pdistnam)
       {
-        p1 <- log(do.call(ddistnam, c(list(x=ncens), as.list(par), as.list(fix.arg))))
-        p2 <- log(do.call(pdistnam, c(list(q=lcens), as.list(par), as.list(fix.arg)))) 
-        p3 <- log(1-do.call(pdistnam, c(list(q=rcens), as.list(par), as.list(fix.arg))))
-        p4 <- log(do.call(pdistnam, c(list(q=icens$right), as.list(par), as.list(fix.arg))) - 
-                    do.call(pdistnam, c(list(q=icens$left), as.list(par), as.list(fix.arg))) )
+        p1 <- log(do.call(ddistnam, c(list(ncens), as.list(par), as.list(fix.arg))))
+        p2 <- log(do.call(pdistnam, c(list(lcens), as.list(par), as.list(fix.arg)))) 
+        p3 <- log(1-do.call(pdistnam, c(list(rcens), as.list(par), as.list(fix.arg))))
+        p4 <- log(do.call(pdistnam, c(list(icens$right), as.list(par), as.list(fix.arg))) - 
+                    do.call(pdistnam, c(list(icens$left), as.list(par), as.list(fix.arg))) )
         -sum(weights[irow.ncens] * p1) - 
           sum(weights[irow.lcens] * p2) - 
           sum(weights[irow.rcens] * p3) - 
@@ -263,8 +270,7 @@ mledist <- function (data, distr, start=NULL, fix.arg=NULL, optim.method="defaul
             else #cens == TRUE
               opttryerror <- try(opt <- constrOptim(theta=vstart, f=fnobjcens, ui=Mat, ci=Bnd, grad=gradient,
                     ddistnam=ddistname, rcens=rcens, lcens=lcens, icens=icens, ncens=ncens, pdistnam=pdistname,
-                    fix.arg=fix.arg, obs=data, hessian=!is.null(gradient), method=meth, 
-                    ...), silent=TRUE)
+                    fix.arg=fix.arg, hessian=!is.null(gradient), method=meth, ...), silent=TRUE)
             if(!inherits(opttryerror, "try-error"))
               if(length(opt$counts) == 1) #appears when the initial point is a solution
                 opt$counts <- c(opt$counts, NA)
@@ -313,10 +319,10 @@ mledist <- function (data, distr, start=NULL, fix.arg=NULL, optim.method="defaul
         }
         if(is.null(names(opt$par)))
           names(opt$par) <- names(vstart)
-        res <- list(estimate = opt$par, convergence = opt$convergence, loglik = -opt$value, 
-                    hessian = opt$hessian, optim.function=opt.fun, fix.arg = fix.arg, 
-                    optim.method=meth, fix.arg.fun = fix.arg.fun, weights = weights, 
-                    counts=opt$counts, optim.message=opt$message)
+        res <- list(estimate = opt$par, convergence = opt$convergence, value=opt$value,  
+                    hessian = opt$hessian, optim.function=opt.fun, optim.method=meth, 
+                    fix.arg = fix.arg, fix.arg.fun = fix.arg.fun, weights = weights, 
+                    counts=opt$counts, optim.message=opt$message, loglik = -opt$value)
     }
     else # Try to minimize the minus (log-)likelihood using a user-supplied optim function 
     {
@@ -343,18 +349,14 @@ mledist <- function (data, distr, start=NULL, fix.arg=NULL, optim.method="defaul
             warnings("The customized optimization function failed to converge, with the error code ", 
                      opt$convergence)
         }
-        argdot <- list(...)
-        method.cust <- argdot[argdot == "method"]
-        if(length(method.cust) == 0)
-        {
-          method.cust <- NULL
-        }
         if(is.null(names(opt$par)))
           names(opt$par) <- names(vstart)
-        res <- list(estimate = opt$par, convergence = opt$convergence, loglik = -opt$value, 
-                      hessian = opt$hessian, optim.function = custom.optim, fix.arg = fix.arg,
-                      method = method.cust, fix.arg.fun = fix.arg.fun, weights = weights, 
-                      counts=opt$counts, optim.message=opt$message)        
+        argdot <- list(...)
+        method.cust <- argdot$method
+        res <- list(estimate = opt$par, convergence = opt$convergence, value=opt$value, 
+                    hessian = opt$hessian, optim.function = custom.optim, optim.method = method.cust, 
+                    fix.arg = fix.arg, fix.arg.fun = fix.arg.fun, weights = weights, 
+                    counts=opt$counts, optim.message=opt$message, loglik = -opt$value)        
     }   
         
     return(res) 

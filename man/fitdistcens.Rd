@@ -101,6 +101,8 @@ otherwise only a sample subset is returned.}
 \value{ 
     \code{fitdistcens} returns an object of class \code{"fitdistcens"}, a list with the following components:
     \item{estimate}{ the parameter estimates.}
+    \item{method}{ the character string coding for the fitting method : 
+        only \code{"mle"} for 'maximum likelihood estimation'.}
     \item{sd}{ the estimated standard errors.}
     \item{cor}{ the estimated correlation matrix, \code{NA} if numerically not computable
     or \code{NULL} if not available.}
@@ -113,9 +115,18 @@ otherwise only a sample subset is returned.}
     \item{fix.arg}{ the named list giving the values of parameters of the named distribution
       that must be kept fixed rather than estimated by maximum likelihood or 
       \code{NULL} if there are no such parameters. }
+    \item{fix.arg.fun}{the function used to set the value of \code{fix.arg} or \code{NULL}.}    
     \item{dots}{ the list of  further arguments passed in \dots to be used in \code{bootdistcens} to
     control the optimization method used in iterative calls to \code{mledist} or 
       \code{NULL} if no such arguments.}
+    \item{convergence}{ an integer code for the convergence of 
+    \code{\link{optim}}/\code{\link{constrOptim}} defined as below
+    or defined by the user in the user-supplied optimization function. 
+        \code{0} indicates successful convergence.
+        \code{1} indicates that the iteration limit of \code{\link{optim}} has been reached.
+        \code{10} indicates degeneracy of the Nealder-Mead simplex.
+        \code{100} indicates that \code{\link{optim}} encountered an internal error.} 
+    \item{discrete}{always \code{FALSE}.}    
     \item{weights}{the vector of weigths used in the estimation process or \code{NULL}.}
     
 
@@ -173,13 +184,13 @@ Marie-Laure Delignette-Muller and Christophe Dutang.
 data(smokedfish)
 fitsf  <-  fitdistcens(smokedfish,"lnorm")
 summary(fitsf)
-# default plot using the Turnbull algorithm
+# default plot using the Wang technique (see ?plotdiscens for details)
 plot(fitsf)
-# plot using the Turnbull algorithm with confidence intervals for the 
-# empirical distribution
-plot(fitsf, Turnbull.confint = TRUE)
+# plot using the Turnbull algorithm (see ?plotdiscens for details)
+# with confidence intervals for the empirical distribution
+plot(fitsf, NPMLE = TRUE, NPMLE.method = "Turnbull", Turnbull.confint = TRUE)
 # basic plot using intervals and points (see ?plotdiscens for details)
-plot(fitsf, Turnbull = FALSE)
+plot(fitsf, NPMLE = FALSE)
 # plot of the same fit using the Turnbull algorithm in logscale
 cdfcompcens(fitsf,main="bacterial contamination fits",
     xlab="bacterial concentration (CFU/g)",ylab="F",
@@ -272,6 +283,14 @@ fln <- fitdistcens(log10EC50,"norm")
 
 quantile(fln, probs = 0.05)
 quantile(fln, probs = c(0.05, 0.1, 0.2))
+
+# (9) Fit of a lognormal distribution on 72-hour acute salinity tolerance (LC50 values)
+# of riverine macro-invertebrates using maximum likelihood estimation
+
+data(salinity)
+log10LC50 <-log10(salinity)
+fln <- fitdistcens(log10LC50,"norm")
+plot(fln)
 
 }
 

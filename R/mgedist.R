@@ -25,7 +25,8 @@
 ### 
 
 mgedist <- function (data, distr, gof = "CvM", start=NULL, fix.arg=NULL, optim.method="default",
-    lower=-Inf, upper=Inf, custom.optim=NULL, silent=TRUE, gradient=NULL, ...)
+    lower=-Inf, upper=Inf, custom.optim=NULL, silent=TRUE, gradient=NULL, 
+    checkstartfix=FALSE, ...)
     # data may correspond to a vector for non censored data or to
     # a dataframe of two columns named left and right for censored data 
 {
@@ -44,6 +45,7 @@ mgedist <- function (data, distr, gof = "CvM", start=NULL, fix.arg=NULL, optim.m
     ddistname <- paste("d",distname,sep="")    
     if (!exists(ddistname, mode="function"))
         stop(paste("The ", ddistname, " function must be defined"))
+    argddistname <- names(formals(ddistname))
 
     if(is.null(custom.optim))
       optim.method <- match.arg(optim.method, c("default", "Nelder-Mead", "BFGS", "CG", "L-BFGS-B", "SANN", "Brent"))
@@ -92,29 +94,39 @@ mgedist <- function (data, distr, gof = "CvM", start=NULL, fix.arg=NULL, optim.m
         data<-c(rcens,lcens,ncens,(icens$left+icens$right)/2)
     }
     
-    # MGE fit 
-    # definition of starting/fixed values values
-    argddistname <- names(formals(ddistname))
-    chfixstt <- checkparam(start.arg=start.arg, fix.arg=fix.arg, argdistname=argddistname, 
-                           errtxt=NULL, data10=head(data, 10), distname=distname)
-    
-    if(!chfixstt$ok)
-      stop(chfixstt$txt)
-    #unlist starting values as needed in optim()
-    if(is.function(chfixstt$start.arg))
-      vstart <- unlist(chfixstt$start.arg(data))
-    else
-      vstart <- unlist(chfixstt$start.arg)
-    if(is.function(fix.arg)) #function
-    { 
-      fix.arg.fun <- fix.arg
-      fix.arg <- fix.arg(data)
-    }else
+    if(!checkstartfix) #pre-check has not been done by fitdist() or bootdist()
+    {
+      # manage starting/fixed values: may raise errors or return two named list
+      arg_startfix <- manageparam(start.arg=start, fix.arg=fix.arg, obs=data, 
+                                  distname=distname)
+      
+      #check inconsistent parameters
+      hasnodefaultval <- sapply(formals(ddistname), is.name)
+      arg_startfix <- checkparamlist(arg_startfix$start.arg, arg_startfix$fix.arg, 
+                                     argddistname, hasnodefaultval)
+      #arg_startfix contains two names list (no longer NULL nor function)  
+      
+      #set fix.arg.fun
+      if(is.function(fix.arg))
+        fix.arg.fun <- fix.arg
+      else
+        fix.arg.fun <- NULL
+    }else #pre-check has been done by fitdist() or bootdist()
+    {
+      arg_startfix <- list(start.arg=start, fix.arg=fix.arg)
       fix.arg.fun <- NULL
-    #otherwise fix.arg is a named list or NULL
+    }
     
-    # end of the definition of starting/fixed values 
-   
+    #unlist starting values as needed in optim()
+    vstart <- unlist(arg_startfix$start.arg)
+    #sanity check
+    if(is.null(vstart))
+      stop("Starting values could not be NULL with checkstartfix=TRUE")
+    
+    #erase user value
+    #(cannot coerce to vector as there might be different modes: numeric, character...)
+    fix.arg <- arg_startfix$fix.arg
+    
    ############# MGE fit using optim or custom.optim ##########
 
     # definition of the function to minimize depending on the argument gof
@@ -131,7 +143,7 @@ mgedist <- function (data, distr, gof = "CvM", start=NULL, fix.arg=NULL, optim.m
             { 
                 n <- length(obs)
                 s <- sort(obs)
-                theop <- do.call(pdistnam,c(list(q=s),as.list(par),as.list(fix.arg)))
+                theop <- do.call(pdistnam,c(list(s),as.list(par),as.list(fix.arg)))
                 1/(12*n) + sum( ( theop - (2 * 1:n - 1)/(2 * n) )^2 )
             }
         else     
@@ -142,7 +154,7 @@ mgedist <- function (data, distr, gof = "CvM", start=NULL, fix.arg=NULL, optim.m
                 s <- sort(obs)
                 obspu <- seq(1,n)/n
                 obspl <- seq(0,n-1)/n
-                theop <- do.call(pdistnam,c(list(q=s),as.list(par),as.list(fix.arg)))
+                theop <- do.call(pdistnam,c(list(s),as.list(par),as.list(fix.arg)))
                 max(pmax(abs(theop-obspu),abs(theop-obspl)))
             }
         else
@@ -151,7 +163,7 @@ mgedist <- function (data, distr, gof = "CvM", start=NULL, fix.arg=NULL, optim.m
             { 
                 n <- length(obs)
                 s <- sort(obs)
-                theop <- do.call(pdistnam,c(list(q=s),as.list(par),as.list(fix.arg)))
+                theop <- do.call(pdistnam,c(list(s),as.list(par),as.list(fix.arg)))
                 - n - mean( (2 * 1:n - 1) * (log(theop) + log(1 - rev(theop))) ) 
             }
         else
@@ -160,7 +172,7 @@ mgedist <- function (data, distr, gof = "CvM", start=NULL, fix.arg=NULL, optim.m
             { 
                 n <- length(obs)
                 s <- sort(obs)
-                theop <- do.call(pdistnam,c(list(q=s),as.list(par),as.list(fix.arg)))
+                theop <- do.call(pdistnam,c(list(s),as.list(par),as.list(fix.arg)))
                 n/2 - 2 * sum(theop) - mean ( (2 * 1:n - 1) * log(1 - rev(theop)) )
             }
         else
@@ -169,7 +181,7 @@ mgedist <- function (data, distr, gof = "CvM", start=NULL, fix.arg=NULL, optim.m
             { 
                 n <- length(obs)
                 s <- sort(obs)
-                theop <- do.call(pdistnam,c(list(q=s),as.list(par),as.list(fix.arg)))
+                theop <- do.call(pdistnam,c(list(s),as.list(par),as.list(fix.arg)))
                 -3*n/2 + 2 * sum(theop) - mean ( (2 * 1:n - 1) * log(theop) )
             }
         else  
@@ -178,7 +190,7 @@ mgedist <- function (data, distr, gof = "CvM", start=NULL, fix.arg=NULL, optim.m
             { 
                 n <- length(obs)
                 s <- sort(obs)
-                theop <- do.call(pdistnam,c(list(q=s),as.list(par),as.list(fix.arg)))
+                theop <- do.call(pdistnam,c(list(s),as.list(par),as.list(fix.arg)))
                 2 * sum(log(1 - theop)) + mean ( (2 * 1:n - 1) / (1 - rev(theop)) )
             }
         else  
@@ -187,7 +199,7 @@ mgedist <- function (data, distr, gof = "CvM", start=NULL, fix.arg=NULL, optim.m
             { 
                 n <- length(obs)
                 s <- sort(obs)
-                theop <- do.call(pdistnam,c(list(q=s),as.list(par),as.list(fix.arg)))
+                theop <- do.call(pdistnam,c(list(s),as.list(par),as.list(fix.arg)))
                 2 * sum(log(theop)) + mean ( (2 * 1:n - 1) / theop )
             }
          else  
@@ -196,7 +208,7 @@ mgedist <- function (data, distr, gof = "CvM", start=NULL, fix.arg=NULL, optim.m
             { 
                 n <- length(obs)
                 s <- sort(obs)
-                theop <- do.call(pdistnam,c(list(q=s),as.list(par),as.list(fix.arg)))
+                theop <- do.call(pdistnam,c(list(s),as.list(par),as.list(fix.arg)))
                 2 * sum(log(theop) + log(1 - theop) ) + 
                 mean ( ((2 * 1:n - 1) / theop) + ((2 * 1:n - 1) / (1 - rev(theop))) )
             }
@@ -280,7 +292,7 @@ mgedist <- function (data, distr, gof = "CvM", start=NULL, fix.arg=NULL, optim.m
               stop("Starting values must be in the feasible region.")
             
             opttryerror <- try(opt <- constrOptim(theta=vstart, f=fnobj, ui=Mat, ci=Bnd, grad=gradient,
-                                                    fix.arg=fix.arg, obs=data, pdistnam=pdistname, hessian=!is.null(gradient), method=meth, 
+                                                  fix.arg=fix.arg, obs=data, pdistnam=pdistname, hessian=!is.null(gradient), method=meth, 
                                                     ...), silent=TRUE)
             if(!inherits(opttryerror, "try-error"))
               if(length(opt$counts) == 1) #appears when the initial point is a solution
@@ -318,10 +330,10 @@ mgedist <- function (data, distr, gof = "CvM", start=NULL, fix.arg=NULL, optim.m
         if(is.null(names(opt$par)))
           names(opt$par) <- names(vstart)
         res <- list(estimate = opt$par, convergence = opt$convergence, value = opt$value, 
-                    hessian = opt$hessian, gof=gof, optim.function=opt.fun,
-                    loglik=loglik(opt$par, fix.arg, data, ddistname), fix.arg = fix.arg, 
-                    optim.method=meth, fix.arg.fun = fix.arg.fun, counts=opt$counts, 
-                    optim.message=opt$message)
+                    hessian = opt$hessian, optim.function=opt.fun, optim.method=meth, 
+                    fix.arg = fix.arg, fix.arg.fun = fix.arg.fun, weights=NULL,
+                    counts=opt$counts, optim.message=opt$message,
+                    loglik=loglik(opt$par, fix.arg, data, ddistname), gof=gof)
     }
     else # Try to minimize the gof distance using a user-supplied optim function 
     {
@@ -347,11 +359,13 @@ mgedist <- function (data, distr, gof = "CvM", start=NULL, fix.arg=NULL, optim.m
         }
         if(is.null(names(opt$par)))
           names(opt$par) <- names(vstart)
+        argdot <- list(...)
+        method.cust <- argdot$method
         res <- list(estimate = opt$par, convergence = opt$convergence, value = opt$value, 
-                    gof=gof, hessian = opt$hessian, optim.function=custom.optim,
-                    loglik=loglik(opt$par, fix.arg, data, ddistname), fix.arg = fix.arg,
-                    optim.method=NULL, fix.arg.fun = fix.arg.fun, counts=opt$counts, 
-                    optim.message=opt$message)
+                    hessian = opt$hessian, optim.function=custom.optim, optim.method=method.cust,
+                    fix.arg = fix.arg, fix.arg.fun = fix.arg.fun, weights=NULL,
+                    counts=opt$counts, optim.message=opt$message,
+                    loglik=loglik(opt$par, fix.arg, data, ddistname), gof=gof)
     }   
    
     return(res)                

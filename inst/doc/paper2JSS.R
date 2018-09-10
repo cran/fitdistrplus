@@ -204,7 +204,7 @@ fdanish.P.MLE <- fitdist(danishuni$Loss, "pareto",
 memp <- function(x, order) sum(x^order)/length(x)
 fdanish.P.MME <- fitdist(danishuni$Loss, "pareto", 
     method="mme", order=1:2, 
-memp="memp", start=c(shape=10, scale=10), lower=c(2+1e-6,2+1e-6), 
+memp="memp", start=list(shape=10, scale=10), lower=c(2+1e-6,2+1e-6), 
 upper=c(Inf,Inf))
 par(mfrow=c(1, 2))
 cdfcomp(list(fdanish.ln.MLE, fdanish.ln.MME), 
@@ -304,7 +304,7 @@ str(salinity)
 ###################################################
 ### code chunk number 31: plotsalinity2.echo
 ###################################################
-plotdistcens(salinity,Turnbull = FALSE)
+plotdistcens(salinity, NPMLE = FALSE)
 
 
 ###################################################
@@ -327,16 +327,26 @@ summary(fsal.ll)
 ###################################################
 ### code chunk number 34: fitsalinity.cdfcomp.echo (eval = FALSE)
 ###################################################
+## par(mfrow=c(2, 2))
 ## cdfcompcens(list(fsal.ln, fsal.ll), 
 ##   legendtext = c("lognormal", "loglogistic "))
+## qqcompcens(fsal.ln, legendtext = "lognormal")
+## ppcompcens(fsal.ln, legendtext = "lognormal")
+## qqcompcens(list(fsal.ln, fsal.ll), legendtext = c("lognormal", "loglogistic "),
+##            main = "Q-Q plot with 2 dist.")
 
 
 ###################################################
 ### code chunk number 35: fitsalinitycdfcompplot
 ###################################################
 getOption("SweaveHooks")[["fig"]]()
+par(mfrow=c(2, 2))
 cdfcompcens(list(fsal.ln, fsal.ll),
     legendtext=c("lognormal", "loglogistic "))
+qqcompcens(fsal.ln, legendtext = "lognormal")
+ppcompcens(fsal.ln, legendtext = "lognormal")
+qqcompcens(list(fsal.ln, fsal.ll), legendtext = c("lognormal", "loglogistic "),
+           main = "Q-Q plot with 2 dist.")
 
 
 ###################################################
@@ -354,35 +364,28 @@ str(toxocara)
 
 
 ###################################################
-### code chunk number 38: fittoxocara.pois.echo
+### code chunk number 38: fittoxocara.poisnbinom.echo
 ###################################################
-plot(ftoxo.P)
+par(mfrow = c(1,2))
+denscomp(list(ftoxo.P, ftoxo.nb), 
+  legendtext = c("Poisson", "negative binomial"), fitlty = 1)
+cdfcomp(list(ftoxo.P, ftoxo.nb), 
+  legendtext = c("Poisson", "negative binomial"), fitlty = 1)
 
 
 ###################################################
-### code chunk number 39: fittoxocarapois
+### code chunk number 39: fittoxocarapoisnbinomplot
 ###################################################
 getOption("SweaveHooks")[["fig"]]()
-plot(ftoxo.P)
-
-
-###################################################
-### code chunk number 40: fittoxocara.poisnbinom.echo
-###################################################
+par(mfrow = c(1,2))
+denscomp(list(ftoxo.P, ftoxo.nb), 
+  legendtext = c("Poisson", "negative binomial"), fitlty = 1)
 cdfcomp(list(ftoxo.P, ftoxo.nb), 
-  legendtext = c("Poisson", "negative binomial"))
+  legendtext = c("Poisson", "negative binomial"), fitlty = 1)
 
 
 ###################################################
-### code chunk number 41: fittoxocarapoisnbinomplot
-###################################################
-getOption("SweaveHooks")[["fig"]]()
-cdfcomp(list(ftoxo.P, ftoxo.nb), 
-        legendtext = c("Poisson", "negative binomial"))
-
-
-###################################################
-### code chunk number 42: fittoxocara.poisnbinom.gof
+### code chunk number 40: fittoxocara.poisnbinom.gof
 ###################################################
 gofstat(list(ftoxo.P, ftoxo.nb), 
   fitnames = c("Poisson", "negative binomial"))

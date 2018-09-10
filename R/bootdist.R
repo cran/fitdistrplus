@@ -51,7 +51,7 @@ bootdist <- function (f, bootmethod="param", niter=1001, silent=TRUE,
         rdistname <- paste("r", f$distname, sep="")
         if (!exists(rdistname, mode="function"))
             stop(paste("The ", rdistname, " function must be defined"))
-        rdata <- do.call(rdistname, c(list(n=niter*f$n), as.list(f$estimate), f$fix.arg))
+        rdata <- do.call(rdistname, c(list(niter*f$n), as.list(f$estimate), f$fix.arg))
         dim(rdata) <- c(f$n, niter)
     }
     else { # non parametric bootstrap
@@ -66,26 +66,57 @@ bootdist <- function (f, bootmethod="param", niter=1001, silent=TRUE,
       fix.arg <- f$fix.arg.fun
     else 
       fix.arg <- f$fix.arg
-    if (is.null(f$dots))
+    if (is.null(f$dots) && !is.function(fix.arg))
     {    
-      func <- function(iter) {
-        res <- try(do.call(foncestim, list(data=rdata[, iter], distr=f$distname, start=start, fix.arg=fix.arg)), silent=silent)
+      func <- function(iter) 
+      {
+        res <- try(do.call(foncestim, list(data=rdata[, iter], distr=f$distname, start=start, 
+                                           fix.arg=fix.arg, checkstartfix=TRUE)), silent=silent)
         if(inherits(res, "try-error"))
           return(c(rep(NA, length(start)), 100))
         else
           return(c(res$estimate, res$convergence))
       }
-    }else
+    }else if (is.null(f$dots) && is.function(fix.arg))
     {    
-      func <- function(iter) {
-        res <- try(do.call(foncestim, c(list(data=rdata[, iter], distr=f$distname, start=start, fix.arg=fix.arg), f$dots)), silent=silent)
+      func <- function(iter) 
+      {
+        fix.arg.iter <- fix.arg(rdata[, iter])
+        res <- try(do.call(foncestim, list(data=rdata[, iter], distr=f$distname, start=start, 
+                                           fix.arg=fix.arg.iter, checkstartfix=TRUE)), silent=silent)
+        if(inherits(res, "try-error"))
+          return(c(rep(NA, length(start)), 100))
+        else
+          return(c(res$estimate, res$convergence))
+      }
+    }else if(!is.null(f$dots) && !is.function(fix.arg))
+    {    
+      func <- function(iter) 
+      {
+        res <- try(do.call(foncestim, c(list(data=rdata[, iter], distr=f$distname, start=start, 
+                                             fix.arg=fix.arg, checkstartfix=TRUE), f$dots)), silent=silent)
         if(inherits(res, "try-error"))
           return(c(rep(NA, length(start)), 100))
         else
           return(c(res$estimate, res$convergence))
         
       }
-    }
+    }else if(!is.null(f$dots) && is.function(fix.arg))
+    {    
+      func <- function(iter) 
+      {
+        fix.arg.iter <- fix.arg(rdata[, iter])
+        res <- try(do.call(foncestim, c(list(data=rdata[, iter], distr=f$distname, start=start, 
+                                             fix.arg=fix.arg.iter, checkstartfix=TRUE), f$dots)), silent=silent)
+        if(inherits(res, "try-error"))
+          return(c(rep(NA, length(start)), 100))
+        else
+          return(c(res$estimate, res$convergence))
+        
+      }
+    }else
+      stop("wrong implementation in bootdist")
+    
     owarn <- getOption("warn")
     oerr <- getOption("show.error.messages")
     options(warn=ifelse(silent, -1, 0), show.error.messages=!silent)

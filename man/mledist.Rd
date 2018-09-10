@@ -10,7 +10,7 @@
 \usage{
 mledist(data, distr, start = NULL, fix.arg = NULL, optim.method = "default", 
     lower = -Inf, upper = Inf, custom.optim = NULL, weights = NULL, silent = TRUE, 
-    gradient = NULL, \dots)
+    gradient = NULL, checkstartfix=FALSE, \dots)
 }
 
 \arguments{
@@ -48,6 +48,7 @@ mledist(data, distr, start = NULL, fix.arg = NULL, optim.method = "default",
 \item{gradient}{A function to return the gradient of the log-likelihood for the \code{"BFGS"}, \code{"CG"} 
     and \code{"L-BFGS-B"} methods. If it is \code{NULL}, a finite-difference approximation will be used,
     see details.}
+\item{checkstartfix}{A logical to test starting and fixed values. Do not change it.}    
 \item{\dots}{further arguments passed to the \code{\link{optim}}, 
     \code{\link{constrOptim}} or \code{custom.optim} function.}
 }
@@ -68,7 +69,8 @@ mledist(data, distr, start = NULL, fix.arg = NULL, optim.method = "default",
     \code{"exp"} and \code{"pois"}, \code{"cauchy"}, \code{"gamma"}, \code{"logis"},
     \code{"nbinom"} (parametrized by mu and size), \code{"geom"}, \code{"beta"}, \code{"weibull"}
     from the \code{stats} package; 
-    \code{"invgamma"}, \code{"llogis"}, \code{"invweibull"}, \code{"pareto1"}, \code{"pareto"}
+    \code{"invgamma"}, \code{"llogis"}, \code{"invweibull"}, \code{"pareto1"}, \code{"pareto"},
+    \code{"lgamma"}, \code{"trgamma"}, \code{"invtrgamma"}
     from the \code{actuar} package. 
     Note that these starting values may not be good enough if the fit is poor. 
     The function uses a closed-form formula to fit the uniform distribution.
@@ -137,29 +139,25 @@ mledist(data, distr, start = NULL, fix.arg = NULL, optim.method = "default",
     \item{convergence}{ an integer code for the convergence of 
     \code{\link{optim}}/\code{\link{constrOptim}} defined as below
     or defined by the user in the user-supplied optimization function. 
-    
         \code{0} indicates successful convergence.
-        
         \code{1} indicates that the iteration limit of \code{\link{optim}} has been reached.
-
         \code{10} indicates degeneracy of the Nealder-Mead simplex.
-
         \code{100} indicates that \code{\link{optim}} encountered an internal error.
         }
-        
-    \item{loglik}{the log-likelihood value.}
+    \item{value}{the minimal value reached for the criterion to minimize.}    
     \item{hessian}{a symmetric matrix computed by \code{\link{optim}} as an estimate of the Hessian
         at the solution found or computed in the user-supplied optimization function.
         It is used in \code{fitdist} to estimate standard errors. }
     \item{optim.function}{the name of the optimization function used for maximum likelihood.}
+    \item{optim.method}{when \code{\link{optim}} is used, the name of the
+    algorithm used, the field \code{method} of the \code{custom.optim} function
+    otherwise.}
     \item{fix.arg}{the named list giving the values of parameters of the named distribution
         that must kept fixed rather than estimated by maximum likelihood or \code{NULL} 
         if there are no such parameters. }
-    \item{optim.method}{when \code{\link{optim}} is used, the name of the algorithm used, 
-    \code{NULL} otherwise.}
     \item{fix.arg.fun}{the function used to set the value of \code{fix.arg} or \code{NULL}.}
     \item{weights}{the vector of weigths used in the estimation process or \code{NULL}.}
-     \item{counts}{A two-element integer vector giving the number of calls 
+    \item{counts}{A two-element integer vector giving the number of calls 
     to the log-likelihood function and its gradient respectively. 
     This excludes those calls needed to compute the Hessian, if requested, 
     and any calls to log-likelihood function to compute a finite-difference
@@ -168,6 +166,7 @@ mledist(data, distr, start = NULL, fix.arg = NULL, optim.method = "default",
     \item{optim.message}{A character string giving any additional information 
     returned by the optimizer, or \code{NULL}. To understand exactly the message,
     see the source code.}
+    \item{loglik}{the log-likelihood value.}
 }
 
 

@@ -62,6 +62,11 @@ qqcomp <- function(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, main, x
   n <- length(mydata)
   sdata <- sort(mydata)
   largedata <- (n > 1e4)
+  if (xlogscale != ylogscale)
+  {
+    warning("As a Q-Q plot should use the same scale on x and y axes, 
+            both or none of the axes should be put in a logarithmic scale.")
+  }
   logxy <- paste(ifelse(xlogscale,"x",""), ifelse(ylogscale,"y",""), sep="")
   
   # manage default parameters
@@ -70,8 +75,15 @@ qqcomp <- function(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, main, x
   if (missing(fitpch)) fitpch <- ifelse(largedata, 1, 21)
   fitcol <- rep(fitcol, length.out=nft)
   fitpch <- rep(fitpch, length.out=nft)
-  if (missing(legendtext)) 
-    legendtext <- paste("fit",1:nft)
+  # check legend parameters if added
+  if(missing(legendtext)) 
+  {
+    legendtext <- sapply(ft, function(x) x$distname)
+    if(length(legendtext) != length(unique(legendtext)))
+      legendtext <- paste(legendtext, sapply(ft, function(x) toupper(x$method)), sep="-")
+    if(length(legendtext) != length(unique(legendtext)))
+      legendtext <- paste(legendtext, 1:nft, sep="-")
+  }
   
   if (missing(xlab))
     xlab <- "Theoretical quantiles"
@@ -92,7 +104,7 @@ qqcomp <- function(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, main, x
     para <- c(as.list(fti$estimate), as.list(fti$fix.arg))
     distname <- fti$distname
     qdistname <- paste("q", distname, sep="")
-    do.call(qdistname, c(list(p=obsp), as.list(para)))
+    do.call(qdistname, c(list(obsp), as.list(para)))
   }
   fittedquant <- sapply(1:nft, comput.fti)
   if(NCOL(fittedquant) != nft || NROW(fittedquant) != length(obsp))
@@ -123,7 +135,15 @@ qqcomp <- function(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, main, x
         points(fittedquant[,i], sdata, pch=fitpch[i], col=fitcol[i], ...)
     if(nft > 1 && ynoise && !largedata)
       for(i in 2:nft)
-        points(fittedquant[,i], sdata*(1 + rnorm(n, 0, 0.01)), pch=fitpch[i], col=fitcol[i], ...)
+        if (ylogscale)
+        {
+          noise2mult <- runif(n, 0.95, 1.05)
+          points(fittedquant[,i], sdata*noise2mult, pch=fitpch[i], col=fitcol[i], ...)
+        }else
+        {
+          noise2add <- runif(n, -0.02, 0.02)
+          points(fittedquant[,i], sdata+noise2add, pch=fitpch[i], col=fitcol[i], ...)
+        }
     if(largedata)
       for(i in 2:nft)
         lines(fittedquant[,i], sdata, col=fitcol[i], lty = fitpch[i], ...)
@@ -156,10 +176,19 @@ qqcomp <- function(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, main, x
     fittedquant <- as.data.frame(fittedquant)
     colnames(fittedquant) <- unlist(lapply(ft, function(X) X["distname"]))
     fittedquant <- stack(fittedquant)
+    nfq <- nrow(fittedquant)
     fittedquant$sdata <- sdata   # sdata is recycled in the standard fashion
     fittedquant$ind <- factor(fittedquant$ind, levels = unique(fittedquant$ind))   # reorder levels in the appearance order of the input
     if(nft > 1 && ynoise && !largedata) {
-      fittedquant$sdata <- fittedquant$sdata*(1 + rnorm(n*nft, 0, 0.01))
+      if (ylogscale)
+      {
+        noise2mult <- runif(nfq, 0.95, 1.05)
+        fittedquant$sdata <- fittedquant$sdata*noise2mult
+      }else
+      {
+        noise2add <- runif(nfq, -0.02, 0.02)
+        fittedquant$sdata <- fittedquant$sdata+noise2add
+      }
     }
     
     ggqqcomp <-
@@ -170,7 +199,7 @@ qqcomp <- function(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, main, x
       ggplot2::coord_cartesian(xlim = c(xlim[1], xlim[2]), ylim = c(ylim[1], ylim[2])) +
       {if(!largedata) ggplot2::geom_point() else ggplot2::geom_line(ggplot2::aes_(linetype = quote(ind)))} +
       
-      {if(addlegend) ggplot2::theme(legend.position = c(xlegend, ylegend)) else ggplot2::theme(legend.position = "none")} +
+      {if(addlegend) ggplot2::theme(legend.position = c(xlegend, ylegend), plot.title = ggplot2::element_text(hjust = 0.5)) else ggplot2::theme(legend.position = "none", plot.title = ggplot2::element_text(hjust = 0.5))} +
       ggplot2::scale_color_manual(values = fitcol, labels = legendtext) +
       ggplot2::scale_shape_manual(values = fitpch, labels = legendtext) +
       ggplot2::scale_linetype_manual(values = fitpch, labels = legendtext) +

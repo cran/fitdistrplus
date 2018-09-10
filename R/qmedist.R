@@ -24,7 +24,7 @@
 
 qmedist <- function (data, distr, probs, start=NULL, fix.arg=NULL, 
     qtype=7, optim.method="default", lower=-Inf, upper=Inf, custom.optim=NULL, 
-    weights=NULL, silent=TRUE, gradient=NULL, ...)
+    weights=NULL, silent=TRUE, gradient=NULL, checkstartfix=FALSE, ...)
     # data may correspond to a vector for non censored data or to
     # a dataframe of two columns named left and right for censored data 
 {
@@ -35,6 +35,7 @@ qmedist <- function (data, distr, probs, start=NULL, fix.arg=NULL,
         distname <- distr
     qdistname <- paste("q",distname,sep="")
     ddistname <- paste("d",distname,sep="")
+    argddistname <- names(formals(ddistname))
     
     if (!exists(qdistname, mode="function"))
         stop(paste("The ", qdistname, " function must be defined"))
@@ -74,28 +75,37 @@ qmedist <- function (data, distr, probs, start=NULL, fix.arg=NULL,
         stop("Quantile matching estimation is not yet available for censored data.")
     }
     
-
-    # QME fit 
-    # definition of starting/fixed values values
-    argddistname <- names(formals(ddistname))
-    chfixstt <- checkparam(start.arg=start.arg, fix.arg=fix.arg, argdistname=argddistname, 
-                           errtxt=NULL, data10=head(data, 10), distname=distname)
-    if(!chfixstt$ok)
-      stop(chfixstt$txt)
-    #unlist starting values as needed in optim()
-    if(is.function(chfixstt$start.arg))
-      vstart <- unlist(chfixstt$start.arg(data))
-    else
-      vstart <- unlist(chfixstt$start.arg)
-    if(is.function(fix.arg)) #function
-    { 
-      fix.arg.fun <- fix.arg
-      fix.arg <- fix.arg(data)
-    }else
-      fix.arg.fun <- NULL
-    #otherwise fix.arg is a named list or NULL
     
-    # end of the definition of starting/fixed values 
+    if(!checkstartfix) #pre-check has not been done by fitdist() or bootdist()
+    {
+      # manage starting/fixed values: may raise errors or return two named list
+      arg_startfix <- manageparam(start.arg=start, fix.arg=fix.arg, obs=data, 
+                                  distname=distname)
+      
+      #check inconsistent parameters
+      arg_startfix <- checkparamlist(arg_startfix$start.arg, arg_startfix$fix.arg, argddistname)
+      #arg_startfix contains two names list (no longer NULL nor function)  
+      
+      #set fix.arg.fun
+      if(is.function(fix.arg))
+        fix.arg.fun <- fix.arg
+      else
+        fix.arg.fun <- NULL
+    }else #pre-check has been done by fitdist() or bootdist()
+    {
+      arg_startfix <- list(start.arg=start, fix.arg=fix.arg)
+      fix.arg.fun <- NULL
+    }
+    
+    #unlist starting values as needed in optim()
+    vstart <- unlist(arg_startfix$start.arg)
+    #sanity check
+    if(is.null(vstart))
+      stop("Starting values could not be NULL with checkstartfix=TRUE")
+    
+    #erase user value
+    #(cannot coerce to vector as there might be different modes: numeric, character...)
+    fix.arg <- arg_startfix$fix.arg
 
     if(length(vstart) != length(probs))
         stop("wrong dimension for the quantiles to match.")
@@ -253,9 +263,10 @@ qmedist <- function (data, distr, probs, start=NULL, fix.arg=NULL,
         if(is.null(names(opt$par)))
           names(opt$par) <- names(vstart)
         res <- list(estimate = opt$par, convergence = opt$convergence, value = opt$value, 
-					hessian = opt$hessian, probs=probs, optim.function=opt.fun, 
-					loglik=loglik(opt$par, fix.arg, data, ddistname), fix.arg=fix.arg,
-          optim.method=meth, weights = weights, counts=opt$counts, optim.message=opt$message)		
+					hessian = opt$hessian, optim.function=opt.fun, optim.method=meth, 
+					fix.arg=fix.arg, fix.arg.fun=fix.arg.fun, weights = weights, 
+					counts=opt$counts, optim.message=opt$message, 
+					loglik=loglik(opt$par, fix.arg, data, ddistname), probs=probs)		
     }
     else # Try to minimize the stat distance using a user-supplied optim function 
     {
@@ -279,10 +290,13 @@ qmedist <- function (data, distr, probs, start=NULL, fix.arg=NULL,
         }
         if(is.null(names(opt$par)))
           names(opt$par) <- names(vstart)
+        argdot <- list(...)
+        method.cust <- argdot$method
         res <- list(estimate = opt$par, convergence = opt$convergence, value = opt$value, 
-					hessian = opt$hessian, probs=probs, optim.function=custom.optim, 
-					loglik=loglik(opt$par, fix.arg, data, ddistname), fix.arg=fix.arg, 
-          optim.method=NULL, weights = weights, counts=opt$counts, optim.message=opt$message)		
+                    hessian = opt$hessian, optim.function=custom.optim, optim.method=method.cust, 
+                    fix.arg=fix.arg, fix.arg.fun=fix.arg.fun, weights = weights, 
+                    counts=opt$counts, optim.message=opt$message, 
+                    loglik=loglik(opt$par, fix.arg, data, ddistname), probs=probs)
     }   
     return(res)    
      

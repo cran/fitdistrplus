@@ -53,13 +53,6 @@ fitdist(data, distr, method = c("mle", "mme", "qme", "mge"),
     or a function of data computing (fixed) parameter values and returning a named list. 
     Parameters with fixed value are thus NOT estimated by this maximum likelihood procedure.
     The use of this argument is not possible if \code{method="mme"} and a closed-form formula is used.}
-\item{x}{An object of class \code{"fitdist"}.  }
-\item{object}{An object of class \code{"fitdist"}.  }
-\item{breaks}{If \code{"default"} the histogram is plotted with the function \code{hist} 
-    with its default breaks definition. Else \code{breaks} is passed to the function \code{hist}.
-    This argument is not taken into account with discrete distributions: \code{"binom"}, 
-    \code{"nbinom"}, \code{"geom"}, \code{"hyper"} and \code{"pois"}. }
-    
 \item{keepdata}{a logical. If \code{TRUE}, dataset is returned, 
     otherwise only a sample subset is returned.}
 \item{keepdata.nb}{When \code{keepdata=FALSE}, the length (>1) of the subset returned.}
@@ -71,6 +64,12 @@ fitdist(data, distr, method = c("mle", "mme", "qme", "mge"),
     to enter this argument when using another discrete distribution. This argument will not directly affect
     the results of the fit but will be passed to functions \code{\link{gofstat}}, \code{\link{plotdist}} 
     and \code{\link{cdfcomp}}.  }
+\item{x}{An object of class \code{"fitdist"}.  }
+\item{object}{An object of class \code{"fitdist"}.  }
+\item{breaks}{If \code{"default"} the histogram is plotted with the function \code{hist} 
+    with its default breaks definition. Else \code{breaks} is passed to the function \code{hist}.
+    This argument is not taken into account with discrete distributions: \code{"binom"}, 
+    \code{"nbinom"}, \code{"geom"}, \code{"hyper"} and \code{"pois"}. }
 \item{\dots}{Further arguments to be passed to generic functions, or to one of the functions
     \code{"mledist"},  \code{"mmedist"}, \code{"qmedist"} or \code{"mgedist"}
     depending of the chosen method. See \code{\link{mledist}}, \code{\link{mmedist}}, \code{\link{qmedist}}, 
@@ -166,8 +165,8 @@ fitdist(data, distr, method = c("mle", "mme", "qme", "mge"),
 
 \value{ 
     \code{fitdist} returns an object of class \code{"fitdist"}, a list with the following components:
-    \item{estimate }{ the parameter estimates.}
-    \item{method }{ the character string coding for the fitting method : 
+    \item{estimate}{ the parameter estimates.}
+    \item{method}{ the character string coding for the fitting method : 
         \code{"mle"} for 'maximum likelihood estimation', \code{"mme"} for 'matching moment estimation',
          \code{"qme"} for 'matching quantile estimation'
     and \code{"mge"} for 'maximum goodness-of-fit estimation'.}
@@ -186,13 +185,21 @@ fitdist(data, distr, method = c("mle", "mme", "qme", "mge"),
         that must be kept fixed rather than estimated by maximum likelihood or \code{NULL} 
         if there are no such parameters. }
     \item{fix.arg.fun}{the function used to set the value of \code{fix.arg} or \code{NULL}.}    
-    \item{discrete}{ the input argument or the automatic definition by the function to be passed
-        to functions \code{\link{gofstat}}, \code{\link{plotdist}} 
-        and \code{\link{cdfcomp}}. }
     \item{dots}{ the list of  further arguments passed in \dots to be used in \code{\link{bootdist}} 
         in iterative calls to \code{\link{mledist}}, \code{\link{mmedist}},
         \code{\link{qmedist}}, \code{\link{mgedist}} or 
         \code{NULL} if no such arguments.}
+    \item{convergence}{ an integer code for the convergence of 
+    \code{\link{optim}}/\code{\link{constrOptim}} defined as below
+    or defined by the user in the user-supplied optimization function. 
+        \code{0} indicates successful convergence.
+        \code{1} indicates that the iteration limit of \code{\link{optim}} has been reached.
+        \code{10} indicates degeneracy of the Nealder-Mead simplex.
+        \code{100} indicates that \code{\link{optim}} encountered an internal error.}    
+    \item{discrete}{ the input argument or the automatic definition by the function to be passed
+        to functions \code{\link{gofstat}}, \code{\link{plotdist}} 
+        and \code{\link{cdfcomp}}. }
+    
     \item{weights}{the vector of weigths used in the estimation process or \code{NULL}.}    
 
     Generic functions:
@@ -341,7 +348,7 @@ fitdist(serving, "gamma", optim.method="SANN")
 
 # (7) custom optimization function
 #
-
+\dontrun{
 #create the sample
 set.seed(1234)
 mysample <- rexp(100, 5)
@@ -372,6 +379,7 @@ res2 <- fitdist(mysample, "exp", start=mystart, custom.optim=myoptimize,
 
 #show the result
 summary(res2)
+}
 
 
 # (8) custom optimization function - another example with the genetic algorithm
@@ -450,7 +458,7 @@ gofstat(fWqme)
 # (12) Fit of a Weibull distribution to serving size data by maximum 
 # goodness-of-fit estimation using all the distances available
 # 
-
+\dontrun{
 data(groundbeef)
 serving <- groundbeef$serving
 (f1 <- fitdist(serving, "weibull", method="mge", gof="CvM"))
@@ -465,6 +473,7 @@ cdfcomp(list(f1, f2, f3, f4, f5, f6, f7, f8))
 cdfcomp(list(f1, f2, f3, f4, f5, f6, f7, f8), 
   xlogscale=TRUE, xlim=c(8, 250), verticals=TRUE)
 denscomp(list(f1, f2, f3, f4, f5, f6, f7, f8))
+}
 
 # (13) Fit of a uniform distribution using maximum likelihood 
 # (a closed formula is used in this special case where the loglikelihood is not defined),

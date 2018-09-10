@@ -28,7 +28,8 @@
 cdfcomp <- function(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, main, xlab, ylab, 
                     datapch, datacol, fitlty, fitcol, addlegend = TRUE, legendtext, xlegend = "bottomright", 
                     ylegend = NULL, horizontals = TRUE, verticals = FALSE, do.points = TRUE, 
-                    use.ppoints = TRUE, a.ppoints = 0.5, lines01 = FALSE, discrete, add = FALSE, plotstyle = "graphics", ...)
+                    use.ppoints = TRUE, a.ppoints = 0.5, lines01 = FALSE, discrete, add = FALSE, 
+                    plotstyle = "graphics", fitnbpts = 101, ...)
 {
   if(inherits(ft, "fitdist"))
   {
@@ -67,16 +68,21 @@ cdfcomp <- function(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, main, 
   
   # check legend parameters if added
   if(missing(legendtext)) 
-    legendtext <- paste("fit", 1:nft)
+  {
+    legendtext <- sapply(ft, function(x) x$distname)
+    if(length(legendtext) != length(unique(legendtext)))
+      legendtext <- paste(legendtext, sapply(ft, function(x) toupper(x$method)), sep="-")
+    if(length(legendtext) != length(unique(legendtext)))
+      legendtext <- paste(legendtext, 1:nft, sep="-")
+  }
   
   # initiate discrete if not given 
   if(missing(discrete))
   {
-    discrete <- ft[[1]]$discrete
+    discrete <- any(sapply(ft, function(x) x$discrete))
   }
   if(!is.logical(discrete))
     stop("wrong argument 'discrete'.")
-  
   
   # check data
   mydata <- ft[[1]]$data
@@ -113,9 +119,9 @@ cdfcomp <- function(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, main, 
   
   # plot of data (ecdf)
   if(xlogscale && !discrete)
-    sfin <- seq(log10(xmin), log10(xmax), by=(log10(xmax)-log10(xmin))/100)
+    sfin <- seq(log10(xmin), log10(xmax), by=(log10(xmax)-log10(xmin))/fitnbpts[1])
   else # (!xlogscale && !discrete) and discrete
-    sfin <- seq(xmin, xmax, length.out=101)
+    sfin <- seq(xmin, xmax, length.out=fitnbpts[1])
   
   
   # previous version with no vizualisation of ex-aequos
@@ -134,10 +140,10 @@ cdfcomp <- function(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, main, 
     pdistname <- paste("p", distname, sep = "")
     if(xlogscale && !discrete)
     {
-      do.call(pdistname, c(list(q=10^sfin), as.list(para)))
+      do.call(pdistname, c(list(10^sfin), as.list(para)))
     }else
     {
-      do.call(pdistname, c(list(q=sfin), as.list(para)))
+      do.call(pdistname, c(list(sfin), as.list(para)))
     }
   }
   fittedprob <- sapply(1:nft, comput.fti)  	
@@ -227,6 +233,9 @@ cdfcomp <- function(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, main, 
       xlegend <- "left"
     if(xlegend %in% c("topright", "bottomright"))
       xlegend <- "right"
+    if(xlegend == "center")
+      xlegend <- "right"
+    
     
     # structure the fittedprob in a relevant data.frame
     fittedprob <- as.data.frame(fittedprob)
@@ -259,7 +268,8 @@ cdfcomp <- function(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, main, 
       
       {if(discrete) ggplot2::geom_step(data = fittedprob, ggplot2::aes_(linetype = quote(ind), colour = quote(ind)), size = 0.4)} +
       {if(!discrete) ggplot2::geom_line(data = fittedprob, ggplot2::aes_(linetype = quote(ind), colour = quote(ind)), size = 0.4)} +
-      
+
+      ggplot2::theme_bw() +   
       {if(addlegend) ggplot2::theme(legend.position = c(xlegend, ylegend)) else ggplot2::theme(legend.position = "none")} +
       ggplot2::scale_color_manual(values = fitcol, labels = legendtext) +
       ggplot2::scale_linetype_manual(values = fitlty, labels = legendtext) +

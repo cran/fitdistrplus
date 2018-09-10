@@ -44,12 +44,42 @@ fitdistcens <- function (censdata, distr, start=NULL, fix.arg=NULL,
     if(!is.logical(keepdata) || !is.numeric(keepdata.nb) || keepdata.nb < 3)
       stop("wrong arguments 'keepdata' and 'keepdata.nb'.")
     
+    #encapsulate three dots arguments
     my3dots <- list(...)    
     if (length(my3dots) == 0) 
       my3dots <- NULL
+    
+    #format data for calculation of starting values
+    pseudodata <- cens2pseudo(censdata)$pseudo
+    
+    # manage starting/fixed values: may raise errors or return two named list
+    arg_startfix <- manageparam(start.arg=start, fix.arg=fix.arg, obs=pseudodata, 
+                                distname=distname)
+    
+    #check inconsistent parameters
+    argddistname <- names(formals(ddistname))
+    arg_startfix <- checkparamlist(arg_startfix$start.arg, arg_startfix$fix.arg, argddistname)
+    #arg_startfix contains two names list (no longer NULL nor function)
+    #store fix.arg.fun if supplied by the user
+    if(is.function(fix.arg))
+      fix.arg.fun <- fix.arg
+    else
+      fix.arg.fun <- NULL
+    
+    # check d, p, q, functions of distname
+    dpq2test <- c("d", "p")
+    resdpq <- testdpqfun(distname, dpq2test, start.arg=arg_startfix$start.arg, 
+                         fix.arg=arg_startfix$fix.arg, discrete=FALSE)
+    if(any(!resdpq$ok))
+    {
+      for(x in resdpq[!resdpq$ok, "txt"])
+        warning(x)
+    }
+    
         
     # MLE fit with mledist 
-    mle <- mledist(censdata, distname, start, fix.arg, ...)
+    mle <- mledist(censdata, distname, start=arg_startfix$start.arg, 
+                   fix.arg=arg_startfix$fix.arg, checkstartfix=TRUE, ...)
     if (mle$convergence>0) 
         stop("the function mle failed to estimate the parameters, 
         with the error code ", mle$convergence) 
@@ -79,14 +109,19 @@ fitdistcens <- function (censdata, distr, start=NULL, fix.arg=NULL,
     bic <- -2*loglik+log(n)*npar
          
     fix.arg <- mle$fix.arg
-    fix.arg.fun <- mle$fix.arg.fun
     weights <- mle$weights
+    
+    #needed for bootstrap
+    if (!is.null(fix.arg)) 
+      fix.arg <- as.list(fix.arg)
+    
     if(keepdata)
     {
-      reslist <- list(estimate = estimate, sd = sd, cor = correl, vcov = varcovar,
-                    loglik = loglik, aic=aic, bic=bic, censdata=censdata, distname=distname,
-                    fix.arg=as.list(fix.arg), fix.arg.fun = fix.arg.fun, dots=my3dots, 
-                    weights = weights)
+      reslist <- list(estimate = estimate, method="mle", sd = sd, cor = correl, 
+                      vcov = varcovar, loglik = loglik, aic=aic, bic=bic, n=n, censdata=censdata, 
+                      distname=distname, fix.arg=fix.arg, fix.arg.fun = fix.arg.fun, 
+                      dots=my3dots, convergence=mle$convergence, discrete=FALSE,
+                      weights = weights)
     }else
     {
       n2keep <- min(keepdata.nb, n)-4
@@ -95,12 +130,13 @@ fitdistcens <- function (censdata, distr, start=NULL, fix.arg=NULL,
       subdata <- censdata[sample((1:n)[-c(imin, imax)], size=n2keep, replace=FALSE), ]
       subdata <- rbind.data.frame(subdata, censdata[c(imin, imax), ])
       
-      reslist <- list(estimate = estimate, sd = sd, cor = correl, vcov = varcovar,
-                      loglik = loglik, aic=aic, bic=bic, censdata=subdata, distname=distname,
-                      fix.arg=as.list(fix.arg), fix.arg.fun = fix.arg.fun, dots=my3dots,
+      reslist <- list(estimate = estimate, method="mle", sd = sd, cor = correl, 
+                      vcov = varcovar, loglik = loglik, aic=aic, bic=bic, n=n, censdata=subdata, 
+                      distname=distname, fix.arg=fix.arg, fix.arg.fun = fix.arg.fun, 
+                      dots=my3dots, convergence=mle$convergence, discrete=FALSE,
                       weights = weights)
     }
-      
+    
     return(structure(reslist, class = "fitdistcens"))
         
 }
