@@ -1,7 +1,7 @@
 Package: fitdistrplus
 Title: Help to Fit of a Parametric Distribution to Non-Censored or
         Censored Data
-Version: 1.0-11
+Version: 1.0-14
 Authors@R: c(person("Marie-Laure", "Delignette-Muller", role = "aut", email = "marielaure.delignettemuller@vetagro-sup.fr"),
              person("Christophe", "Dutang", role = "aut", email = "christophe.dutang@ensimag.fr"),
              person("Regis", "Pouillot", role = "ctb", email = "rpouillot@yahoo.fr"),
@@ -19,9 +19,11 @@ Encoding: UTF-8
 URL: MailingList: http://listes.univ-lyon1.fr/wws/info/fitdist-users;
         https://lbbe.univ-lyon1.fr/fitdistrplus.html,
         http://riskassessment.r-forge.r-project.org
-Contact: Marie-Laure Delignette-Muller <marielaure.delignettemuller at
-        vetagro-sup.fr> or Christophe Dutang <christophe.dutang at
-        ensimag.fr>
+Contact: Marie-Laure Delignette-Muller
+        <marielaure.delignettemuller@vetagro-sup.fr> or Christophe
+        Dutang <christophe.dutang@ensimag.fr>
+NeedsCompilation: no
+Packaged: 2019-01-23 13:21:11 UTC; aurelie
 Author: Marie-Laure Delignette-Muller [aut],
   Christophe Dutang [aut],
   Regis Pouillot [ctb],
@@ -29,9 +31,4 @@ Author: Marie-Laure Delignette-Muller [aut],
   Aurelie Siberchicot [aut, cre]
 Maintainer: Aurelie Siberchicot <aurelie.siberchicot@univ-lyon1.fr>
 Repository: CRAN
-Repository/R-Forge/Project: riskassessment
-Repository/R-Forge/Revision: 592
-Repository/R-Forge/DateTimeStamp: 2018-09-10 08:46:15
-Date/Publication: 2018-09-10 15:10:12 UTC
-NeedsCompilation: no
-Packaged: 2018-09-10 09:11:31 UTC; rforge
+Date/Publication: 2019-01-23 14:40:03 UTC

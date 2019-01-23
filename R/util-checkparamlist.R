@@ -17,8 +17,8 @@ checkparamlist <- function(start.arg, fix.arg, argdistname, hasnodefaultval)
           t5="A distribution parameter cannot be specified both in 'start' and 'fix.arg'.",
           t6="'start' should not have NA or NaN values.",
           t7="'fix.arg' should not have NA or NaN values.",
-          t8="Some parameter names have no starting/fixed value.",
-          t9="Some parameter names have no starting/fixed value but have a default value.")
+          t8="Some parameter names have no starting/fixed value: ",
+          t9="Some parameter names have no starting/fixed value but have a default value: ")
   
   vstart <- unlist(start.arg)
   #check unexpected names
@@ -26,7 +26,7 @@ checkparamlist <- function(start.arg, fix.arg, argdistname, hasnodefaultval)
   if (any(is.na(m))) 
     stop(errtxt$t3)
   #check NA/NaN values
-  if(any(is.na(vstart) || is.nan(vstart)))
+  if(any(is.na(vstart)) || any(is.nan(vstart)))
     stop(errtxt$t6)
   if(!is.null(fix.arg))
   {
@@ -42,7 +42,7 @@ checkparamlist <- function(start.arg, fix.arg, argdistname, hasnodefaultval)
       stop(errtxt$t5)
     
     #check NA/NaN values
-    if(any(is.na(vfix) || is.nan(vfix)))
+    if(any(is.na(vfix)) || any(is.nan(vfix)))
       stop(errtxt$t7)
     allparname <- names(c(vstart, vfix))
   }else
@@ -64,9 +64,9 @@ checkparamlist <- function(start.arg, fix.arg, argdistname, hasnodefaultval)
   {
     unsetarg <- theoparam[!theoparam %in% allparname] 
     if(any(hasnodefaultval[unsetarg]))
-      stop(errtxt$t8)
+      stop(paste0(errtxt$t8, unsetarg, "."))
     else
-      warning(errtxt$t9)
+      warning(paste0(errtxt$t9, unsetarg, "."))
   }
   
   list("start.arg"=start.arg, "fix.arg"=fix.arg)
