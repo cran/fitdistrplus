@@ -1,14 +1,14 @@
 Package: fitdistrplus
 Title: Help to Fit of a Parametric Distribution to Non-Censored or
         Censored Data
-Version: 1.0-14
+Version: 1.1-1
 Authors@R: c(person("Marie-Laure", "Delignette-Muller", role = "aut", email = "marielaure.delignettemuller@vetagro-sup.fr"),
              person("Christophe", "Dutang", role = "aut", email = "christophe.dutang@ensimag.fr"),
-             person("Regis", "Pouillot", role = "ctb", email = "rpouillot@yahoo.fr"),
-             person("Jean-Baptiste", "Denis", role = "ctb", email = "jbdenis@jouy.inra.fr"),
+             person("Regis", "Pouillot", role = "ctb"),
+             person("Jean-Baptiste", "Denis", role = "ctb"),
              person("Aurelie", "Siberchicot", role = c("aut", "cre"), email = "aurelie.siberchicot@univ-lyon1.fr"))
 Description: Extends the fitdistr() function (of the MASS package) with several functions to help the fit of a parametric distribution to non-censored or censored data. Censored data may contain left censored, right censored and interval censored values, with several lower and upper bounds. In addition to maximum likelihood estimation (MLE), the package provides moment matching (MME), quantile matching (QME) and maximum goodness-of-fit estimation (MGE) methods (available only for non-censored data). Weighted versions of MLE, MME and QME are available. See e.g. Casella & Berger (2002). Statistical inference. Pacific Grove.
-Depends: R (>= 3.2.0), MASS, grDevices, survival, methods, npsurv
+Depends: R (>= 3.2.0), MASS, grDevices, survival, methods
 Imports: stats
 Suggests: actuar, rgenoud, mc2d, gamlss.dist, knitr, knitcitations,
         ggplot2, GeneralizedHyperbolic
@@ -16,14 +16,14 @@ VignetteBuilder: knitr
 BuildVignettes: true
 License: GPL (>= 2)
 Encoding: UTF-8
-URL: MailingList: http://listes.univ-lyon1.fr/wws/info/fitdist-users;
-        https://lbbe.univ-lyon1.fr/fitdistrplus.html,
-        http://riskassessment.r-forge.r-project.org
+URL: https://lbbe.univ-lyon1.fr/fitdistrplus.html,
+        https://github.com/aursiber/fitdistrplus
+BugReports: https://github.com/aursiber/fitdistrplus/issues
 Contact: Marie-Laure Delignette-Muller
         <marielaure.delignettemuller@vetagro-sup.fr> or Christophe
         Dutang <christophe.dutang@ensimag.fr>
 NeedsCompilation: no
-Packaged: 2019-01-23 13:21:11 UTC; aurelie
+Packaged: 2020-05-19 11:44:55 UTC; aurelie
 Author: Marie-Laure Delignette-Muller [aut],
   Christophe Dutang [aut],
   Regis Pouillot [ctb],
@@ -31,4 +31,4 @@ Author: Marie-Laure Delignette-Muller [aut],
   Aurelie Siberchicot [aut, cre]
 Maintainer: Aurelie Siberchicot <aurelie.siberchicot@univ-lyon1.fr>
 Repository: CRAN
-Date/Publication: 2019-01-23 14:40:03 UTC
+Date/Publication: 2020-05-19 13:20:07 UTC

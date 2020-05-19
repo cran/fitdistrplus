@@ -23,14 +23,16 @@
 ### 
 
 plotdistcens <- function(censdata, distr, para, leftNA = -Inf,rightNA = Inf, NPMLE = TRUE,
-                         Turnbull = NULL, Turnbull.confint = FALSE, NPMLE.method = "Wang",...)
+                         Turnbull.confint = FALSE, 
+                         NPMLE.method = "Wang",
+                         ...)
 {
-  if (missing(censdata) ||
+    if (missing(censdata) ||
       !(is.vector(censdata$left) & is.vector(censdata$right) & length(censdata[,1])>1))
     stop("datacens must be a dataframe with two columns named left 
          and right and more than one line")
   if ((missing(distr) & !missing(para)) || 
-      (missing(distr) & !missing(para)))
+      (!missing(distr) & missing(para)))
     stop("distr and para must defined")
   
   my3dots <- list(...)
@@ -70,45 +72,55 @@ plotdistcens <- function(censdata, distr, para, leftNA = -Inf,rightNA = Inf, NPM
   xlim <- c(xmin, xmax)
   #definition of ylim or lim for ECDF
   ylim <- c(0,1)
+
+  # Supression of the deprecated argument Turnbull
+  ###############################################
+  # if (!missing(Turnbull))
+  # {
+  #   warning("The argument Turnbull is deprecated and should note be used any more. 
+  #           Now use the argument NPMLE to tell if you want to compute a nonparametric
+  #           maximum likelihood estimation of the cumulative distribution, and the argument NPMLE.method
+  #           to define the method chosen for the computation (Turnbull or Wang).") 
+  #   if (missing(NPMLE) & missing(NPMLE.method)) 
+  #   {
+  #     if (Turnbull == TRUE)
+  #     {
+  #       NPMLE <- TRUE
+  #       NPMLE.method <- "Turnbull"
+  #     } else
+  #     {
+  #       NPMLE <- FALSE
+  #     }
+  #   }
+  # }
   
-  if (!missing(Turnbull))
+  NPMLE.method <- match.arg(NPMLE.method, c("Wang", "Turnbull.intervals", "Turnbull.middlepoints", "Turnbull"))
+  if (NPMLE.method == "Turnbull")
   {
-    warning("The argument Turnbull is deprecated and should note be used any more. 
-            Now use the argument NPMLE to tell if you want to compute a nonparametric
-            maximum likelihood estimation of the cumulative distribution, and the argument NPMLE.method
-            to define the method chosen for the computation (Turnbull or Wang).") 
-    if (missing(NPMLE) & missing(NPMLE.method)) 
-    {
-      if (Turnbull == TRUE)
-      {
-        NPMLE <- TRUE
-        NPMLE.method <- "Turnbull"
-      } else
-      {
-        NPMLE <- FALSE
-      }
-    }
+    warning("Turnbull is now a deprecated option for NPMLE.method. You should use Turnbull.middlepoints
+            of Turnbull.intervals. It was here fixed as Turnbull.middlepoints, equivalent to former Turnbull.")
+    NPMLE.method <- "Turnbull.middlepoints"
   }
   
-  if ((Turnbull.confint == TRUE) & (NPMLE.method == "Wang"))
+  if ((Turnbull.confint == TRUE) & ((NPMLE.method == "Wang") | (NPMLE.method == "Turnbull.intervals")))
   {
-    warning("When Turnbull.confint is TRUE NPMLE.method is forced to Turnbull." )
-    NPMLE.method <- "Turnbull"
+    warning("When Turnbull.confint is TRUE NPMLE.method is forced to Turnbull.middlepoints." )
+    NPMLE.method <- "Turnbull.middlepoints"
     # so the second part of the message will be printed in the following if needed
     onlyCDFplot <- TRUE
   } 
-  if ((NPMLE.method == "Turnbull") & !missing(distr))
+  if ((NPMLE.method == "Turnbull.middlepoints") & !missing(distr))
   {
-    warning("Q-Q plot and P-P plot are available only using the method implemented in the package npsurv (Wang) 
-            with the arguments NPMLE.method at Wang (default recommended arguments)." )
+    warning("Q-Q plot and P-P plot are available only  
+            with the arguments NPMLE.method at Wang (default value) or Turnbull.intervals." )
     onlyCDFplot <- TRUE
   }
   if ((NPMLE == FALSE) & !missing(distr))
   {
     warning("When NPMLE is FALSE the nonparametric maximum likelihood estimation 
             of the cumulative distribution function is not computed.
-            Q-Q plot and P-P plot are available only using the method implemented in the package npsurv (Wang) 
-            with the arguments Turnbull.confint at FALSE and NPMLE.method at Wang (default recommended arguments)." )
+            Q-Q plot and P-P plot are available only with the arguments NPMLE.method at Wang 
+            (default value) or Turnbull.intervals." )
     onlyCDFplot <- TRUE
   }
   if (!onlyCDFplot)
@@ -134,14 +146,11 @@ plotdistcens <- function(censdata, distr, para, leftNA = -Inf,rightNA = Inf, NPM
   # Plot of the empirical distribution as an ECDF       
   if (NPMLE)
   {
-    if (NPMLE.method == "Wang") # plot using package npsurv
+    if (NPMLE.method == "Wang" | NPMLE.method =="Turnbull.intervals") 
     {
-      db <- censdata
-      db$left[is.na(db$left)] <- -Inf
-      db$right[is.na(db$right)] <- Inf
-      f <- npsurv(db)$f
-      
-      # New xlim calculation form Wang intervals
+      f <- npmle(censdata, method = NPMLE.method)
+          
+      # New xlim calculation from equivalence intervals
       bounds <- c(f$right, f$left)
       finitebounds <- bounds[is.finite(bounds)]
       upper <- max(finitebounds)
@@ -166,8 +175,9 @@ plotdistcens <- function(censdata, distr, para, leftNA = -Inf,rightNA = Inf, NPM
       Qi.right <- df$right
       Qi.right4plot <- Qi.right
       if (is.infinite(Qi.right4plot[k]) | is.nan(Qi.right4plot[k])) Qi.right4plot[k] <- xmaxinf
-      Pi.low <- Fbefore
-      Pi.up <- Fnpsurv
+      # keep only 16 significants digits for R configured with noLD (--disable-long-double)
+      Pi.low <- signif(Fbefore, 16)
+      Pi.up <- signif(Fnpsurv, 16)
       
       # Plot of the ECDF
       if (specifytitle) {
@@ -255,9 +265,9 @@ plotdistcens <- function(censdata, distr, para, leftNA = -Inf,rightNA = Inf, NPM
     }
     # functions to plot one interval or point for each observation for 
     # observation ordered i out of n
-    plotlcens<-function(i) {
-      y<-i/n
-      lines(c(xmininf,lcens[ordlcens[i]]),c(y,y),...) 
+    plotlcens <- function(i) {
+      y <- i/n
+      lines(c(xmininf, lcens[ordlcens[i]]), c(y, y), ...) 
     }
     if (nlcens>=1)
       toto<-sapply(1:nlcens,plotlcens)

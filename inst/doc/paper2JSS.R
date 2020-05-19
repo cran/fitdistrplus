@@ -1,5 +1,4 @@
 ### R code from vignette source 'paper2JSS.Rnw'
-### Encoding: UTF-8
 
 ###################################################
 ### code chunk number 1: par4vignette
@@ -311,7 +310,7 @@ plotdistcens(salinity, NPMLE = FALSE)
 ### code chunk number 32: plotsalinity
 ###################################################
 getOption("SweaveHooks")[["fig"]]()
-plotdistcens(salinity,Turnbull = FALSE)
+plotdistcens(salinity, NPMLE = FALSE)
 
 
 ###################################################

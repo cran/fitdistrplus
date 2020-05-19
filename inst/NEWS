@@ -1,4 +1,20 @@
-=== fitdistrplus : Help to fit of a parametric distribution ===
+==== fitdistrplus : Help to fit of a parametric distribution ===
+
+Version 1.1-1
+=============
+NEW FEATURES
+- add of internal functions to cope with problems of lack of maintenance of the package npsurv and remove the dependence to this package
+- remove of the deprecated argument Turnbull of plotdistcens()
+
+Version 1.0-14
+=============
+NEW FEATURES
+- add a new estimation method called maximum spacing estimation via msedist()
+
+Version 1.0-13
+=============
+BUG FIXES
+- fix issues coming from the noLD (--disable-long-double) configuration of R
 
 Version 1.0-12
 =============
