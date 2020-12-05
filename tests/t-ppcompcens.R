@@ -44,6 +44,7 @@ log10LC50 <-log10(salinity)
 fn <- fitdistcens(log10LC50,"norm")
 fl <- fitdistcens(log10LC50,"logis")
 ppcompcens(list(fn, fl))
+ppcompcens(list(fn, fl), fitlwd = c(5, 2))
 
 if (visualize)
 {
@@ -59,6 +60,7 @@ if (visualize)
 
 if (requireNamespace ("ggplot2", quietly = TRUE) ) {
   ppcompcens(list(fn, fl), plotstyle = "ggplot", fitcol = "red")
+  ppcompcens(list(fn, fl), plotstyle = "ggplot", fitlwd = c(5, 2))
 }
 
 
@@ -69,4 +71,3 @@ if (requireNamespace ("ggplot2", quietly = TRUE) & visualize) {
   ppcompcens(list(fn, fl), ynoise = FALSE, plotstyle = "ggplot")
   ppcompcens(list(fn, fl), xlogscale = TRUE, xlim = c(0.01, 0.6), plotstyle = "ggplot")
 }
-

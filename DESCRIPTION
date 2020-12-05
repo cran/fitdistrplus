@@ -1,17 +1,25 @@
 Package: fitdistrplus
 Title: Help to Fit of a Parametric Distribution to Non-Censored or
         Censored Data
-Version: 1.1-1
+Version: 1.1-3
 Authors@R: c(person("Marie-Laure", "Delignette-Muller", role = "aut", email = "marielaure.delignettemuller@vetagro-sup.fr"),
              person("Christophe", "Dutang", role = "aut", email = "christophe.dutang@ensimag.fr"),
              person("Regis", "Pouillot", role = "ctb"),
              person("Jean-Baptiste", "Denis", role = "ctb"),
              person("Aurelie", "Siberchicot", role = c("aut", "cre"), email = "aurelie.siberchicot@univ-lyon1.fr"))
-Description: Extends the fitdistr() function (of the MASS package) with several functions to help the fit of a parametric distribution to non-censored or censored data. Censored data may contain left censored, right censored and interval censored values, with several lower and upper bounds. In addition to maximum likelihood estimation (MLE), the package provides moment matching (MME), quantile matching (QME) and maximum goodness-of-fit estimation (MGE) methods (available only for non-censored data). Weighted versions of MLE, MME and QME are available. See e.g. Casella & Berger (2002). Statistical inference. Pacific Grove.
+Description: Extends the fitdistr() function (of the MASS package) with several functions 
+  to help the fit of a parametric distribution to non-censored or censored data. 
+  Censored data may contain left censored, right censored and interval censored values, 
+  with several lower and upper bounds. In addition to maximum likelihood estimation (MLE), 
+  the package provides moment matching (MME), quantile matching (QME), maximum goodness-of-fit 
+  estimation (MGE) and maximum spacing estimation (MSE) methods (available only for 
+  non-censored data). Weighted versions of MLE, MME, QME and MSE are available. See e.g. 
+  Casella & Berger (2002), Statistical inference, Pacific Grove, for a general introduction 
+  to parametric estimation.
 Depends: R (>= 3.2.0), MASS, grDevices, survival, methods
 Imports: stats
-Suggests: actuar, rgenoud, mc2d, gamlss.dist, knitr, knitcitations,
-        ggplot2, GeneralizedHyperbolic
+Suggests: actuar, rgenoud, mc2d, gamlss.dist, knitr, ggplot2,
+        GeneralizedHyperbolic, rmarkdown, Hmisc
 VignetteBuilder: knitr
 BuildVignettes: true
 License: GPL (>= 2)
@@ -23,7 +31,7 @@ Contact: Marie-Laure Delignette-Muller
         <marielaure.delignettemuller@vetagro-sup.fr> or Christophe
         Dutang <christophe.dutang@ensimag.fr>
 NeedsCompilation: no
-Packaged: 2020-05-19 11:44:55 UTC; aurelie
+Packaged: 2020-12-04 17:50:04 UTC; siberchicot
 Author: Marie-Laure Delignette-Muller [aut],
   Christophe Dutang [aut],
   Regis Pouillot [ctb],
@@ -31,4 +39,4 @@ Author: Marie-Laure Delignette-Muller [aut],
   Aurelie Siberchicot [aut, cre]
 Maintainer: Aurelie Siberchicot <aurelie.siberchicot@univ-lyon1.fr>
 Repository: CRAN
-Date/Publication: 2020-05-19 13:20:07 UTC
+Date/Publication: 2020-12-05 05:40:07 UTC

@@ -154,7 +154,6 @@ llsurface <- function(data, distr, plot.arg, min.arg, max.arg,   lseq = 50, fix.
     
   }
   
-  
   #sanity check for argument names
   argdistname <- names(formals(ddistname))
   
@@ -175,7 +174,6 @@ llsurface <- function(data, distr, plot.arg, min.arg, max.arg,   lseq = 50, fix.
         par <- list(x,y)
         names(par) <- plot.arg
         loglikelihood(par, fix.arg = fix.arg, obs = data, ddistnam = ddistname, weights = weights)
-        #sum(log(do.call(ddistname, c(list(data), par, as.list(fix.arg)) ) ) )
       }
     }else
     {
@@ -184,7 +182,6 @@ llsurface <- function(data, distr, plot.arg, min.arg, max.arg,   lseq = 50, fix.
         par <- list(x,y)
         names(par) <- plot.arg
         likelihood(par, fix.arg = fix.arg, obs= data, ddistnam = ddistname, weights = weights)
-        # prod(do.call(ddistname, c(list(data), as.list(par), as.list(fix.arg)) ) ) 
       }
     }
   } else # for censored data
@@ -221,12 +218,12 @@ llsurface <- function(data, distr, plot.arg, min.arg, max.arg,   lseq = 50, fix.
   
   if (back.col)
   {
-    image(p1, p2, z, col = pal.col, xlab = plot.arg[1], ylab = plot.arg[2])
+    image(p1, p2, z, col = pal.col, xlab = plot.arg[1], ylab = plot.arg[2], ...)
     if (nlev > 0)
-      contour(p1, p2, z, nlevels = nlev, add = TRUE)
+      contour(p1, p2, z, nlevels = nlev, add = TRUE, ...)
   } else
   {
-    contour(p1, p2, z, nlevels = nlev, xlab = plot.arg[1], ylab = plot.arg[2])
+    contour(p1, p2, z, nlevels = nlev, xlab = plot.arg[1], ylab = plot.arg[2], ...)
   }
   
   invisible()

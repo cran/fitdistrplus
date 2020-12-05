@@ -4,7 +4,9 @@
 \alias{denscomp}
 \alias{qqcomp}
 \alias{ppcomp}
+
 \title{Graphical comparison of multiple fitted distributions (for non-censored data)}
+
 \description{   
  \code{cdfcomp} plots the empirical cumulative distribution against fitted distribution functions,
  \code{denscomp} plots the histogram against fitted density functions, 
@@ -15,24 +17,24 @@
 
 \usage{
 cdfcomp(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, main, xlab, ylab, 
-    datapch, datacol, fitlty, fitcol, addlegend = TRUE, legendtext, 
+    datapch, datacol, fitlty, fitcol, fitlwd, addlegend = TRUE, legendtext, 
     xlegend = "bottomright", ylegend = NULL, horizontals = TRUE, 
     verticals = FALSE, do.points = TRUE, use.ppoints = TRUE, a.ppoints = 0.5, 
     lines01 = FALSE, discrete, add = FALSE, plotstyle = "graphics", 
     fitnbpts = 101, \dots)
     
 denscomp(ft, xlim, ylim, probability = TRUE, main, xlab, ylab, datacol, fitlty, 
-    fitcol, addlegend = TRUE, legendtext, xlegend = "topright", ylegend = NULL, 
+    fitcol, fitlwd, addlegend = TRUE, legendtext, xlegend = "topright", ylegend = NULL, 
     demp = FALSE, dempcol = "black", plotstyle = "graphics", 
     discrete, fitnbpts = 101, fittype="l", \dots)
 
 qqcomp(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, main, xlab, ylab, 
-    fitpch, fitcol, addlegend = TRUE, legendtext, xlegend = "bottomright", 
+    fitpch, fitcol, fitlwd, addlegend = TRUE, legendtext, xlegend = "bottomright", 
     ylegend = NULL, use.ppoints = TRUE, a.ppoints = 0.5, line01 = TRUE, 
     line01col = "black", line01lty = 1, ynoise = TRUE, plotstyle = "graphics", \dots)
     
 ppcomp(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, main, xlab, ylab, 
-    fitpch, fitcol, addlegend = TRUE, legendtext, xlegend = "bottomright", 
+    fitpch, fitcol, fitlwd, addlegend = TRUE, legendtext, xlegend = "bottomright", 
     ylegend = NULL, use.ppoints = TRUE, a.ppoints = 0.5, line01 = TRUE, 
     line01col = "black", line01lty = 1, ynoise = TRUE, plotstyle = "graphics", \dots)
 }
@@ -53,10 +55,13 @@ ppcomp(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, main, xlab, ylab,
   If there are fewer colors than fits they are recycled in the standard fashion.
   See also \code{\link{par}}.}
 \item{fitlty}{A (vector of) line type(s) to plot fitted distributions/densities. 
-  If there are fewer colors than fits they are recycled in the standard fashion.
+  If there are fewer values than fits they are recycled in the standard fashion.
+  See also \code{\link{par}}.}
+\item{fitlwd}{A (vector of) line size(s) to plot fitted distributions/densities. 
+  If there are fewer values than fits they are recycled in the standard fashion.
   See also \code{\link{par}}.}
 \item{fitpch}{A (vector of) line type(s) to plot fitted quantiles/probabilities. 
-  If there are fewer colors than fits they are recycled in the standard fashion.
+  If there are fewer values than fits they are recycled in the standard fashion.
   See also \code{\link{par}}.}
 \item{fittype}{The type of plot for fitted probabilities in the case of
   discrete distributions: possible types are \code{"p"} for points,
@@ -99,8 +104,9 @@ ppcomp(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, main, xlab, ylab,
   object of the list \code{ft} is discrete.}
 \item{add}{If \code{TRUE}, adds to an already existing plot. If \code{FALSE}, starts a new plot.
   This parameter is not available when \code{plotstyle = "ggplot"}.}
-\item{plotstyle}{\code{"graphics"} or \code{"ggplot"}. If \code{"graphics"}, the display is built with \code{\link{graphics}} functions. 
-  If \code{"ggplot"}, a graphic object output is created with \code{ggplot2} functions.}
+\item{plotstyle}{\code{"graphics"} or \code{"ggplot"}. 
+  If \code{"graphics"}, the display is built with \code{\link{graphics}} functions. 
+  If \code{"ggplot"}, a graphic object output is created with \code{ggplot2} functions (the \code{ggplot2} package must be installed).}
 \item{\dots}{Further graphical arguments passed to graphical functions used in \code{cdfcomp}, \code{denscomp}, \code{ppcomp} 
   and \code{qqcomp} when \code{plotstyle = "graphics"}. 
   When \code{plotstyle = "ggplot"}, these arguments are only used by the histogram plot (\code{\link{hist}}) in the \code{denscomp} function.
@@ -148,12 +154,10 @@ ppcomp(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, main, xlab, ylab,
   of fitdistrplus.  
 }
 
-
 \references{
 Delignette-Muller ML and Dutang C (2015), 
 \emph{fitdistrplus: An R Package for Fitting Distributions}.
 Journal of Statistical Software, 64(4), 1-34.
-
 }
 
 \author{ 
@@ -239,11 +243,11 @@ fitnb <- fitdist(number, "nbinom")
 cdfcomp(list(fitp, fitnb), legendtext = c("Poisson", "negative binomial"))
 denscomp(list(fitp, fitnb),demp = TRUE, legendtext = c("Poisson", "negative binomial"))
 denscomp(list(fitp, fitnb),demp = TRUE, fittype = "l", dempcol = "black",
-        legendtext = c("Poisson", "negative binomial"))
+  legendtext = c("Poisson", "negative binomial"))
 denscomp(list(fitp, fitnb),demp = TRUE, fittype = "p", dempcol = "black",
-        legendtext = c("Poisson", "negative binomial"))
+  legendtext = c("Poisson", "negative binomial"))
 denscomp(list(fitp, fitnb),demp = TRUE, fittype = "o", dempcol = "black",
-        legendtext = c("Poisson", "negative binomial"))
+  legendtext = c("Poisson", "negative binomial"))
 
 
 # (5) Customizing of graphical output and use of ggplot2
@@ -254,10 +258,10 @@ fitW <- fitdist(serving, "weibull")
 fitln <- fitdist(serving, "lnorm")
 fitg <- fitdist(serving, "gamma")
 if (requireNamespace ("ggplot2", quietly = TRUE)) {
-denscomp(list(fitW, fitln, fitg), plotstyle = "ggplot")
-cdfcomp(list(fitW, fitln, fitg), plotstyle = "ggplot")
-qqcomp(list(fitW, fitln, fitg), plotstyle = "ggplot")
-ppcomp(list(fitW, fitln, fitg), plotstyle = "ggplot")
+  denscomp(list(fitW, fitln, fitg), plotstyle = "ggplot")
+  cdfcomp(list(fitW, fitln, fitg), plotstyle = "ggplot")
+  qqcomp(list(fitW, fitln, fitg), plotstyle = "ggplot")
+  ppcomp(list(fitW, fitln, fitg), plotstyle = "ggplot")
 }
 
 # customizing graphical output with graphics

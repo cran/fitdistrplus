@@ -22,7 +22,7 @@
 ###         R functions
 ### 
 
-plotdistcens <- function(censdata, distr, para, leftNA = -Inf,rightNA = Inf, NPMLE = TRUE,
+plotdistcens <- function(censdata, distr, para, leftNA = -Inf, rightNA = Inf, NPMLE = TRUE,
                          Turnbull.confint = FALSE, 
                          NPMLE.method = "Wang",
                          ...)
@@ -245,7 +245,7 @@ plotdistcens <- function(censdata, distr, para, leftNA = -Inf,rightNA = Inf, NPM
     noricens<-censdata[!is.na(censdata$left) & !is.na(censdata$right),]
     # definition of mid point for each observation (if not NA) 
     # in order to have the order of plot of each observation
-    # and order of left and rigth bounds for censored observations
+    # and order of left and right bounds for censored observations
     midnoricens<-(noricens$left+noricens$right)/2
     ordmid<-order(midnoricens)
     ordlcens<-order(lcens)

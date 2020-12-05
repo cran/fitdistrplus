@@ -106,6 +106,35 @@ curve(ptiexp(x, 1, .5, 3), add=TRUE, col="blue", lty=3)
 legend("bottomright", lty=1:3, col=c("red", "green", "blue", "black"), 
         leg=c("full MLE", "MLE fixed arg", "true CDF", "emp. CDF"))
 
+## ---- fig.height=4, fig.width=6-----------------------------------------------
+trueval <- c("min"=3, "max"=5)
+x <- runif(n=500, trueval[1], trueval[2])
+
+f1 <- fitdist(x, "unif")
+delta <- .01
+llsurface(x, "unif", plot.arg = c("min", "max"), min.arg=c(min(x)-2*delta, max(x)-delta),
+          max.arg=c(min(x)+delta, max(x)+2*delta), main="likelihood surface for uniform",
+        loglik=FALSE)
+abline(v=min(x), h=max(x), col="grey", lty=2)
+points(f1$estimate[1], f1$estimate[2], pch="x", col="red")
+points(trueval[1], trueval[2], pch="+", col="blue")
+legend("bottomright", pch=c("+","x"), col=c("blue","red"), c("true", "fitted"))
+delta <- .2
+llsurface(x, "unif", plot.arg = c("min", "max"), min.arg=c(3-2*delta, 5-delta),
+          max.arg=c(3+delta, 5+2*delta), main="log-likelihood surface for uniform")
+abline(v=min(x), h=max(x), col="grey", lty=2)
+points(f1$estimate[1], f1$estimate[2], pch="x", col="red")
+points(trueval[1], trueval[2], pch="+", col="blue")
+legend("bottomright", pch=c("+","x"), col=c("blue","red"), c("true", "fitted"))
+
+## -----------------------------------------------------------------------------
+dunif2 <- function(x, min, max) dunif(x, min, max)
+punif2 <- function(q, min, max) punif(q, min, max)
+f2 <- fitdist(x, "unif2", start=list(min=0, max=10), lower=c(-Inf, max(x)),
+              upper=c(min(x), Inf))
+print(c(logLik(f1), logLik(f2)), digits=7)
+print(cbind(coef(f1), coef(f2)), digits=7)
+
 ## -----------------------------------------------------------------------------
 x <- rbeta(1000, 3, 3)
 dbeta2 <- function(x, shape, ...)
@@ -117,6 +146,21 @@ fitdist(x, "beta2", start=list(shape=1/2))
 ## -----------------------------------------------------------------------------
 x <- rbeta(1000, .3, .3)
 fitdist(x, "beta2", start=list(shape=1/2), optim.method="L-BFGS-B", lower=1e-2)	
+
+## ---- message=FALSE, fig.height=4, fig.width=6--------------------------------
+require(mc2d)
+x2 <- rpert(n=2e2, min=0, mode=1, max=2, shape=3/4)
+eps <- sqrt(.Machine$double.eps)
+f1 <- fitdist(x2, "pert", start=list(min=-1, mode=0, max=10, shape=1),
+              lower=c(-Inf, -Inf, -Inf, 0), upper=c(Inf, Inf, Inf, Inf))
+f2 <- fitdist(x2, "pert", start=list(mode=1, shape=1), 
+              fix.arg=list(min=min(x2)-eps, max=max(x2)+eps),
+              lower=c(min(x2), 0), upper=c(max(x2), Inf))
+
+gofstat(list(f1,f2))
+cdfcomp(list(f1,f2))
+print(cbind(coef(f1), c(f2$fix.arg["min"], coef(f2)["mode"], 
+                        f2$fix.arg["max"], coef(f2)["shape"])), digits=7)
 
 ## ---- fig.height=3, fig.width=6-----------------------------------------------
 set.seed(1234)
@@ -400,7 +444,7 @@ fitln <- fitdist(serving, "lnorm")
 fitg <- fitdist(serving, "gamma")
 dcomp <- denscomp(list(fitW, fitln, fitg), legendtext = c("Weibull", "lognormal", "gamma"),
     xlab = "serving sizes (g)", xlim = c(0, 250), 
-    fitcol = c("red", "green", "orange"), fitlty = 1, 
+    fitcol = c("red", "green", "orange"), fitlty = 1, fitlwd = 1:3, 
     xlegend = "topright", plotstyle = "ggplot", addlegend = FALSE)
 dcomp + ggplot2::theme_minimal() + ggplot2::ggtitle("Ground beef fits")
 
