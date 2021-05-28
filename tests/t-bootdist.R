@@ -3,7 +3,7 @@ library(fitdistrplus)
 #For practical application, we recommend to use nbboot=501 or nbboot=1001.
 
 nbboot <- 1001
-nbboot <- 10
+nbboot <- 11
 
 nsample <- 100
 nsample <- 10
@@ -34,7 +34,7 @@ plot(b1, enhance=TRUE)
 plot(b1, enhance=TRUE, trueval = c(2, 3))
 plot(b1, enhance=TRUE, rampcol=c("blue", "green"), nbgrid=15, nbcol=15)
 
-if(any(installed.packages()[, "Package"] == "actuar"))
+if(any(installed.packages()[, "Package"] == "actuar") && visualize)
 {
   require(actuar)
   set.seed(123)
@@ -66,10 +66,12 @@ summary(b1d)
 # (5) fit of a gamma distribution with control of the optimization
 # method,  followed by parametric bootstrap
 #
-f1e <- fitdist(serving, "gamma", optim.method="L-BFGS-B", lower=c(0, 0))
-b1e <- bootdist(f1e, niter=nbboot)
-summary(b1e)
-
+if(visualize) { # check ERROR on aarch64-apple-darwin20.4.0 (64-bit) (2021/05/12)
+  set.seed(1234)
+  f1e <- fitdist(serving, "gamma", optim.method="L-BFGS-B", lower=c(0, 0))
+  b1e <- bootdist(f1e, niter=nbboot)
+  summary(b1e)
+}
 
 # (6) fit of a discrete distribution by matching moment estimation 
 # (using a closed formula) followed by parametric bootstrap
@@ -84,11 +86,14 @@ summary(b2)
 # (7) Fit of a uniform distribution using the Cramer-von Mises distance
 # followed by parametric bootstrap 
 # 
-x3  <-  runif(nsample, min=5, max=10)
-f3  <-  fitdist(x3, "unif", method="mge", gof="CvM")
-b3  <-  bootdist(f3, bootmethod="param", niter=nbboot)
-summary(b3)
-plot(b3)
+if(visualize)
+{
+  x3  <-  runif(nsample, min=5, max=10)
+  f3  <-  fitdist(x3, "unif", method="mge", gof="CvM")
+  b3  <-  bootdist(f3, bootmethod="param", niter=nbboot)
+  summary(b3)
+  plot(b3)
+}
 
 # (9) fit of a Weibull distribution to serving size data by maximum likelihood 
 # estimation or by quantile matching estimation (in this example matching 
@@ -111,13 +116,13 @@ quantile(bWqme, probs=c(0.25, 0.75))
 #
 if (visualize) 
 {
-if(any(installed.packages()[, "Package"] == "actuar"))
-{
+  if(any(installed.packages()[, "Package"] == "actuar"))
+  {
     require(actuar)
-#simulate a sample
+    #simulate a sample
     x4 <- rpareto(nsample,  6,  2)
     memp <- function(x,  order)
-    ifelse(order == 1,  mean(x),  sum(x^order)/length(x))
+      ifelse(order == 1,  mean(x),  sum(x^order)/length(x))
     
     f4 <- fitdist(x4,  "pareto",  "mme",  order=1:2,  
                   start=list(shape=10,  scale=10),  
@@ -128,7 +133,7 @@ if(any(installed.packages()[, "Package"] == "actuar"))
     
     b4npar <- bootdist(f4,  niter=nbboot,  bootmethod="nonparam")
     summary(b4npar)
-}
+  }
 }
 
 # (11) Fit of a Burr distribution (3 parameters) using MLE 
@@ -156,57 +161,59 @@ if (visualize)
 # 
 if(any(installed.packages()[, "Package"] == "mc2d"))
 {
-    require(mc2d)
-    set.seed(1234)
-    x4 <- rtriang(100,min=0,mode=4,max=20) # nsample not used : does not converge if the sample is too small
-    fit4t<-fitdist(x4,dtriang,start=list(min=0,mode=4,max=20))
-    summary(fit4t)
-    b4t<-bootdist(fit4t,niter=nbboot) 
-    b4t
-    plot(b4t)
-    summary(b4t)
-    quantile(b4t)
-
+  require(mc2d)
+  set.seed(1234)
+  x4 <- rtriang(100,min=0,mode=4,max=20) # nsample not used : does not converge if the sample is too small
+  fit4t<-fitdist(x4,dtriang,start=list(min=0,mode=4,max=20))
+  summary(fit4t)
+  b4t<-bootdist(fit4t,niter=nbboot) 
+  b4t
+  plot(b4t)
+  summary(b4t)
+  quantile(b4t)
+  
 }
 
 # (13) Fit of a Pareto and a Burr distribution, with bootstrap on the Burr distribution
 #
 #
-data(endosulfan)
-ATV <-endosulfan$ATV
-plotdist(ATV)
-descdist(ATV,boot=nbboot)
-
-fln <- fitdist(ATV, "lnorm")
-summary(fln)
-gofstat(fln)
-
-# use of plotdist to find good reasonable initial values for parameters
-plotdist(ATV, "pareto", para=list(shape=1, scale=500))
-fP <- fitdist(ATV, "pareto", start=list(shape=1, scale=500))
-summary(fP)
-gofstat(fP)
-
-# definition of the initial values from the fit of the Pareto
-# as the Burr distribution is the Pareto when shape2 == 1
-fB <- fitdist(ATV, "burr", start=list(shape1=0.3, shape2=1, rate=1))
-summary(fB)
-gofstat(fB)
-
-cdfcomp(list(fln,fP,fB),xlogscale=TRUE)
-qqcomp(list(fln,fP,fB),xlogscale=TRUE,ylogscale=TRUE)
-ppcomp(list(fln,fP,fB),xlogscale=TRUE,ylogscale=TRUE)
-denscomp(list(fln,fP,fB)) # without great interest as hist does accept argument log="x"
-
-# comparison of HC5 values (5 percent quantiles)
-quantile(fln,probs=0.05)
-quantile(fP,probs=0.05)
-quantile(fB,probs=0.05)
-
-# bootstrap for the Burr distribution
-bfB <- bootdist(fB,niter=nbboot)
-plot(bfB)
-
+if(visualize)
+{
+  data(endosulfan)
+  ATV <-endosulfan$ATV
+  plotdist(ATV)
+  descdist(ATV,boot=nbboot)
+  
+  fln <- fitdist(ATV, "lnorm")
+  summary(fln)
+  gofstat(fln)
+  
+  # use of plotdist to find good reasonable initial values for parameters
+  plotdist(ATV, "pareto", para=list(shape=1, scale=500))
+  fP <- fitdist(ATV, "pareto", start=list(shape=1, scale=500))
+  summary(fP)
+  gofstat(fP)
+  
+  # definition of the initial values from the fit of the Pareto
+  # as the Burr distribution is the Pareto when shape2 == 1
+  fB <- fitdist(ATV, "burr", start=list(shape1=0.3, shape2=1, rate=1))
+  summary(fB)
+  gofstat(fB)
+  
+  cdfcomp(list(fln,fP,fB),xlogscale=TRUE)
+  qqcomp(list(fln,fP,fB),xlogscale=TRUE,ylogscale=TRUE)
+  ppcomp(list(fln,fP,fB),xlogscale=TRUE,ylogscale=TRUE)
+  denscomp(list(fln,fP,fB)) # without great interest as hist does accept argument log="x"
+  
+  # comparison of HC5 values (5 percent quantiles)
+  quantile(fln,probs=0.05)
+  quantile(fP,probs=0.05)
+  quantile(fB,probs=0.05)
+  
+  # bootstrap for the Burr distribution
+  bfB <- bootdist(fB,niter=nbboot)
+  plot(bfB)
+}
 
 # (14) relevant example for zero modified geometric distribution
 #
@@ -269,15 +276,15 @@ if (visualize)
   }
   # not available on Windows
   if(.Platform$OS.type == "unix") 
-  for (cli in 1:4)
-  {
-    cat("\nnb cluster", cli, "\n")
-    #ptm <- proc.time()
-    alltime[cli+5,] <- system.time(res <- bootdist(f1, niter = niter, parallel = "multicore", ncpus = cli))
-    print(summary(res))
-    #print(proc.time() - ptm)
-    
-  }
+    for (cli in 1:4)
+    {
+      cat("\nnb cluster", cli, "\n")
+      #ptm <- proc.time()
+      alltime[cli+5,] <- system.time(res <- bootdist(f1, niter = niter, parallel = "multicore", ncpus = cli))
+      print(summary(res))
+      #print(proc.time() - ptm)
+      
+    }
   
   alltime
 }

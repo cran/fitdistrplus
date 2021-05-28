@@ -1,7 +1,7 @@
 Package: fitdistrplus
 Title: Help to Fit of a Parametric Distribution to Non-Censored or
         Censored Data
-Version: 1.1-3
+Version: 1.1-5
 Authors@R: c(person("Marie-Laure", "Delignette-Muller", role = "aut", email = "marielaure.delignettemuller@vetagro-sup.fr"),
              person("Christophe", "Dutang", role = "aut", email = "christophe.dutang@ensimag.fr"),
              person("Regis", "Pouillot", role = "ctb"),
@@ -31,7 +31,7 @@ Contact: Marie-Laure Delignette-Muller
         <marielaure.delignettemuller@vetagro-sup.fr> or Christophe
         Dutang <christophe.dutang@ensimag.fr>
 NeedsCompilation: no
-Packaged: 2020-12-04 17:50:04 UTC; siberchicot
+Packaged: 2021-05-19 12:47:17 UTC; siberchicot
 Author: Marie-Laure Delignette-Muller [aut],
   Christophe Dutang [aut],
   Regis Pouillot [ctb],
@@ -39,4 +39,4 @@ Author: Marie-Laure Delignette-Muller [aut],
   Aurelie Siberchicot [aut, cre]
 Maintainer: Aurelie Siberchicot <aurelie.siberchicot@univ-lyon1.fr>
 Repository: CRAN
-Date/Publication: 2020-12-05 05:40:07 UTC
+Date/Publication: 2021-05-28 05:50:02 UTC

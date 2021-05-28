@@ -1,4 +1,3 @@
-
 library(fitdistrplus)
 nbboot <- 100
 nbboot <- 10
@@ -22,7 +21,10 @@ names(fitdist(serving, "gamma", optim.method="Brent", lower=0, upper=10, fix.arg
 names(fitdist(serving, "gamma", optim.method="Nelder-Mead")$estimate)
 names(fitdist(serving, "gamma", optim.method="BFGS")$estimate)
 # names(fitdist(serving, "gamma", optim.method="CG", start=list(shape=4, rate=1/20))$estimate)
-names(fitdist(serving, "gamma", optim.method="L-BFGS-B", lower=0)$estimate)
+if(visualize) {  # check ERROR on aarch64-apple-darwin20.4.0 (64-bit) (2021/05/12)
+  set.seed(1234)
+  names(fitdist(serving, "gamma", optim.method="L-BFGS-B", lower=0)$estimate)
+}
 
 # (7) custom optimization function
 #
@@ -42,18 +44,18 @@ summary(res1)
 #to meet the standard 'fn' argument and specific name arguments, we wrap optimize, 
 myoptimize <- function(fn, par, ...) 
 {
-    res <- optimize(f=fn, ..., maximum=FALSE)  
-#assume the optimization function minimize
-    
-    standardres <- c(res, convergence=0, value=res$objective, 
-                     par=res$minimum, hessian=NA)
-    
-    return(standardres)
+  res <- optimize(f=fn, ..., maximum=FALSE)  
+  #assume the optimization function minimize
+  
+  standardres <- c(res, convergence=0, value=res$objective, 
+                   par=res$minimum, hessian=NA)
+  
+  return(standardres)
 }
 
 #call fitdist with a 'custom' optimization function
 res2 <- fitdist(mysample, dexp, start=mystart, custom.optim=myoptimize, 
-interval=c(0, 100))
+                interval=c(0, 100))
 
 #show the result
 summary(res2)
@@ -61,50 +63,50 @@ summary(res2)
 
 # (8) custom optimization function - another example with the genetic algorithm
 #
-if(any(installed.packages()[,"Package"] == "rgenoud"))
+if(any(installed.packages()[,"Package"] == "rgenoud") && visualize)
 {
-
-#set a sample
-    fit1 <- fitdist(serving, "gamma")
-    summary(fit1)
+  
+  #set a sample
+  fit1 <- fitdist(serving, "gamma")
+  summary(fit1)
+  
+  #wrap genoud function rgenoud package
+  mygenoud <- function(fn, par, ...) 
+  {
+    require(rgenoud)
+    res <- genoud(fn, starting.values=par, ...)        
+    standardres <- c(res, convergence=0, counts=NULL)
     
-#wrap genoud function rgenoud package
-    mygenoud <- function(fn, par, ...) 
-    {
-        require(rgenoud)
-        res <- genoud(fn, starting.values=par, ...)        
-        standardres <- c(res, convergence=0, counts=NULL)
-        
-        return(standardres)
-    }
-    
-#call fitdist with a 'custom' optimization function
-    fit2 <- fitdist(serving, "gamma", custom.optim=mygenoud, nvars=2, start=as.list(fit1$estimate),
-                    Domains=cbind(c(0, 0), c(10, 10)), boundary.enforcement=1, 
-                    print.level=0, hessian=TRUE)
-    
-    summary(fit2)
+    return(standardres)
+  }
+  
+  #call fitdist with a 'custom' optimization function
+  fit2 <- fitdist(serving, "gamma", custom.optim=mygenoud, nvars=2, start=as.list(fit1$estimate),
+                  Domains=cbind(c(0, 0), c(10, 10)), boundary.enforcement=1, 
+                  print.level=0, hessian=TRUE)
+  
+  summary(fit2)
 }
 
 # (11) Fit of a Pareto distribution by numerical moment matching estimation
 #
-if(any(installed.packages()[,"Package"] == "actuar"))
+if(any(installed.packages()[,"Package"] == "actuar") && visualize)
 {
-    require(actuar)
-    #simulate a sample
-    set.seed(1234)
-    x4 <- rpareto(nsample, 6, 2)
-    
-    #empirical raw moment
-    memp <- function(x, order)
-        ifelse(order == 1, mean(x), sum(x^order)/length(x))
-    
-    #fit
-    fP <- fitdist(x4, "pareto", method="mme", order=c(1, 2), memp="memp", 
-                  start=list(shape=10, scale=10), lower=1, upper=Inf)
-    summary(fP)
-    plot(fP)
-    
+  require(actuar)
+  #simulate a sample
+  set.seed(1234)
+  x4 <- rpareto(nsample, 6, 2)
+  
+  #empirical raw moment
+  memp <- function(x, order)
+    ifelse(order == 1, mean(x), sum(x^order)/length(x))
+  
+  #fit
+  fP <- fitdist(x4, "pareto", method="mme", order=c(1, 2), memp="memp", 
+                start=list(shape=10, scale=10), lower=1, upper=Inf)
+  summary(fP)
+  plot(fP)
+  
 }
 
 
@@ -200,14 +202,14 @@ quantile(fln, probs = 0.05)
 # (17) Fit of a triangular distribution using Cramer-von Mises or
 # Kolmogorov-Smirnov distance
 # 
-if(any(installed.packages()[,"Package"] == "mc2d"))
+if(any(installed.packages()[,"Package"] == "mc2d") && visualize)
 {
-set.seed(1234)
-require(mc2d)
-t <- rtriang(100,min=5,mode=6,max=10) # nsample not used : does not converge with a too small sample
-fCvM <- fitdist(t,"triang",method="mge",start = list(min=4, mode=6,max=9),gof="CvM")
-fKS <- fitdist(t,"triang",method="mge",start = list(min=4, mode=6,max=9),gof="KS")
-cdfcomp(list(fCvM,fKS))
+  set.seed(1234)
+  require(mc2d)
+  t <- rtriang(100,min=5,mode=6,max=10) # nsample not used : does not converge with a too small sample
+  fCvM <- fitdist(t,"triang",method="mge",start = list(min=4, mode=6,max=9),gof="CvM")
+  fKS <- fitdist(t,"triang",method="mge",start = list(min=4, mode=6,max=9),gof="KS")
+  cdfcomp(list(fCvM,fKS))
 }
 
 # (18) gumbel distribution
@@ -353,20 +355,22 @@ fitdist(x, "pois", method = "qme", probs=c(1/2), optim.method="SANN", control=li
 # that do not yet take weights into account
 # with an example to be used later to see if weights are well taken into account
 #
-
-x3 <- rnorm(100) # this sample size must be fixed here (see next lines, 50+50)
-x3 <- sort(x3)
-(f <- fitdist(x3, "norm", method="mle", weights= c(rep(1, 50), rep(2, 50))))
-try(plot(f))
-try(cdfcomp(f))
-(f2 <- fitdist(x3, "logis", method="mle", weights= c(rep(1, 50), rep(2, 50))))
-try(cdfcomp(list(f,f2)))
-try(denscomp(f))
-try(denscomp(list(f,f2)))
-try(ppcomp(f))
-try(ppcomp(list(f,f2)))
-try(qqcomp(f))
-try(qqcomp(list(f,f2)))
-try(gofstat(f))
-try(gofstat(list(f,f2)))
-try(bootdist(f))
+if(visualize)
+{
+  x3 <- rnorm(100) # this sample size must be fixed here (see next lines, 50+50)
+  x3 <- sort(x3)
+  (f <- fitdist(x3, "norm", method="mle", weights= c(rep(1, 50), rep(2, 50))))
+  try(plot(f))
+  try(cdfcomp(f))
+  (f2 <- fitdist(x3, "logis", method="mle", weights= c(rep(1, 50), rep(2, 50))))
+  try(cdfcomp(list(f,f2)))
+  try(denscomp(f))
+  try(denscomp(list(f,f2)))
+  try(ppcomp(f))
+  try(ppcomp(list(f,f2)))
+  try(qqcomp(f))
+  try(qqcomp(list(f,f2)))
+  try(gofstat(f))
+  try(gofstat(list(f,f2)))
+  try(bootdist(f))
+}
