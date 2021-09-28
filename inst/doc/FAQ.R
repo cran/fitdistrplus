@@ -448,6 +448,15 @@ dcomp <- denscomp(list(fitW, fitln, fitg), legendtext = c("Weibull", "lognormal"
     xlegend = "topright", plotstyle = "ggplot", addlegend = FALSE)
 dcomp + ggplot2::theme_minimal() + ggplot2::ggtitle("Ground beef fits")
 
+## ---- fig.height= 6, fig.width= 6, warning = FALSE----------------------------
+data(endosulfan)
+ATV <- subset(endosulfan, group == "NonArthroInvert")$ATV
+taxaATV <- subset(endosulfan, group == "NonArthroInvert")$taxa
+f <- fitdist(ATV, "lnorm")
+cdfcomp(f, xlogscale = TRUE, main = "Species Sensitivty Distribution", 
+    xlim = c(1, 100000), name.points = taxaATV, 
+    addlegend = FALSE, plotstyle = "ggplot")
+
 ## -----------------------------------------------------------------------------
 dtoy <- data.frame(left = c(NA, 2, 4, 6, 9.7, 10), right = c(1, 3, 7, 8, 9.7, NA))
 dtoy
@@ -458,15 +467,11 @@ exitage <- c(81.1,78.9,72.6,67.9,60.1,78.3,83.4,66.9,74.8,80.5,75.6,67.1,
 death <- c(0,0,1,0,0,0,0,1,0,0,0,0,0,0,1,1,0,0,0,0)
 
 ## -----------------------------------------------------------------------------
-svdata <- Surv(exitage, death)
-
-## -----------------------------------------------------------------------------
-fitdstdata <- cbind.data.frame(left=svdata[,"time"], right=NA)
-fitdstdata$right[svdata[,"status"] == 1] <- fitdstdata$left[svdata[,"status"] == 1]
+svdata <- Surv2fitdistcens(exitage, event=death)
 
 ## ---- fig.height= 4, fig.width= 6---------------------------------------------
-flnormc <- fitdistcens(fitdstdata, "lnorm")
-fweic <- fitdistcens(fitdstdata, "weibull")
+flnormc <- fitdistcens(svdata, "lnorm")
+fweic <- fitdistcens(svdata, "weibull")
 cdfcompcens(list(fweic, flnormc), xlim=range(exitage), xlegend = "topleft")
 
 ## ---- fig.height= 4, fig.width= 8---------------------------------------------

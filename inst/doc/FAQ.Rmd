@@ -1171,6 +1171,26 @@ dcomp + ggplot2::theme_minimal() + ggplot2::ggtitle("Ground beef fits")
 
 <!-- We plan to include the argument `plotstyle` to other functions of the `fitdistrplus` package in a next future. -->
 
+## Is it possible to add the names of the observations in a goodness-of-fit plot,  e.g. the names of the species in the plot of the Species Sensitivity Distribution (SSD) classically used in ecotoxicology ?
+
+An argument named `name.points` can be used in functions `cdfcomp` or 
+`CIcdfcomp` to pass a label vector for observed points so as to add the names
+of the points on the left of each point. This option is available only for 
+ECDF goodness-of-fit plots and only for non censored data. This option can be used 
+as below, for example, to name the species in the classical plot of the
+Species Sensitivity Distributions (SSD) in ecotoxicology.
+
+```{r, fig.height= 6, fig.width= 6, warning = FALSE}
+data(endosulfan)
+ATV <- subset(endosulfan, group == "NonArthroInvert")$ATV
+taxaATV <- subset(endosulfan, group == "NonArthroInvert")$taxa
+f <- fitdist(ATV, "lnorm")
+cdfcomp(f, xlogscale = TRUE, main = "Species Sensitivty Distribution", 
+    xlim = c(1, 100000), name.points = taxaATV, 
+    addlegend = FALSE, plotstyle = "ggplot")
+```
+
+
 
 # Questions regarding (left, right and/or interval) censored data
 
@@ -1178,39 +1198,37 @@ dcomp + ggplot2::theme_minimal() + ggplot2::ggtitle("Ground beef fits")
 
 Censored data must be rpresented in the package by a dataframe of two columns respectively named left and right, describing each observed value as an interval. The left column contains either `NA` for left censored observations, the left bound of the interval for interval censored observations, or the observed value for non-censored observations. The right column contains either `NA` for right censored observations, the right bound of the interval for interval censored observations, or the observed value for non-censored observations. This type of representation
 corresponds to the coding names `"interval2"` in function `Surv` of the package 
-`survival`. There is no other way to represent censored data in `fitdistrplus`
-for the moment. You have a toy example below.
+`survival`. There is no other way to represent censored data in `fitdistrplus` but the function Surv2fitdistcens() can be used to help you
+to format data for use in fitdistcens() from one of the format
+used in the survival package (see the help page of Surv2fitdistcens()). You have a toy example below.
 ```{r}
 dtoy <- data.frame(left = c(NA, 2, 4, 6, 9.7, 10), right = c(1, 3, 7, 8, 9.7, NA))
 dtoy
 ```
 
-## How do I use the output of `Surv()` to code the input of `fitdistcens()`?
+## How do I prepare the input of `fitdistcens()` with `Surv2fitdistcens()`? 
 
-Let us consider a right-censored dataset for human life:
-twenty values randomly chosen from `canlifins` dataset of `CASdatasets` package.
+Let us consider a classical right-censored dataset for human life:
+twenty values randomly chosen from the `canlifins` dataset of `CASdatasets` package.
+We refer to the help of `Surv2fitdistcens()` for other censoring types.
 ```{r}
 exitage <- c(81.1,78.9,72.6,67.9,60.1,78.3,83.4,66.9,74.8,80.5,75.6,67.1,
              75.3,82.8,70.1,85.4,74,70,71.6,76.5)
 death <- c(0,0,1,0,0,0,0,1,0,0,0,0,0,0,1,1,0,0,0,0)
 ```
-The `Surv()` function can handle many type of censoring, we focus only on right-censoring.
+When performing survival analysis, it is very common to use `Surv()` function 
+from package `survival` to handle different types of censoring. 
+In order to ease the use of `fitdistcens()`, a dedicated function `Surv2fitdistcens()`
+has been implemented with arguments similar to the ones of `Surv()`.
 ```{r}
-svdata <- Surv(exitage, death)
-```
-In order to match the input of, we replace non-censored data.
-```{r}
-fitdstdata <- cbind.data.frame(left=svdata[,"time"], right=NA)
-fitdstdata$right[svdata[,"status"] == 1] <- fitdstdata$left[svdata[,"status"] == 1]
+svdata <- Surv2fitdistcens(exitage, event=death)
 ```
 Let us now fit two simple distributions.
 ```{r, fig.height= 4, fig.width= 6}
-flnormc <- fitdistcens(fitdstdata, "lnorm")
-fweic <- fitdistcens(fitdstdata, "weibull")
+flnormc <- fitdistcens(svdata, "lnorm")
+fweic <- fitdistcens(svdata, "weibull")
 cdfcompcens(list(fweic, flnormc), xlim=range(exitage), xlegend = "topleft")
 ```
-
-
 
 ## How to represent an empirical distribution from censored data ?
 

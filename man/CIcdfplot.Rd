@@ -10,7 +10,7 @@ CIcdfplot(b, CI.output, CI.type = "two.sided", CI.level = 0.95, CI.col = "red",
   CI.lty = 2, CI.fill = NULL, CI.only = FALSE, xlim, ylim, xlogscale = FALSE, 
   ylogscale = FALSE, main, xlab, ylab, datapch, datacol, fitlty, fitcol, fitlwd, 
   horizontals = TRUE, verticals = FALSE, do.points = TRUE, use.ppoints = TRUE, 
-  a.ppoints = 0.5, lines01 = FALSE, \dots)
+  a.ppoints = 0.5, name.points = NULL, lines01 = FALSE, plotstyle = "graphics", \dots)
 }
 \arguments{
 \item{b}{One \code{"bootdist"} object.}
@@ -34,31 +34,34 @@ CIcdfplot(b, CI.output, CI.type = "two.sided", CI.level = 0.95, CI.col = "red",
 \item{ylab}{A label for the \eqn{y}-axis, defaults to a description of \code{y}.}
 
 \item{datapch}{An integer specifying a symbol to be used in plotting data points, 
-    see also \code{\link{points}} (only for non censored data).}
+  see also \code{\link{points}} (only for non censored data).}
 \item{datacol}{A specification of the color to be used in plotting data points.}
 \item{fitcol}{A (vector of) color(s) to plot fitted distributions. 
-    If there are fewer colors than fits they are recycled in the standard fashion.}
+  If there are fewer colors than fits they are recycled in the standard fashion.}
 \item{fitlty}{A (vector of) line type(s) to plot fitted distributions/densities. 
-    If there are fewer values than fits they are recycled in the standard fashion.
-    See also \code{\link{par}}.}
+  If there are fewer values than fits they are recycled in the standard fashion.
+  See also \code{\link{par}}.}
 \item{fitlwd}{A (vector of) line size(s) to plot fitted distributions/densities. 
-    If there are fewer values than fits they are recycled in the standard fashion.
-    See also \code{\link{par}}.}
+  If there are fewer values than fits they are recycled in the standard fashion.
+  See also \code{\link{par}}.}
 \item{horizontals}{If \code{TRUE}, draws horizontal lines for the step empirical 
   cdf function (only for non censored data). See also \code{\link{plot.stepfun}}.}
-\item{do.points}{logical; if \code{TRUE}, also draw points at the x-locations. 
-  Default is true (only for non censored data).}
 \item{verticals}{If \code{TRUE}, draws also vertical lines for the empirical cdf function. 
-    Only taken into account if \code{horizontals=TRUE} (only for non censored data). }
+  Only taken into account if \code{horizontals=TRUE} (only for non censored data).}
+\item{do.points}{logical; if \code{TRUE}, also draw points at the x-locations. 
+  Default is TRUE (only for non censored data).}
 \item{use.ppoints}{If \code{TRUE}, probability points of the empirical distribution
-    are defined using function \code{\link{ppoints}} as 
-    \code{(1:n - a.ppoints)/(n - 2a.ppoints + 1)} (only for non censored data).
-     If \code{FALSE}, 
-    probability points are simply defined as \code{1:n / n}. This argument is ignored 
-    for discrete data.}
+  are defined using function \code{\link{ppoints}} as 
+  \code{(1:n - a.ppoints)/(n - 2a.ppoints + 1)} (only for non censored data).
+  If \code{FALSE}, probability points are simply defined as \code{(1:n)/n}. This argument 
+  is ignored for discrete data.}
 \item{a.ppoints}{If \code{use.ppoints=TRUE}, this is passed to function \code{\link{ppoints}}
   (only for non censored data).}
+\item{name.points}{Label vector for points if they are drawn i.e. if do.points = TRUE (only for non censored data).}
 \item{lines01}{A logical to plot two horizontal lines at \code{h=0} and \code{h=1} for \code{cdfcomp}.}
+\item{plotstyle}{\code{"graphics"} or \code{"ggplot"}. 
+  If \code{"graphics"}, the display is built with \code{\link{graphics}} functions. 
+  If \code{"ggplot"}, a graphic object output is created with \code{ggplot2} functions (the \code{ggplot2} package must be installed).}
 \item{\dots}{Further graphical arguments passed to \code{matlines} or \code{polygon},
   respectively when \code{CI.fill=FALSE} and \code{CI.fill=TRUE}.}
 }
@@ -102,6 +105,7 @@ Christophe Dutang and Marie-Laure Delignette-Muller.
 # constraint.
 # For practical applications, we recommend to use at least niter=501 or niter=1001.
 
+if (requireNamespace ("ggplot2", quietly = TRUE)) {ggplotEx <- TRUE}
 
 # (1) Fit of an exponential distribution
 #
@@ -113,28 +117,41 @@ b1 <- bootdist(f1, niter= 11) #voluntarily low to decrease computation time
 
 # plot 95 percent bilateral confidence intervals on y values (probabilities)
 CIcdfplot(b1, CI.level= 95/100, CI.output = "probability")
+if (ggplotEx) CIcdfplot(b1, CI.level= 95/100, CI.output = "probability", plotstyle = "ggplot")
 
 # plot of the previous intervals as a band 
 CIcdfplot(b1, CI.level= 95/100, CI.output = "probability", 
   CI.fill = "pink", CI.col = "red")
+if (ggplotEx) CIcdfplot(b1, CI.level= 95/100, CI.output = "probability", 
+  CI.fill = "pink", CI.col = "red", plotstyle = "ggplot")
 
 # plot of the previous intervals as a band without empirical and fitted dist. functions
 CIcdfplot(b1, CI.level= 95/100, CI.output = "probability", CI.only = TRUE,
   CI.fill = "pink", CI.col = "red")
+if (ggplotEx) CIcdfplot(b1, CI.level= 95/100, CI.output = "probability", CI.only = TRUE,
+  CI.fill = "pink", CI.col = "red", plotstyle = "ggplot")
   
 # same plot without contours
 CIcdfplot(b1, CI.level= 95/100, CI.output = "probability", CI.only = TRUE,
   CI.fill = "pink", CI.col = "pink")
+if (ggplotEx) CIcdfplot(b1, CI.level= 95/100, CI.output = "probability", CI.only = TRUE,
+  CI.fill = "pink", CI.col = "pink", plotstyle = "ggplot")
 
 # plot 95 percent bilateral confidence intervals on x values (quantiles)
 CIcdfplot(b1, CI.level= 95/100, CI.output = "quantile")
+if (ggplotEx) CIcdfplot(b1, CI.level= 95/100, CI.output = "quantile", plotstyle = "ggplot")
 
 
 # plot 95 percent unilateral confidence intervals on quantiles
 CIcdfplot(b1, CI.level = 95/100, CI.output = "quant", CI.type = "less", 
   CI.fill = "grey80", CI.col = "black", CI.lty = 1)
+if (ggplotEx) CIcdfplot(b1, CI.level = 95/100, CI.output = "quant", CI.type = "less", 
+  CI.fill = "grey80", CI.col = "black", CI.lty = 1, plotstyle = "ggplot")
+    
 CIcdfplot(b1, CI.level= 95/100, CI.output = "quant", CI.type = "greater",
   CI.fill = "grey80", CI.col = "black", CI.lty = 1)
+if (ggplotEx) CIcdfplot(b1, CI.level= 95/100, CI.output = "quant", CI.type = "greater",
+  CI.fill = "grey80", CI.col = "black", CI.lty = 1, plotstyle = "ggplot")
 
 # (2) Fit of a normal distribution on acute toxicity log-transformed values of 
 # endosulfan for nonarthropod invertebrates, using maximum likelihood estimation
@@ -149,13 +166,15 @@ CIcdfplot(b1, CI.level= 95/100, CI.output = "quant", CI.type = "greater",
 #
 
 data(endosulfan)
-ATV <- subset(endosulfan, group == "NonArthroInvert")$ATV
 log10ATV <- log10(subset(endosulfan, group == "NonArthroInvert")$ATV)
+namesATV <- subset(endosulfan, group == "NonArthroInvert")$taxa
 fln <- fitdist(log10ATV, "norm")
 bln <- bootdist(fln, bootmethod ="param", niter=101)
 quantile(bln, probs = c(0.05, 0.1, 0.2))
 CIcdfplot(bln, CI.output = "quantile", CI.fill = "lightblue", CI.col = "blue",
-          xlim = c(1,5))
+          xlim = c(0,5), name.points=namesATV)
+if (ggplotEx) CIcdfplot(bln, CI.output = "quantile", CI.fill = "lightblue", CI.col = "blue",
+  xlim = c(0,5), name.points=namesATV, plotstyle = "ggplot")
 
 
 # (3) Same type of example as example (2) from ecotoxicology
@@ -168,11 +187,17 @@ bln <- bootdistcens(fln, niter=101)
 (HC5ln <- quantile(bln,probs = 0.05))
 CIcdfplot(bln, CI.output = "quantile", CI.fill = "lightblue", CI.col = "blue",
     xlab = "log10(LC50)",xlim=c(0.5,2),lines01 = TRUE)
+if (ggplotEx) CIcdfplot(bln, CI.output = "quantile", CI.fill = "lightblue", CI.col = "blue",
+                        xlab = "log10(LC50)",xlim=c(0.5,2),lines01 = TRUE, plotstyle = "ggplot")
 # zoom around the HC5  
 CIcdfplot(bln, CI.output = "quantile", CI.fill = "lightblue", CI.col = "blue",
           xlab = "log10(LC50)", lines01 = TRUE, xlim = c(0.8, 1.5), ylim = c(0, 0.1))
 abline(h = 0.05, lty = 2) # line corresponding to a CDF of 5 percent
 
+if (ggplotEx) CIcdfplot(bln, CI.output = "quantile", CI.fill = "lightblue", CI.col = "blue",
+    xlab = "log10(LC50)", lines01 = TRUE, xlim = c(0.8, 1.5), ylim = c(0, 0.1), 
+    plotstyle = "ggplot") +
+  ggplot2::geom_hline(yintercept = 0.05, lty = 2) # line corresponding to a CDF of 5 percent
 }
 
 \keyword{ distribution }

@@ -1,5 +1,20 @@
 ==== fitdistrplus : Help to fit of a parametric distribution ====
 
+Version 1.1-6
+=============
+NEW FEATURES
+- new function Surv2fitdistcens() to format data for use in fitdistcens() from a format
+used in the survival package
+- new dataset fremale in order to illustrate Surv2fitdistcens()
+- support the use of ggplot2 for CIcdfplot
+- add the taxon names to the endosulfan dataset
+- new argument name.points in cdfcomp and CIcdfplot to add labels next to points
+
+Version 1.1-4/5
+=============
+WARNING FIX
+- reduce testing times in test files
+
 Version 1.1-3
 =============
 NEW FEATURE
