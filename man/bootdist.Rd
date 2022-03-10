@@ -192,7 +192,7 @@ quantile(bln, probs = c(0.05, 0.1, 0.2))
 # (4) comparison of sequential and parallel versions of bootstrap
 # to be tried with a greater number of iterations (1001 or more)
 #
-\dontrun{
+\donttest{
 niter <- 1001
 data(groundbeef)
 x1 <- groundbeef$serving
@@ -206,12 +206,12 @@ proc.time() - ptm
 # parallel version using snow
 require(parallel)
 ptm <- proc.time()
-summary(bootdist(f1, niter = niter, parallel = "snow", ncpus = 4))
+summary(bootdist(f1, niter = niter, parallel = "snow", ncpus = 2))
 proc.time() - ptm
 
 # parallel version using multicore (not available on Windows)
 ptm <- proc.time()
-summary(bootdist(f1, niter = niter, parallel = "multicore", ncpus = 4))
+summary(bootdist(f1, niter = niter, parallel = "multicore", ncpus = 2))
 proc.time() - ptm
 }
 
