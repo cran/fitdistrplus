@@ -78,7 +78,7 @@ to the number of parameters to estimate.}
     By default (when \code{weigths=NULL}), ordinary MME is carried out, otherwise 
     the specified weights are used to compute (raw or centered) weighted moments.
     For closed-form estimators, weighted mean and variance are computed by 
-    \code{\link[Hmisc:wtd.stats]{wtd.mean}} and \code{\link[Hmisc:wtd.stats]{wtd.var}}
+    \code{\link[Hmisc:wtd.stats]{wtdmean}} and \code{\link[Hmisc:wtd.stats]{wtdvar}}
     from the \code{Hmisc} package. When a numerical minimization
     is used, weighted are expected to be computed by the \code{memp} function.
     It is not yet possible to take into account weighths in functions \code{plotdist}, 
@@ -87,10 +87,8 @@ to the number of parameters to estimate.}
     and \code{descdist}
     (developments planned in the future).
 
-    
     This function is not intended to be called directly but is internally called in
     \code{\link{fitdist}} and \code{\link{bootdist}} when used with the matching moments method. 
-     
 }
 
 \value{ 
@@ -138,7 +136,6 @@ to the number of parameters to estimate.}
 }
 
 \references{ 
-    
 Evans M, Hastings N and Peacock B (2000), \emph{Statistical distributions}. John Wiley and Sons Inc.
 
 Vose D (2000), \emph{Risk analysis, a quantitative guide}.
@@ -146,7 +143,6 @@ John Wiley & Sons Ltd, Chischester, England, pp. 99-143.
 
 Delignette-Muller ML and Dutang C (2015), \emph{fitdistrplus: An R Package for Fitting Distributions}.
 Journal of Statistical Software, 64(4), 1-34.
-
 }
 
 
@@ -205,7 +201,6 @@ mmedist(x3, "beta")
   mmedist(x4, "pareto", order=c(1, 2), memp=memp2, weights=w,
     start=list(shape=10, scale=10), lower=1, upper=Inf)
 }
-
 }
 
-\keyword{ distribution }% at least one, from doc/KEYWORDS
+\keyword{ distribution }

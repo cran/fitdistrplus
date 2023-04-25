@@ -5,7 +5,9 @@ set.seed(12345)
 options(digits = 3)
 
 ## ---- echo=TRUE, eval=FALSE---------------------------------------------------
-#  fitbench <- function(data, distr, method, grad=NULL, control=list(trace=0, REPORT=1, maxit=1000), lower=-Inf, upper=+Inf, ...)
+#  fitbench <- function(data, distr, method, grad = NULL,
+#                       control = list(trace = 0, REPORT = 1, maxit = 1000),
+#                       lower = -Inf, upper = +Inf, ...)
 
 ## ---- echo=FALSE--------------------------------------------------------------
 fitbench <- fitdistrplus:::fitbench
@@ -35,7 +37,7 @@ unconstropt <- fitbench(x, "beta", "mle", grad=grlnlbeta, lower=0)
 dbeta2 <- function(x, shape1, shape2, log)
   dbeta(x, exp(shape1), exp(shape2), log=log)
 #take the log of the starting values
-startarg <- lapply(fitdistrplus:::start.arg.default(x, "beta"), log)
+startarg <- lapply(fitdistrplus:::startargdefault(x, "beta"), log)
 #redefine the gradient for the new parametrization
 grbetaexp <- function(par, obs, ...) 
     grlnlbeta(exp(par), obs) * exp(par)
@@ -65,10 +67,11 @@ points(unconstropt[1,"BFGS"], unconstropt[2,"BFGS"], pch="+", col="red")
 points(3, 3/4, pch="x", col="green")
 
 ## ---- fig.width=4, fig.height=4-----------------------------------------------
-b1 <- bootdist(fitdist(x, "beta", method="mle", optim.method="BFGS"), niter=100, parallel="snow", ncpus=2)
+b1 <- bootdist(fitdist(x, "beta", method = "mle", optim.method = "BFGS"), 
+               niter = 100, parallel = "snow", ncpus = 2)
 summary(b1)
 plot(b1)
-abline(v=3, h=3/4, col="red", lwd=1.5)
+abline(v = 3, h = 3/4, col = "red", lwd = 1.5)
 
 ## -----------------------------------------------------------------------------
 grlnlNB <- function(x, obs, ...)
@@ -88,31 +91,36 @@ x <- rnbinom(n, trueval["size"], trueval["prob"])
 
 hist(x, prob=TRUE, ylim=c(0, .3))
 lines(density(x), col="red")
-points(min(x):max(x), dnbinom(min(x):max(x), trueval["size"], trueval["prob"]), col="green")
-legend("topleft", lty=1, col=c("red","green"), leg=c("empirical", "theoretical"))
+points(min(x):max(x), dnbinom(min(x):max(x), trueval["size"], trueval["prob"]), 
+       col = "green")
+legend("topleft", lty = 1, col = c("red", "green"), 
+       leg = c("empirical", "theoretical"))
 
 ## -----------------------------------------------------------------------------
-ctr <- list(trace=0, REPORT=1, maxit=1000)
-unconstropt <- fitbench(x, "nbinom", "mle", grad=grlnlNB, lower=0)
-unconstropt <- rbind(unconstropt, "fitted prob"=unconstropt["fitted mu",] / (1+unconstropt["fitted mu",]))
+ctr <- list(trace = 0, REPORT = 1, maxit = 1000)
+unconstropt <- fitbench(x, "nbinom", "mle", grad = grlnlNB, lower = 0)
+unconstropt <- rbind(unconstropt, 
+                     "fitted prob" = unconstropt["fitted mu", ] / (1 + unconstropt["fitted mu", ]))
 
 ## -----------------------------------------------------------------------------
 dnbinom2 <- function(x, size, prob, log)
-  dnbinom(x, exp(size), 1/(1+exp(-prob)), log=log)
-#transform starting values
-startarg <- fitdistrplus:::start.arg.default(x, "nbinom")
-startarg$mu <- startarg$size / (startarg$size+startarg$mu)
-startarg <- list(size=log(startarg[[1]]), prob=log(startarg[[2]]/(1-startarg[[2]])))
+  dnbinom(x, exp(size), 1 / (1 + exp(-prob)), log = log)
+# transform starting values
+startarg <- fitdistrplus:::startargdefault(x, "nbinom")
+startarg$mu <- startarg$size / (startarg$size + startarg$mu)
+startarg <- list(size = log(startarg[[1]]), 
+                 prob = log(startarg[[2]] / (1 - startarg[[2]])))
 
-#redefine the gradient for the new parametrization
+# redefine the gradient for the new parametrization
 Trans <- function(x)
   c(exp(x[1]), plogis(x[2]))
 grNBexp <- function(par, obs, ...) 
     grlnlNB(Trans(par), obs) * c(exp(par[1]), plogis(x[2])*(1-plogis(x[2])))
 
 expopt <- fitbench(x, distr="nbinom2", method="mle", grad=grNBexp, start=startarg) 
-#get back to original parametrization
-expopt[c("fitted size", "fitted prob"), ] <- apply(expopt[c("fitted size", "fitted prob"), ], 2, Trans)
+# get back to original parametrization
+expopt[c("fitted size", "fitted prob"), ] <- 
+  apply(expopt[c("fitted size", "fitted prob"), ], 2, Trans)
 
 ## ---- results='asis', echo=FALSE----------------------------------------------
 kable(unconstropt[, grep("G-", colnames(unconstropt), invert=TRUE)], digits=3)
@@ -127,15 +135,17 @@ kable(expopt[, grep("G-", colnames(expopt), invert=TRUE)], digits=3)
 kable(expopt[, grep("G-", colnames(expopt))], digits=3)
 
 ## ---- fig.width=4, fig.height=4-----------------------------------------------
-llsurface(min.arg=c(5, 0.3), max.arg=c(15, 1), 
-          plot.arg=c("size", "prob"), nlev=25,
-          plot.np=50, data=x, distr="nbinom", back.col = FALSE)
-points(unconstropt["fitted size","BFGS"], unconstropt["fitted prob","BFGS"], pch="+", col="red")
-points(trueval["size"], trueval["prob"], pch="x", col="green")
+llsurface(min.arg = c(5, 0.3), max.arg = c(15, 1), 
+          plot.arg = c("size", "prob"), nlev = 25,
+          plot.np = 50, data = x, distr = "nbinom", back.col = FALSE)
+points(unconstropt["fitted size", "BFGS"], unconstropt["fitted prob", "BFGS"], 
+       pch = "+", col = "red")
+points(trueval["size"], trueval["prob"], pch = "x", col = "green")
 
 ## ---- fig.width=4, fig.height=4-----------------------------------------------
-b1 <- bootdist(fitdist(x, "nbinom", method="mle", optim.method="BFGS"), niter=100, parallel="snow", ncpus=2)
+b1 <- bootdist(fitdist(x, "nbinom", method = "mle", optim.method = "BFGS"), 
+               niter = 100, parallel = "snow", ncpus = 2)
 summary(b1)
 plot(b1)
-abline(v=trueval["size"], h=trueval["mu"], col="red", lwd=1.5)
+abline(v = trueval["size"], h = trueval["mu"], col = "red", lwd = 1.5)
 

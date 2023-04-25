@@ -40,8 +40,10 @@ denscomp(list(f1, f2), demp=TRUE, main = "Density plot")
 c("E(X) by MME"=as.numeric(exp(f2$estimate["meanlog"]+f2$estimate["sdlog"]^2/2)), 
 	"E(X) by MLE"=as.numeric(exp(f1$estimate["meanlog"]+f1$estimate["sdlog"]^2/2)), 
 	"empirical"=mean(x3))
-c("Var(X) by MME"=as.numeric(exp(2*f2$estimate["meanlog"]+f2$estimate["sdlog"]^2)*(exp(f2$estimate["sdlog"]^2)-1)), 
-	"Var(X) by MLE"=as.numeric(exp(2*f1$estimate["meanlog"]+f1$estimate["sdlog"]^2)*(exp(f1$estimate["sdlog"]^2)-1)), 
+c("Var(X) by MME"=as.numeric(exp(2*f2$estimate["meanlog"]+f2$estimate["sdlog"]^2) * 
+                               (exp(f2$estimate["sdlog"]^2)-1)), 
+	"Var(X) by MLE"=as.numeric(exp(2*f1$estimate["meanlog"]+f1$estimate["sdlog"]^2) * 
+	                             (exp(f1$estimate["sdlog"]^2)-1)), 
 	"empirical"=var(x3))
 
 ## -----------------------------------------------------------------------------
