@@ -4,6 +4,8 @@
 \alias{print.fitdistcens}
 \alias{summary.fitdistcens}
 \alias{logLik.fitdistcens}
+\alias{AIC.fitdistcens}
+\alias{BIC.fitdistcens}
 \alias{vcov.fitdistcens}
 \alias{coef.fitdistcens}
 \title{Fitting of univariate distributions to censored data}
@@ -14,7 +16,7 @@
 
 \usage{
 fitdistcens(censdata, distr, start=NULL, fix.arg=NULL, 
-  keepdata = TRUE, keepdata.nb=100, \dots)
+  keepdata = TRUE, keepdata.nb=100, calcvcov=TRUE, \dots)
 
 \method{print}{fitdistcens}(x, \dots)
 
@@ -23,6 +25,10 @@ fitdistcens(censdata, distr, start=NULL, fix.arg=NULL,
 \method{summary}{fitdistcens}(object, \dots)
 
 \method{logLik}{fitdistcens}(object, \dots)
+
+\method{AIC}{fitdistcens}(object, \dots, k = 2)
+
+\method{BIC}{fitdistcens}(object, \dots)
 
 \method{vcov}{fitdistcens}(object, \dots)
 
@@ -54,7 +60,9 @@ fitdistcens(censdata, distr, start=NULL, fix.arg=NULL,
 \item{keepdata}{a logical. If \code{TRUE}, dataset is returned, 
 otherwise only a sample subset is returned.}
 \item{keepdata.nb}{When \code{keepdata=FALSE}, the length of the subset returned.}
+\item{calcvcov}{A logical indicating if (asymptotic) covariance matrix is required.}
 
+\item{k}{penalty per parameter to be passed to the AIC generic function (2 by default).}
 \item{\dots}{ further arguments to be passed to generic functions,
     to the function \code{plotdistcens} in order to control the type of ecdf-plot used for censored data, 
     or to the function \code{mledist} 
@@ -94,6 +102,9 @@ otherwise only a sample subset is returned.}
     It is not yet possible to take into account weighths in functions plotdistcens, 
     plot.fitdistcens and cdfcompcens 
     (developments planned in the future).
+    
+    Once the parameter(s) is(are) estimated, \code{\link{gofstat}} allows to compute 
+    goodness-of-fit statistics.
 
 }
 
@@ -145,6 +156,10 @@ otherwise only a sample subset is returned.}
     }
     \item{\code{logLik}}{ Extracts the estimated log-likelihood from the \code{"fitdistcens"} object.
     }
+    \item{\code{AIC}}{ Extracts the AIC from the \code{"fitdistcens"} object.
+    }
+    \item{\code{BIC}}{ Extracts the BIC from the \code{"fitdistcens"} object.
+    }
     \item{\code{vcov}}{ Extracts the estimated var-covariance matrix from the \code{"fitdistcens"} object
     (only available When \code{method = "mle"}).
     }
@@ -155,18 +170,20 @@ otherwise only a sample subset is returned.}
 
 
 \seealso{ 
+    See \code{\link{Surv2fitdistcens}} to convert \code{Surv} outputs to a
+    data frame appropriate for \code{fitdistcens}.
+    See \code{\link{plotdistcens}}, \code{\link{optim}} and 
+    \code{\link{quantile.fitdistcens}} for generic functions.
+    See \code{\link{gofstat}} for goodness-of-fit statistics.
     See \code{\link{fitdistrplus}} for an overview of the package.
-    \code{\link{plotdistcens}}, \code{\link{optim}}, \code{\link{mledist}}, 
-    \code{\link{fitdist}} and \code{\link{quantile.fitdistcens}} for another generic function to calculate 
-    quantiles from the fitted distribution.
 }
 
 \references{ 
 Venables WN and Ripley BD (2002), \emph{Modern applied statistics with S}.
-Springer, New York, pp. 435-446.
+Springer, New York, pp. 435-446, \doi{10.1007/978-0-387-21706-2}.
 
 Delignette-Muller ML and Dutang C (2015), \emph{fitdistrplus: An R Package for Fitting Distributions}.
-Journal of Statistical Software, 64(4), 1-34.
+Journal of Statistical Software, 64(4), 1-34, \doi{https://doi.org/10.18637/jss.v064.i04}.
 }
 
 \author{ 

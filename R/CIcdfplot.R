@@ -32,14 +32,13 @@ CIcdfplot <- function(b, CI.output, CI.type = "two.sided", CI.level = 0.95, CI.c
   if(inherits(b, "bootdist"))
   {
     cens <- FALSE
+  } else if(inherits(b, "bootdistcens"))
+  {
+    cens <- TRUE
   } else
-    if(inherits(b, "bootdistcens"))
-    {
-      cens <- TRUE
-    } else
-    {
-      stop("argument b must be a 'bootdist' or a `bootdistcens` object")
-    }
+  {
+    stop("argument b must be a 'bootdist' or a `bootdistcens` object")
+  }
   if(missing(CI.output))
     stop("argument CI.output must be specified: either 'probability' or 'quantile'.")
   CI.output <- match.arg(CI.output, c("probability", "quantile"))
@@ -169,13 +168,12 @@ CIcdfplot <- function(b, CI.output, CI.type = "two.sided", CI.level = 0.95, CI.c
   logxy <- paste0(ifelse(xlogscale,"x",""), ifelse(ylogscale,"y",""))
   
   ##### plot ####
-  if(plotstyle == "graphics") {
+  if(plotstyle == "graphics") 
+  {
     ######## plot if plotstyle=='graphics' ########
-    
     #open graphic window
     plot(0, 0, main=main, xlab=xlab, ylab=ylab, xlim=xlim, ylim=ylim,
          log=logxy, type="n")
-    
     if (!is.null(CI.fill)) # first fill the band
     {
       if(CI.output == "probability")
@@ -225,10 +223,11 @@ CIcdfplot <- function(b, CI.output, CI.type = "two.sided", CI.level = 0.95, CI.c
         
       }
     }
-  } else if (!requireNamespace("ggplot2", quietly = TRUE)) {
+  } else if (!requireNamespace("ggplot2", quietly = TRUE)) 
+  {
     stop("ggplot2 needed for this function to work with plotstyle = 'ggplot'. Please install it", call. = FALSE)
-    
-  } else {
+  } else 
+  {
     ######## plot if plotstyle=='ggplot' ########
     if(CI.output == "probability") {
       if(CI.type == "less") CIband <- cbind(rep(0, NROW(CIband)), CIband)
@@ -257,9 +256,9 @@ CIcdfplot <- function(b, CI.output, CI.type = "two.sided", CI.level = 0.95, CI.c
                   main=main, xlab=xlab, ylab=ylab, datacol=datacol, fitlty=fitlty, fitlwd=fitlwd, fillrect = NA, 
                   fitcol=fitcol, lines01 = lines01, Turnbull.confint = FALSE, addlegend = FALSE, add=TRUE, plotstyle = "ggplot")
     }} +
-      ggplot2::geom_line(data = dd, ggplot2::aes_(x=quote(x1), y=quote(y1)), inherit.aes = FALSE, color = CI.col, lty = CI.lty, alpha = 0.5) +
-      ggplot2::geom_line(data = dd, ggplot2::aes_(x=quote(x2), y=quote(y2)), inherit.aes = FALSE, color = CI.col, lty = CI.lty, alpha = 0.5) +
-      {if(!is.null(CI.fill) & CI.output == "probability") ggplot2::geom_ribbon(data = dd, ggplot2::aes_(x = quote(x1), ymin=quote(y1), ymax=quote(y2)), inherit.aes = FALSE, fill = CI.fill, alpha = 0.5)} + 
-      {if(!is.null(CI.fill) & CI.output == "quantile") ggplot2::geom_ribbon(data = dd, ggplot2::aes_(xmin = quote(x1), xmax = quote(x2), y = quote(y1)), inherit.aes = FALSE, fill = CI.fill, alpha = 0.5)}
+      ggplot2::geom_line(data = dd, ggplot2::aes(x=.data$x1, y=.data$y1), inherit.aes = FALSE, color = CI.col, lty = CI.lty, alpha = 0.5) +
+      ggplot2::geom_line(data = dd, ggplot2::aes(x=.data$x2, y=.data$y2), inherit.aes = FALSE, color = CI.col, lty = CI.lty, alpha = 0.5) +
+      {if(!is.null(CI.fill) & CI.output == "probability") ggplot2::geom_ribbon(data = dd, ggplot2::aes(x = .data$x1, ymin=.data$y1, ymax=.data$y2), inherit.aes = FALSE, fill = CI.fill, alpha = 0.5)} + 
+      {if(!is.null(CI.fill) & CI.output == "quantile") ggplot2::geom_ribbon(data = dd, ggplot2::aes(xmin = .data$x1, xmax = .data$x2, y = .data$y1), inherit.aes = FALSE, fill = CI.fill, alpha = 0.5)}
   }
 }

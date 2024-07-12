@@ -1,5 +1,6 @@
 #############################################################################
-#   Copyright (c) 2009 Marie Laure Delignette-Muller, Regis Pouillot                                                                                                 
+#   Copyright (c) 2022 Marie Laure Delignette-Muller, Regis Pouillot, 
+#   Christophe Dutang (sanity check)                                                                                                 
 #                                                                                                                                                                        
 #   This program is free software; you can redistribute it and/or modify                                               
 #   it under the terms of the GNU General Public License as published by                                         
@@ -27,10 +28,14 @@ plotdistcens <- function(censdata, distr, para, leftNA = -Inf, rightNA = Inf, NP
                          NPMLE.method = "Wang",
                          ...)
 {
-    if (missing(censdata) ||
-      !(is.vector(censdata$left) & is.vector(censdata$right) & length(censdata[,1])>1))
-    stop("datacens must be a dataframe with two columns named left 
-         and right and more than one line")
+  if(missing(censdata) || !is.data.frame(censdata))
+    stop("datacens must be a dataframe with two columns named 'left' and 'right' and more than one line")
+  if(!(NCOL(censdata) == 2 && all(colnames(censdata) %in% c("left", "right"))))
+    stop("datacens must be a dataframe with two columns named 'left' and 'right' and more than one line")
+  censdata <- censdata[, c("left", "right")]
+  if(any(censdata$left > censdata$right, na.rm = TRUE))
+    stop("some rows in censdata have left values strictly greater than right values")
+  
   if ((missing(distr) & !missing(para)) || 
       (!missing(distr) & missing(para)))
     stop("distr and para must defined")
@@ -72,8 +77,8 @@ plotdistcens <- function(censdata, distr, para, leftNA = -Inf, rightNA = Inf, NP
   xlim <- c(xmin, xmax)
   #definition of ylim or lim for ECDF
   ylim <- c(0,1)
-
-  # Supression of the deprecated argument Turnbull
+  
+  # Deletion of the deprecated argument Turnbull
   ###############################################
   # if (!missing(Turnbull))
   # {
@@ -149,7 +154,7 @@ plotdistcens <- function(censdata, distr, para, leftNA = -Inf, rightNA = Inf, NP
     if (NPMLE.method == "Wang" | NPMLE.method =="Turnbull.intervals") 
     {
       f <- npmle(censdata, method = NPMLE.method)
-          
+      
       # New xlim calculation from equivalence intervals
       bounds <- c(f$right, f$left)
       finitebounds <- bounds[is.finite(bounds)]
@@ -160,14 +165,14 @@ plotdistcens <- function(censdata, distr, para, leftNA = -Inf, rightNA = Inf, NP
       xmax.Wang.cdf <- upper + width * 0.1
       xlim.Wang.cdf <- c(xmin.Wang.cdf, xmax.Wang.cdf)
       ylim.Wang.cdf <- c(0,1)
-    
+      
       k <- length(f$left)
       Fnpsurv <- cumsum(f$p) 
       
       ## calul des points points pour Q et P dans les GOF stat et graph
       Fbefore <- c(0, Fnpsurv[-k])
       df <- data.frame(left = f$left, right = f$right)
-
+      
       # Definition of vertices of each rectangle
       Qi.left <- df$left # dim k
       Qi.left4plot <- Qi.left
@@ -232,8 +237,8 @@ plotdistcens <- function(censdata, distr, para, leftNA = -Inf, rightNA = Inf, NP
       xmin <- par("usr")[1]
       xmax <- par("usr")[2]
     }
-  }else # if !NPMLE
-  {    
+  } else # if !NPMLE
+  {
     if (is.finite(leftNA) & any(is.na(censdata$left)))
       censdata[is.na(censdata$left),]$left<-leftNA
     if (is.finite(rightNA) & any(is.na(censdata$right)))
@@ -254,7 +259,6 @@ plotdistcens <- function(censdata, distr, para, leftNA = -Inf, rightNA = Inf, NP
     nrcens<-length(rcens)
     nnoricens<-length(noricens$left)
     n<-length(censdata$left)
-
     
     if (specifytitle) {
       plot(c(0,0),c(0,0),type="n",xlim=xlim,ylim=ylim,xlab="Censored data",
@@ -270,7 +274,8 @@ plotdistcens <- function(censdata, distr, para, leftNA = -Inf, rightNA = Inf, NP
       lines(c(xmininf, lcens[ordlcens[i]]), c(y, y), ...) 
     }
     if (nlcens>=1)
-      toto<-sapply(1:nlcens,plotlcens)
+      invisible(sapply(1:nlcens,plotlcens))
+    
     plotnoricens<-function(i) {
       y<-(i+nlcens)/n
       if (noricens[ordmid[i],]$left!=noricens[ordmid[i],]$right)
@@ -279,13 +284,14 @@ plotdistcens <- function(censdata, distr, para, leftNA = -Inf, rightNA = Inf, NP
         points(noricens[ordmid[i],]$left,y,pch=4, ...)
     }
     if (nnoricens>=1)
-      toto<-sapply(1:nnoricens,plotnoricens)
+      invisible(sapply(1:nnoricens,plotnoricens))
+    
     plotrcens<-function(i) {
       y<-(i+nlcens+nnoricens)/n
       lines(c(rcens[ordrcens[i]],xmaxinf),c(y,y), ...) 
     }
     if (nrcens>=1)
-      toto <- sapply(1:nrcens,plotrcens)
+      invisible(sapply(1:nrcens,plotrcens))
   } # en of else if NPMLE
   
   if (!missing(distr)){ # plot of the theoretical cumulative function
@@ -317,11 +323,11 @@ plotdistcens <- function(censdata, distr, para, leftNA = -Inf, rightNA = Inf, NP
     # definition of rectangles and limits
     Qitheo.left <- do.call(qdistname, c(list(Pi.low), as.list(para)))
     Qitheo.right <- do.call(qdistname, c(list(Pi.up), as.list(para)))
-
+    
     xmin.Wang.qq <- min(xmin.Wang.cdf, Qitheo.right[-k])
     xmax.Wang.qq <- max(xmin.Wang.cdf, Qitheo.left[-1])
     xlim.Wang.qq <- c(xmin.Wang.qq, xmax.Wang.qq)
-
+    
     Qitheo.left4plot <- Qitheo.left
     if (is.infinite(Qitheo.left4plot[1]) | is.nan(Qitheo.left4plot[1])) Qitheo.left4plot[1] <- xmininf
     Qitheo.right4plot <- Qitheo.right

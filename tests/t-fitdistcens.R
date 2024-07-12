@@ -5,6 +5,28 @@ nsample <- 10
 visualize <- FALSE # TRUE for manual tests with visualization of results
 set.seed(1234)
 
+
+# (1) check input data
+#
+data(smokedfish)
+fitsf  <-  fitdistcens(smokedfish, "lnorm")
+summary(fitsf)
+
+
+smokedfish2 <- tail(smokedfish, 20)
+
+try(fitdistcens(rbind(smokedfish2, c(NA, NA)) , "lnorm"))
+
+try(fitdistcens(rbind(smokedfish2, c(3, Inf)) , "lnorm"))
+
+try(fitdistcens(rbind(smokedfish2, c(NaN, 3)) , "lnorm"))
+
+try(fitdistcens(rbind(smokedfish2, c(5, 3)) , "lnorm"))
+
+fitsf  <-  fitdistcens(smokedfish, "lnorm", calcvcov = FALSE)
+
+
+
 # (6) custom optimisation function - example with the genetic algorithm
 #
 data(fluazinam)
@@ -22,7 +44,7 @@ log10EC50 <-log10(fluazinam)
   
   # call fitdistcens with a 'custom' optimization function
   fit.with.genoud <- fitdistcens(log10EC50, "logis", custom.optim=mygenoud, nvars=2, 
-                                 start=list(location=0, scale=1),    
+                                 start=list(location=1, scale=1),    
                                  Domains=cbind(c(0,0), c(5, 5)), boundary.enforcement=1, 
                                  print.level=1, hessian=TRUE)
   

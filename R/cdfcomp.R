@@ -171,7 +171,8 @@ cdfcomp <- function(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, main, 
     sfin <- 10^sfin
   
   
-  if(plotstyle == "graphics") {
+  if(plotstyle == "graphics") 
+  {
     ######## plot if plotstyle=='graphics' ########
     
     #main plot
@@ -203,7 +204,8 @@ cdfcomp <- function(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, main, 
       text(sdata, obsp, labels = name.points, pos = 2)
     
     # optional add of horizontal and vertical lines for step function
-    if (!largedata && horizontals) {
+    if (!largedata && horizontals) 
+    {
       segments(xhleft, yh, xhright, yh, col=datacol,...)
       segments(sdata[length(sdata)], 1, xmax, 1, col=datacol, lty = 2, ...)
       segments(xmin, 0, sdata[1], 0, col=datacol, lty = 2, ...)
@@ -224,13 +226,14 @@ cdfcomp <- function(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, main, 
     if(addlegend)
       legend(x=xlegend, y=ylegend, bty="n", legend=legendtext, lty=fitlty, col=fitcol, lwd=fitlwd, ...)
     
-    invisible()
+    return(invisible(list(obs = cbind(sdata, obsp), probabilities = fittedprob)))
     
-    
-  } else if (!requireNamespace("ggplot2", quietly = TRUE)) {
+  } else if (!requireNamespace("ggplot2", quietly = TRUE)) 
+  {
     stop("ggplot2 needed for this function to work with plotstyle = 'ggplot'. Please install it", call. = FALSE)
     
-  } else {
+  }else 
+  {
     ######## plot if plotstyle=='ggplot' ########
     
     # recode the legend position according to available positions in ggplot2
@@ -255,26 +258,26 @@ cdfcomp <- function(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, main, 
     verti <- data.frame(x = sdata[1], y = 0, xend = sdata[1], yend = obsp[1], ind = "verti")
     
     ggcdfcomp <-
-      ggplot2::ggplot(data = fittedprob, ggplot2::aes_(quote(sfin), quote(values), group = quote(ind), colour = quote(ind))) +
+      ggplot2::ggplot(data = fittedprob, ggplot2::aes(.data$sfin, .data$values, group = .data$ind, colour = .data$ind)) +
       ggplot2::xlab(xlab) +
       ggplot2::ylab(ylab) +
       ggplot2::ggtitle(main) +
       ggplot2::coord_cartesian(xlim = c(xlim[1], xlim[2]), ylim = c(ylim[1], ylim[2])) +
       
-      {if(!largedata && do.points) ggplot2::geom_point(data = step, ggplot2::aes_(quote(sfin), quote(values)), show.legend = FALSE, colour = datacol, shape = datapch)} +
-      {if(!largedata && do.points && !is.null(name.points)) ggplot2::geom_text(data = step, ggplot2::aes_(quote(sfin), quote(values), label = name.points), hjust = "right", nudge_x = -0.05, inherit.aes = FALSE, show.legend = FALSE)} +
-      {if(largedata) ggplot2::geom_step(data = step, ggplot2::aes_(quote(sfin), quote(values)), show.legend = FALSE, colour = datacol, shape = datapch)} +
+      {if(!largedata && do.points) ggplot2::geom_point(data = step, ggplot2::aes(.data$sfin, .data$values), show.legend = FALSE, colour = datacol, shape = datapch)} +
+      {if(!largedata && do.points && !is.null(name.points)) ggplot2::geom_text(data = step, ggplot2::aes(.data$sfin, .data$values, label = name.points), hjust = "right", nudge_x = -0.05, inherit.aes = FALSE, show.legend = FALSE)} +
+      {if(largedata) ggplot2::geom_step(data = step, ggplot2::aes(.data$sfin, .data$values), show.legend = FALSE, colour = datacol, shape = datapch)} +
       
-      {if(!largedata && horizontals && !verticals) ggplot2::geom_segment(data = horiz, ggplot2::aes_(x=quote(x), y=quote(y), xend=quote(xend), yend=quote(yend)), show.legend = FALSE, colour = datacol)} +
-      {if(!largedata && horizontals && verticals) ggplot2::geom_step(data = step, ggplot2::aes_(quote(sfin), quote(values)), show.legend = FALSE, colour = datacol)} +
+      {if(!largedata && horizontals && !verticals) ggplot2::geom_segment(data = horiz, ggplot2::aes(x=.data$x, y=.data$y, xend=.data$xend, yend=.data$yend), show.legend = FALSE, colour = datacol)} +
+      {if(!largedata && horizontals && verticals) ggplot2::geom_step(data = step, ggplot2::aes(.data$sfin, .data$values), show.legend = FALSE, colour = datacol)} +
       
-      {if(!largedata && horizontals) ggplot2::geom_segment(data = horiz1, ggplot2::aes_(x=quote(x), y=quote(y), xend=quote(xend), yend=quote(yend)), show.legend = FALSE, colour = datacol, linetype = 2)} +
-      {if(!largedata && horizontals) ggplot2::geom_segment(data = horiz0, ggplot2::aes_(x=quote(x), y=quote(y), xend=quote(xend), yend=quote(yend)), show.legend = FALSE, colour = datacol, linetype = 2)} +
-      {if(!largedata && horizontals && verticals) ggplot2::geom_segment(data = verti, ggplot2::aes_(x=quote(x), y=quote(y), xend=quote(xend), yend=quote(yend)), show.legend = FALSE, colour = datacol)} +
+      {if(!largedata && horizontals) ggplot2::geom_segment(data = horiz1, ggplot2::aes(x=.data$x, y=.data$y, xend=.data$xend, yend=.data$yend), show.legend = FALSE, colour = datacol, linetype = 2)} +
+      {if(!largedata && horizontals) ggplot2::geom_segment(data = horiz0, ggplot2::aes(x=.data$x, y=.data$y, xend=.data$xend, yend=.data$yend), show.legend = FALSE, colour = datacol, linetype = 2)} +
+      {if(!largedata && horizontals && verticals) ggplot2::geom_segment(data = verti, ggplot2::aes(x=.data$x, y=.data$y, xend=.data$xend, yend=.data$yend), show.legend = FALSE, colour = datacol)} +
       
-      {if(discrete) ggplot2::geom_step(data = fittedprob, ggplot2::aes_(linetype = quote(ind), colour = quote(ind)), size = 0.4)} +
-      {if(!discrete) ggplot2::geom_line(data = fittedprob, ggplot2::aes_(linetype = quote(ind), colour = quote(ind), size = quote(ind)))} +
-
+      {if(discrete) ggplot2::geom_step(data = fittedprob, ggplot2::aes(linetype = .data$ind, colour = .data$ind), size = 0.4)} +
+      {if(!discrete) ggplot2::geom_line(data = fittedprob, ggplot2::aes(linetype = .data$ind, colour = .data$ind, size = .data$ind))} +
+      
       ggplot2::theme_bw() +   
       {if(addlegend) ggplot2::theme(legend.position = c(xlegend, ylegend)) else ggplot2::theme(legend.position = "none")} +
       ggplot2::scale_color_manual(values = fitcol, labels = legendtext) +

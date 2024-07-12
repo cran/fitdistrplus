@@ -50,8 +50,8 @@ cdfcompcens <- function(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, ma
             of Turnbull.intervals. It was here fixed as Turnbull.middlepoints, equivalent to former Turnbull.")
     NPMLE.method <- "Turnbull.middlepoints"
   }
-
-    if ((Turnbull.confint == TRUE) & ((NPMLE.method == "Wang") | (NPMLE.method == "Turnbull.intervals")))
+  
+  if ((Turnbull.confint == TRUE) & ((NPMLE.method == "Wang") | (NPMLE.method == "Turnbull.intervals")))
   {
     warning("When Turnbull.confint is TRUE NPMLE.method is forced to Turnbull.middlepoints." )
     NPMLE.method <- "Turnbull.middlepoints"
@@ -100,9 +100,10 @@ cdfcompcens <- function(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, ma
   
   
   # calculations for Wang method, for both graphics and ggplot displays
-  if ((NPMLE.method == "Wang") | (NPMLE.method == "Turnbull.intervals")) {
+  if ((NPMLE.method == "Wang") | (NPMLE.method == "Turnbull.intervals"))
+  {
     f <- npmle(censdata, method = NPMLE.method)
-  
+    
     bounds <- c(f$right, f$left)
     finitebounds <- bounds[is.finite(bounds)]
     upper <- max(finitebounds)
@@ -181,10 +182,9 @@ cdfcompcens <- function(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, ma
       legendtext <- paste(legendtext, 1:nft, sep="-")
   }
   
-  
-  if(plotstyle == "graphics") {
+  if(plotstyle == "graphics") 
+  {
     ######## plot if plotstyle=='graphics' ########
-    
     
     if (NPMLE.method == "Turnbull.middlepoints")
       # Turnbull plot
@@ -194,8 +194,7 @@ cdfcompcens <- function(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, ma
         xmin <- min(c(censdata$left, censdata$right), na.rm=TRUE)
         xmax <- max(c(censdata$left, censdata$right), na.rm=TRUE)
         xlim <- c(xmin, xmax)
-      }
-      else
+      }else
       {
         xmin <- xlim[1]
         xmax <- xlim[2]
@@ -229,8 +228,7 @@ cdfcompcens <- function(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, ma
                   log=logxy, col=datacol, conf.int = FALSE, xlim = xlim, ...)
           
         }
-      }
-      else
+      }else
       {
         if (Turnbull.confint)
         {
@@ -270,7 +268,8 @@ cdfcompcens <- function(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, ma
       # rgbdatacol <- col2rgb(datacol)
       # lightdatacol <- rgb(rgbdatacol[1], rgbdatacol[2], rgbdatacol[3], maxColorValue = 255, 
       #                     alpha = 10)
-      for(i in 1:k) {
+      for(i in 1:k) 
+      {
         rect(xleft = Qi.left4plot, ybottom = Pi.low, xright = Qi.right4plot, ytop = Pi.up,
              border = datacol, col = fillrect)
       }
@@ -307,14 +306,13 @@ cdfcompcens <- function(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, ma
     {
       legend(x=xlegend, y=ylegend, bty="n", legend=legendtext, lty=fitlty, col=fitcol, lwd=fitlwd, ...)
     }
-    
     invisible()
     
-    
-  } else if (!requireNamespace("ggplot2", quietly = TRUE)) {
+  } else if (!requireNamespace("ggplot2", quietly = TRUE)) 
+  {
     stop("ggplot2 needed for this function to work with plotstyle = 'ggplot'. Please install it", call. = FALSE)
-    
-  } else {
+  } else 
+  {
     ######## plot if plotstyle=='ggplot' ########
     if ((NPMLE.method == "Wang") | (NPMLE.method == "Turnbull.intervals")) {
       
@@ -367,10 +365,10 @@ cdfcompcens <- function(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, ma
         ggplot2::ggtitle(main) + ggplot2::xlab(xlab) + ggplot2::ylab(ylab) +
         {if(lines01) ggplot2::geom_hline(ggplot2::aes(yintercept=0), color="grey", linetype="dashed")} +
         {if(lines01) ggplot2::geom_hline(ggplot2::aes(yintercept=1), color="grey", linetype="dashed")} +
-        ggplot2::geom_rect(data=drect, mapping=ggplot2::aes_(xmin=quote(x1), xmax=quote(x2), ymin=quote(y1), ymax=quote(y2)), colour = datacol, fill = fillrect, alpha=0.5) +
-        ggplot2::geom_segment(data=dsegmright, mapping=ggplot2::aes_(x=quote(x1), y=quote(y1), xend=quote(x2), yend=quote(y2)), colour = datacol) +
-        ggplot2::geom_segment(data=dsegmleft, mapping=ggplot2::aes_(x=quote(x1), y=quote(y1), xend=quote(x2), yend=quote(y2)), colour = datacol) +
-        ggplot2::geom_line(data=dline, ggplot2::aes_(quote(x), quote(y), group = quote(ind), colour = quote(ind), linetype = quote(ind), size = quote(ind))) +
+        ggplot2::geom_rect(data=drect, mapping=ggplot2::aes(xmin=.data$x1, xmax=.data$x2, ymin=.data$y1, ymax=.data$y2), colour = datacol, fill = fillrect, alpha=0.5) +
+        ggplot2::geom_segment(data=dsegmright, mapping=ggplot2::aes(x=.data$x1, y=.data$y1, xend=.data$x2, yend=.data$y2), colour = datacol) +
+        ggplot2::geom_segment(data=dsegmleft, mapping=ggplot2::aes(x=.data$x1, y=.data$y1, xend=.data$x2, yend=.data$y2), colour = datacol) +
+        ggplot2::geom_line(data=dline, ggplot2::aes(.data$x, .data$y, group = .data$ind, colour = .data$ind, linetype = .data$ind, size = .data$ind)) +
         ggplot2::theme_bw() +
         {if(addlegend) ggplot2::theme(legend.position = c(xlegend, ylegend), plot.title = ggplot2::element_text(hjust = 0.5)) else ggplot2::theme(legend.position = "none", plot.title = ggplot2::element_text(hjust = 0.5))} +
         ggplot2::scale_color_manual(values = fitcol, labels = legendtext) +

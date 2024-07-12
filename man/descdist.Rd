@@ -11,7 +11,7 @@
 
 \usage{
 descdist(data, discrete = FALSE, boot = NULL, method = "unbiased",
-graph = TRUE, print = TRUE, obs.col = "darkblue", obs.pch = 16, boot.col = "orange")
+graph = TRUE, print = TRUE, obs.col = "red", obs.pch = 16, boot.col = "orange")
 
 \method{print}{descdist}(x, \dots)
 }
@@ -81,13 +81,13 @@ Cullen AC and Frey HC (1999), \emph{Probabilistic techniques in exposure assessm
 Plenum Press, USA, pp. 81-159.
 
 Evans M, Hastings N and Peacock B (2000), \emph{Statistical distributions}.
-John Wiley and Sons Inc.
+John Wiley and Sons Inc, \doi{10.1002/9780470627242}.
 
 Sokal RR and Rohlf FJ (1995), \emph{Biometry}.
 W.H. Freeman and Company, USA, pp. 111-115.
 
 Delignette-Muller ML and Dutang C (2015), \emph{fitdistrplus: An R Package for Fitting Distributions}.
-Journal of Statistical Software, 64(4), 1-34.
+Journal of Statistical Software, 64(4), 1-34, \doi{https://doi.org/10.18637/jss.v064.i04}.
 
 }
 
@@ -102,32 +102,32 @@ Marie-Laure Delignette-Muller and Christophe Dutang.
 set.seed(1234)
 x1 <- rnorm(100)
 descdist(x1)
-descdist(x1,boot=500)
+descdist(x1,boot=11)
 
 # (2) Description of a sample from a beta distribution
 # with uncertainty on skewness and kurtosis estimated by bootstrap
 # with changing of default colors and plotting character for observed point
 #
-descdist(rbeta(100,shape1=0.05,shape2=1),boot=500,
-obs.col="blue", obs.pch = 15, boot.col="yellow")
+descdist(rbeta(100,shape1=0.05,shape2=1),boot=11,
+ obs.col="blue", obs.pch = 15, boot.col="darkgreen")
 
 # (3) Description of a sample from a gamma distribution
 # with uncertainty on skewness and kurtosis estimated by bootstrap
 # without plotting 
 #
-descdist(rgamma(100,shape=2,rate=1),boot=500,graph=FALSE)
+descdist(rgamma(100,shape=2,rate=1),boot=11,graph=FALSE)
 
-# (3) Description of a sample from a Poisson distribution
+# (4) Description of a sample from a Poisson distribution
 # with uncertainty on skewness and kurtosis estimated by bootstrap 
 #
-descdist(rpois(100,lambda=2),discrete=TRUE,boot=500)
+descdist(rpois(100,lambda=2),discrete=TRUE,boot=11)
 
-# (4) Description of serving size data
+# (5) Description of serving size data
 # with uncertainty on skewness and kurtosis estimated by bootstrap 
 #
 data(groundbeef)
 serving <- groundbeef$serving
-descdist(serving, boot=500)
+descdist(serving, boot=11)
 }
 
 \keyword{ distribution }

@@ -147,6 +147,11 @@ ppcomp(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, main, xlab, ylab,
   dedicated to personalize the plots, and fixed to default values if omitted.
 }
 
+\value{ 
+  \code{*comp} returns a list of drawn points and/or lines when \code{plotstyle == "graphics"}
+  or an object of class \code{"ggplot"} when \code{plotstyle == "ggplot"}.
+}
+
 \seealso{ 
   See \code{\link{plot}}, \code{\link{legend}}, \code{\link{ppoints}}, 
   \code{\link{plot.stepfun}} for classic plotting functions.
@@ -157,7 +162,7 @@ ppcomp(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, main, xlab, ylab,
 \references{
 Delignette-Muller ML and Dutang C (2015), 
 \emph{fitdistrplus: An R Package for Fitting Distributions}.
-Journal of Statistical Software, 64(4), 1-34.
+Journal of Statistical Software, 64(4), 1-34, \doi{https://doi.org/10.18637/jss.v064.i04}.
 }
 
 \author{ 

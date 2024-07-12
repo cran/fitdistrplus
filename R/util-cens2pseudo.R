@@ -1,3 +1,22 @@
+#############################################################################
+#   Copyright (c) 2024 Christophe Dutang, Marie Laure Delignette-Muller                                                                                                  
+#                                                                                                                                                                        
+#   This program is free software; you can redistribute it and/or modify                                               
+#   it under the terms of the GNU General Public License as published by                                         
+#   the Free Software Foundation; either version 2 of the License, or                                                   
+#   (at your option) any later version.                                                                                                            
+#                                                                                                                                                                         
+#   This program is distributed in the hope that it will be useful,                                                             
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of                                          
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                                 
+#   GNU General Public License for more details.                                                                                    
+#                                                                                                                                                                         
+#   You should have received a copy of the GNU General Public License                                           
+#   along with this program; if not, write to the                                                                                           
+#   Free Software Foundation, Inc.,                                                                                                              
+#   59 Temple Place, Suite 330, Boston, MA 02111-1307, USA                                                             
+#                                                                                                                                                                         
+#############################################################################
 # compute pseudo data from a censored dataset
 
 # INPUTS 
@@ -19,7 +38,6 @@ cens2pseudo <- function(censdata)
   # mean of bounds for interval censored data and the left or right bound for the other 
   # censored data) = vector
   
-  
   irow.lcens <- is.na(censdata$left) # rows corresponding to lcens data
   lcens <- censdata[irow.lcens, ]$right
   irow.rcens <- is.na(censdata$right)  # rows corresponding to rcens data
@@ -38,9 +56,7 @@ cens2pseudo <- function(censdata)
   list(pseudo=pseudo, rcens=rcens, lcens=lcens, ncens=ncens, icens=icens)
 }
 
-
 # compute row indexes from a censored dataset
-
 cens2idxrow <- function(censdata)
 {
   # Definition of datasets lcens (left censored)=vector, rcens (right censored)= vector, 

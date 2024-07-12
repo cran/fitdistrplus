@@ -22,7 +22,7 @@
 ###         R functions
 ###
 
-#already in R
+#already in R, see <src>/stats/R/vcov.R
 #
 #vcov <- function(object, ...)
 #    UseMethod("vcov")
@@ -32,15 +32,12 @@
 
 vcov.fitdist <- function(object, ...)
 {
-    stopifnot(inherits(object, "fitdist"))
-    if (object$method != "mle")
-      warning("The variance-covariance matrix can only be calculated for fits using the mle method")
-    return(object$vcov)
+  stopifnot(inherits(object, "fitdist"))
+  return(object$vcov)
 }
 
 vcov.fitdistcens <- function(object, ...)
 {
-    stopifnot(inherits(object, "fitdistcens"))
-    
-    return(object$vcov)
+  stopifnot(inherits(object, "fitdistcens"))
+  return(object$vcov)
 }

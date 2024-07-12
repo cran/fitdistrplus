@@ -4,6 +4,8 @@
 \alias{print.fitdist}
 \alias{summary.fitdist}
 \alias{logLik.fitdist}
+\alias{AIC.fitdist}
+\alias{BIC.fitdist}
 \alias{vcov.fitdist}
 \alias{coef.fitdist}
 \title{ Fit of univariate distributions to non-censored data}
@@ -14,12 +16,14 @@
  maximizing goodness-of-fit estimation (mge).
  The latter is also known as minimizing distance estimation.
  Generic methods are \code{print}, \code{plot}, 
-\code{summary}, \code{quantile}, \code{logLik}, \code{vcov} and \code{coef}.
+\code{summary}, \code{quantile}, \code{logLik}, \code{AIC}, 
+\code{BIC}, \code{vcov} and \code{coef}.
 }
 
 \usage{
 fitdist(data, distr, method = c("mle", "mme", "qme", "mge", "mse"), 
-    start=NULL, fix.arg=NULL, discrete, keepdata = TRUE, keepdata.nb=100, \dots)
+    start=NULL, fix.arg=NULL, discrete, keepdata = TRUE, keepdata.nb=100, 
+    calcvcov=TRUE, \dots)
     
 \method{print}{fitdist}(x, \dots)
 
@@ -28,6 +32,10 @@ fitdist(data, distr, method = c("mle", "mme", "qme", "mge", "mse"),
 \method{summary}{fitdist}(object, \dots)
 
 \method{logLik}{fitdist}(object, \dots)
+
+\method{AIC}{fitdist}(object, \dots, k = 2)
+
+\method{BIC}{fitdist}(object, \dots)
 
 \method{vcov}{fitdist}(object, \dots)
 
@@ -57,6 +65,8 @@ fitdist(data, distr, method = c("mle", "mme", "qme", "mge", "mse"),
 \item{keepdata}{a logical. If \code{TRUE}, dataset is returned, 
     otherwise only a sample subset is returned.}
 \item{keepdata.nb}{When \code{keepdata=FALSE}, the length (>1) of the subset returned.}
+\item{calcvcov}{A logical indicating if (asymptotic) covariance matrix is required.}
+
 \item{discrete}{ If TRUE, the distribution is considered as discrete.
     If \code{discrete} is missing, 
 	  \code{discrete} is automaticaly set to \code{TRUE} when \code{distr} belongs to 
@@ -71,6 +81,7 @@ fitdist(data, distr, method = c("mle", "mme", "qme", "mge", "mse"),
     with its default breaks definition. Else \code{breaks} is passed to the function \code{hist}.
     This argument is not taken into account with discrete distributions: \code{"binom"}, 
     \code{"nbinom"}, \code{"geom"}, \code{"hyper"} and \code{"pois"}. }
+\item{k}{penalty per parameter to be passed to the AIC generic function (2 by default).}
 \item{\dots}{Further arguments to be passed to generic functions, or to one of the functions
     \code{"mledist"},  \code{"mmedist"}, \code{"qmedist"} or \code{"mgedist"}
     depending of the chosen method. See \code{\link{mledist}}, \code{\link{mmedist}}, \code{\link{qmedist}}, 
@@ -100,6 +111,10 @@ fitdist(data, distr, method = c("mle", "mme", "qme", "mge", "mse"),
     by minimization of the sum of squared differences between observed and theoretical moments. 
     In this last case, further arguments are needed in the call to \code{fitdist}: \code{order} and \code{memp}
     (see \code{\link{mmedist}} for details).
+    
+    Since Version 1.2-0, \code{mmedist} automatically computes the asymptotic covariance matrix, 
+    hence the theoretical moments \code{mdist} 
+    should be defined up to an order which equals to twice the maximal order given \code{order}.
     }
     \item{When \code{method = "qme"}}{
     Quantile matching estimation consists in equalizing theoretical and empirical quantile.
@@ -159,6 +174,9 @@ fitdist(data, distr, method = c("mle", "mme", "qme", "mge", "mse"),
     \code{plot.fitdist}, \code{cdfcomp}, \code{denscomp}, \code{ppcomp}, 
     \code{qqcomp}, \code{gofstat} and \code{descdist} (developments planned in the future).
 
+    Once the parameter(s) is(are) estimated, \code{\link{gofstat}} allows to compute 
+    goodness-of-fit statistics.
+
     NB: if your data values are particularly small or large, a scaling may be needed 
     before the optimization process. See example (14) in this man page and 
     examples (14,15) in the test file of the package.
@@ -181,7 +199,8 @@ fitdist(data, distr, method = c("mle", "mme", "qme", "mge", "mse"),
         or \code{NULL} if not available.}
     \item{cor}{ the estimated correlation matrix, \code{NA} if numerically not computable
         or \code{NULL} if not available.}
-    \item{vcov}{ the estimated variance-covariance matrix, \code{NULL} if not available.}
+    \item{vcov}{ the estimated variance-covariance matrix, \code{NULL} if not available
+        for the estimation method considered.}
     \item{loglik}{ the log-likelihood.}
     \item{aic}{ the Akaike information criterion.}
     \item{bic}{ the the so-called BIC or SBC (Schwarz Bayesian criterion).}
@@ -231,6 +250,10 @@ fitdist(data, distr, method = c("mle", "mme", "qme", "mge", "mse"),
     }
     \item{\code{logLik}}{ Extracts the estimated log-likelihood from the \code{"fitdist"} object.
     }
+    \item{\code{AIC}}{ Extracts the AIC from the \code{"fitdist"} object.
+    }
+    \item{\code{BIC}}{ Extracts the estimated BIC from the \code{"fitdist"} object.
+    }
     \item{\code{vcov}}{ Extracts the estimated var-covariance matrix from the \code{"fitdist"} object
     (only available When \code{method = "mle"}).
     }
@@ -258,17 +281,21 @@ fitdist(data, distr, method = c("mle", "mme", "qme", "mge", "mse"),
 }
 
 \references{ 
+I. Ibragimov and R. Has'minskii (1981), 
+\emph{Statistical Estimation - Asymptotic Theory}, Springer-Verlag, 
+\doi{10.1007/978-1-4899-0027-2}
+
 Cullen AC and Frey HC (1999), \emph{Probabilistic techniques in exposure assessment}.
 Plenum Press, USA, pp. 81-155.
 
 Venables WN and Ripley BD (2002), \emph{Modern applied statistics with S}.
-Springer, New York, pp. 435-446.
+Springer, New York, pp. 435-446, \doi{10.1007/978-0-387-21706-2}.
 
 Vose D (2000), \emph{Risk analysis, a quantitative guide}.
 John Wiley & Sons Ltd, Chischester, England, pp. 99-143.
 
 Delignette-Muller ML and Dutang C (2015), \emph{fitdistrplus: An R Package for Fitting Distributions}.
-Journal of Statistical Software, 64(4), 1-34.
+Journal of Statistical Software, 64(4), 1-34, \doi{https://doi.org/10.18637/jss.v064.i04}.
 
 }
 

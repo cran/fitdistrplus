@@ -3,10 +3,13 @@ import(stats)
 importFrom("survival", Surv, survfit)
 importFrom("MASS", kde2d)
 importFrom("grDevices", colorRampPalette, terrain.colors) 
-importFrom("graphics", abline, axis, hist, hist.default, legend, lines, par, plot, points, polygon, contour, layout, matlines, segments, stripchart, image, pairs, rect, text)
-importFrom("utils", head, stack, modifyList, tail)
+importFrom("graphics", abline, axis, hist, hist.default, 
+           legend, lines, par, plot, points, polygon, 
+           contour, layout, matlines, segments, stripchart, 
+           image, pairs, rect, text)
+importFrom("utils", head, stack, modifyList, tail, str)
 importFrom("methods", formalArgs)
-
+importFrom("rlang", .data)
 
 ### Exports
 
@@ -20,6 +23,8 @@ S3method(print, quantile.fitdist)
 S3method(print, gofstat.fitdist)
 S3method(quantile, fitdist)
 S3method(logLik, fitdist)
+S3method(AIC, fitdist)
+S3method(BIC, fitdist)
 S3method(vcov, fitdist)
 S3method(coef, fitdist)
 
@@ -30,8 +35,11 @@ S3method(plot, fitdistcens)
 S3method(print, fitdistcens)
 S3method(print, summary.fitdistcens)
 S3method(print, quantile.fitdistcens)
+S3method(print, gofstat.fitdistcens)
 S3method(quantile, fitdistcens)
 S3method(logLik, fitdistcens)
+S3method(AIC, fitdistcens)
+S3method(BIC, fitdistcens)
 S3method(vcov, fitdistcens)
 S3method(coef, fitdistcens)
 export(Surv2fitdistcens)
@@ -39,18 +47,25 @@ export(Surv2fitdistcens)
 #bootdist class
 export(bootdist)
 export(CIcdfplot)
+S3method(density, bootdist)
 S3method(summary, bootdist)
 S3method(plot, bootdist)
+S3method(plot, density.bootdist)
 S3method(print, bootdist)
+S3method(print, density.bootdist)
 S3method(print, summary.bootdist)
 S3method(print, quantile.bootdist)
 S3method(quantile, bootdist)
 
+
 #bootdistcens class
 export(bootdistcens)
+S3method(density, bootdistcens)
 S3method(summary, bootdistcens)
 S3method(plot, bootdistcens)
+S3method(plot, density.bootdistcens)
 S3method(print, bootdistcens)
+S3method(print, density.bootdistcens)
 S3method(print, summary.bootdistcens)
 S3method(print, quantile.bootdistcens)
 S3method(quantile, bootdistcens)

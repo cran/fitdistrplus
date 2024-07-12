@@ -159,9 +159,9 @@ ppcompcens <- function(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, mai
                              Pi.up = Pi.up, ind = legendtext[i])
   }
   
-  if(plotstyle == "graphics") {
+  if(plotstyle == "graphics") 
+  {
     ######## plot if plotstyle=='graphics' ########
-    
     # main plot
     plot(1, 1, type = "n", main = main, xlim = xlim, ylim = ylim,
          xlab = xlab, ylab = ylab, log = logxy)
@@ -208,12 +208,12 @@ ppcompcens <- function(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, mai
     }
     invisible()
     
-  } else if (!requireNamespace("ggplot2", quietly = TRUE)) {
+  } else if (!requireNamespace("ggplot2", quietly = TRUE)) 
+  {
     stop("ggplot2 needed for this function to work with plotstyle = 'ggplot'. Please install it", call. = FALSE)
-    
-  } else {
+  } else 
+  {
     ######## plot if plotstyle=='ggplot' ########
-    
     drect <-  do.call("rbind", lrect)
     ind <- as.factor(drect$ind)
     fitcol <- rep(fitcol, table(ind))
@@ -223,7 +223,7 @@ ppcompcens <- function(ft, xlim, ylim, xlogscale = FALSE, ylogscale = FALSE, mai
     ggppcompcens <- ggplot2::ggplot(drect) + 
       ggplot2::coord_cartesian(xlim = xlim, ylim = ylim)  +
       ggplot2::ggtitle(main) + ggplot2::xlab(xlab) + ggplot2::ylab(ylab) +
-      ggplot2::geom_rect(data=drect, mapping=ggplot2::aes_(xmin=quote(Pitheo.low), xmax=quote(Pitheo.up), ymin=quote(Pi.low), ymax=quote(Pi.up)), colour = fitcol, fill = fillrect, alpha=0.5, size = fitlwd) +
+      ggplot2::geom_rect(data=drect, mapping=ggplot2::aes(xmin=.data$Pitheo.low, xmax=.data$Pitheo.up, ymin=.data$Pi.low, ymax=.data$Pi.up), colour = fitcol, fill = fillrect, alpha=0.5, size = fitlwd) +
       ggplot2::theme_bw() +
       ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5)) +
       {if(line01) ggplot2::geom_abline(ggplot2::aes(slope = 1, intercept = 0), color = line01col, linetype = line01lty)} +

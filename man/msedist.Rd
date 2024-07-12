@@ -10,7 +10,7 @@
 \usage{
 msedist(data, distr, phidiv="KL", power.phidiv=NULL, start = NULL, fix.arg = NULL, 
   optim.method = "default", lower = -Inf, upper = Inf, custom.optim = NULL, 
-  weights=NULL, silent = TRUE, gradient = NULL, checkstartfix=FALSE, \dots)
+  weights=NULL, silent = TRUE, gradient = NULL, checkstartfix=FALSE, calcvcov=FALSE, \dots)
 
 }
 
@@ -45,7 +45,9 @@ msedist(data, distr, phidiv="KL", power.phidiv=NULL, start = NULL, fix.arg = NUL
 \item{silent}{A logical to remove or show warnings when bootstraping.}    
 \item{gradient}{A function to return the gradient of the gof distance for the \code{"BFGS"}, \code{"CG"} 
     and \code{"L-BFGS-B"} methods. If it is \code{NULL}, a finite-difference approximation will be used.}
-\item{checkstartfix}{A logical to test starting and fixed values. Do not change it.}      
+\item{checkstartfix}{A logical to test starting and fixed values. Do not change it.}  
+\item{calcvcov}{A logical indicating if (asymptotic) covariance matrix is required.
+  (currently ignored)}
 \item{\dots}{further arguments passed to the \code{\link{optim}}, \code{\link{constrOptim}} or \code{custom.optim} function.}
 }
 
@@ -152,10 +154,12 @@ msedist(data, distr, phidiv="KL", power.phidiv=NULL, start = NULL, fix.arg = NUL
 \references{
 
 Anatolyev, S., and Kosenok, G. (2005). \emph{An alternative to maximum likelihood
-based on spacings}. Econometric Theory, 21(2), 472-476. 
+based on spacings}. Econometric Theory, 21(2), 472-476,
+\doi{10.1017/S0266466605050255}. 
 
 Cheng, R.C.H. and N.A.K. Amin (1983) \emph{Estimating parameters in continuous univariate 
-distributions with a shifted origin}. Journal of the Royal Statistical Society Series B 45, 394-403.
+distributions with a shifted origin}. Journal of the Royal Statistical Society Series B 45, 394-403,
+\doi{10.1111/j.2517-6161.1983.tb01268.x}.
 
 Ranneby, B. (1984) \emph{The maximum spacing method: An estimation method related to 
 the maximum likelihood method}. Scandinavian Journal of Statistics 11, 93-112.
