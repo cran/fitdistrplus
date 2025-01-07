@@ -1,5 +1,5 @@
-library(fitdistrplus)
-library(actuar)
+require("fitdistrplus")
+require("actuar")
 
 set.seed(1234)
 
@@ -18,6 +18,12 @@ fitdist(x, "trgamma")
 fitdist(x, "gamma")
 fitdist(x, "weibull")
 fitdist(x, "exp")
+
+
+x <- rgamma(n, 2, 2)
+
+fitdistrplus:::startarg_transgamma_family(x, "gamma")
+
 
 
 #weird examples

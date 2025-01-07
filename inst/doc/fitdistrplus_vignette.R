@@ -3,7 +3,7 @@ options(digits = 4)
 set.seed(1234)
 
 ## ----datgroundbeef, echo=TRUE-------------------------------------------------
-library("fitdistrplus")
+require("fitdistrplus")
 data("groundbeef")
 str(groundbeef)
 
@@ -28,7 +28,7 @@ cdfcomp(list(fw, fln, fg), legendtext = plot.legend)
 ppcomp(list(fw, fln, fg), legendtext = plot.legend)
 
 ## ----fitendo, fig.align='center', fig.width=6, fig.height=6, fig.cap="CDF plot to compare the fit of four distributions to acute toxicity values of various organisms for the organochlorine pesticide endosulfan (`endosulfan` data set) as provided by the `cdfcomp` function, with CDF values in a logscale to emphasize discrepancies on the left tail."----
-library(actuar)
+require("actuar")
 data("endosulfan")
 ATV <- endosulfan$ATV
 fendo.ln <- fitdist(ATV, "lnorm")
@@ -80,7 +80,7 @@ str(danishuni)
 ## ----danishmme, fig.align='center', fig.width=7, fig.height=4, fig.cap="Comparison between MME and MLE when fitting a lognormal or a Pareto distribution to loss data from the `danishuni` data set."----
 fdanish.ln.MLE <- fitdist(danishuni$Loss, "lnorm")
 fdanish.ln.MME <- fitdist(danishuni$Loss, "lnorm", method = "mme", order = 1:2)
-library(actuar)
+require("actuar")
 fdanish.P.MLE <- fitdist(danishuni$Loss, "pareto", start = list(shape = 10, scale = 10), 
                          lower = 2+1e-6, upper = Inf)
 memp <- function(x, order) mean(x^order)
@@ -117,7 +117,7 @@ if(inherits(fCG, "try-error")) {fCG <- list(estimate = NA)}
 ## ----optimmethod.customgenoud, echo=TRUE--------------------------------------
 mygenoud <- function(fn, par, ...) 
 {
-   require(rgenoud)
+   require("rgenoud")
    res <- genoud(fn, starting.values = par, ...)        
    standardres <- c(res, convergence = 0)
    return(standardres)

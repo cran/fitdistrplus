@@ -1,7 +1,4 @@
-library(fitdistrplus)
-
-
-
+require("fitdistrplus")
 
 # (1) fit a user-defined continuous distribution (Gumbel) to censored data.
 #
@@ -16,6 +13,7 @@ qgumbel  <-  function(p,a,b) a-b*log(-log(p))
 mledist(log10EC50, "gumbel", start=list(a=0,b=2), optim.method="Nelder-Mead")
 mledist(log10EC50, "gumbel", start=list(a=0,b=2)) #default NM
 
+#fitted coef is 1.63 1.14 , fitted loglik is -20.3
 
 try(mledist(rbind(log10EC50, c("a", "b")), "gamma"))
 try(mledist(rbind(log10EC50, c(NA, NA)), "gamma"))
@@ -23,14 +21,13 @@ try(mledist(rbind(log10EC50, c(3, Inf)), "gamma"))
 try(mledist(rbind(log10EC50, c(3, NaN)), "gamma"))
 
 
-
-
-
 # (2) test optimization arguments to censored data MLE.
 #
 
 mledist(log10EC50, "lnorm", optim.method="BFGS")
 mledist(log10EC50, "lnorm", optim.method="Nelder")
+
+#fitted coef is 0.623   0.928, fitted loglik is -21.1
 
 #optim() is used
 mledist(log10EC50, "lnorm", optim.method="L-BFGS-B", lower=0)
@@ -46,6 +43,8 @@ xleft <- c(-1.8, -0.6, -0.1, 0.07, 0.14, 1, 1.2, 1.2, 1.2)
 xright <- c(-1.8, -0.6, -0.1, 0.07, 0.14, 1, NA, NA, NA)
 d <- data.frame(left = xleft, right = xright)
 f1 <- mledist(d, "norm")
+
+#fitted coef is 0.545 1.342, fitted loglik is -12.9
 
 dbis <- data.frame(left = c(-1.8, -0.6, -0.1, 0.07, 0.14, 1, 1.2), 
                    right = c(-1.8, -0.6, -0.1, 0.07, 0.14, 1, NA))
@@ -64,4 +63,3 @@ mledist(d, "norm", start = function(x) list(mean = mean(x), sd = 1))$estimate
 mledist(d, "norm", fix.arg = function(x) list(mean = 0))$estimate
 mledist(d, "norm", fix.arg = function(x) list(mean = 0.544))$estimate
 mledist(d, "norm", fix.arg = function(x) list(mean = mean(x)))$estimate
-

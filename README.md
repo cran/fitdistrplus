@@ -1,6 +1,6 @@
-# Help to Fit of a Parametric Distribution to Non-Censored or Censored Data 
+# Help to Fit of a Parametric Distribution to Non-Censored or Censored Data  <img src="man/figures/fitdistrplus_hex.png" align="right" style="float:right; height:200px;"/>
 
-[![CRAN_Release_Badge](http://www.r-pkg.org/badges/version-ago/fitdistrplus)](https://cran.r-project.org/package=fitdistrplus)
+[![CRAN_Release_Badge](https://www.r-pkg.org/badges/version-ago/fitdistrplus)](https://cran.r-project.org/package=fitdistrplus)
 [![CRAN Downloads](https://cranlogs.r-pkg.org/badges/fitdistrplus)](https://cran.r-project.org/package=fitdistrplus)
 [![R-CMD-check](https://github.com/lbbe-software/fitdistrplus/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/lbbe-software/fitdistrplus/actions/workflows/R-CMD-check.yaml)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
@@ -41,7 +41,7 @@ remotes::install_github("lbbe-software/fitdistrplus")
 
 Finally load the package in your current R session with the following R command:
 ```r
-library(fitdistrplus)
+require("fitdistrplus")
 ```
 
 ## Documentation

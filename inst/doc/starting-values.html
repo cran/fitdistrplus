@@ -12,7 +12,7 @@
 
 <meta name="author" content="Marie Laure Delignette Muller, Christophe Dutang" />
 
-<meta name="date" content="2024-07-11" />
+<meta name="date" content="2025-01-07" />
 
 <title>Starting values used in fitdistrplus</title>
 
@@ -242,73 +242,73 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">Starting values used in fitdistrplus</h1>
 <h4 class="author">Marie Laure Delignette Muller, Christophe Dutang</h4>
-<h4 class="date">2024-07-11</h4>
+<h4 class="date">2025-01-07</h4>
 
 
 <div id="TOC">
 <ul>
-<li><a href="#discrete-distributions"><span class="toc-section-number">1</span> Discrete distributions</a>
+<li><a href="#discrete-distributions">1. Discrete distributions</a>
 <ul>
-<li><a href="#base-r-distribution"><span class="toc-section-number">1.1</span> Base R distribution</a>
+<li><a href="#base-r-distribution">1.1. Base R distribution</a>
 <ul>
-<li><a href="#geometric-distribution"><span class="toc-section-number">1.1.1</span> Geometric distribution</a></li>
-<li><a href="#negative-binomial-distribution"><span class="toc-section-number">1.1.2</span> Negative binomial distribution</a></li>
-<li><a href="#poisson-distribution"><span class="toc-section-number">1.1.3</span> Poisson distribution</a></li>
-<li><a href="#binomial-distribution"><span class="toc-section-number">1.1.4</span> Binomial distribution</a></li>
+<li><a href="#geometric-distribution">1.1.1. Geometric distribution</a></li>
+<li><a href="#negative-binomial-distribution">1.1.2. Negative binomial distribution</a></li>
+<li><a href="#poisson-distribution">1.1.3. Poisson distribution</a></li>
+<li><a href="#binomial-distribution">1.1.4. Binomial distribution</a></li>
 </ul></li>
-<li><a href="#logarithmic-distribution"><span class="toc-section-number">1.2</span> logarithmic distribution</a></li>
-<li><a href="#zero-truncated-distributions"><span class="toc-section-number">1.3</span> Zero truncated distributions</a></li>
-<li><a href="#zero-modified-distributions"><span class="toc-section-number">1.4</span> Zero modified distributions</a></li>
-<li><a href="#poisson-inverse-gaussian-distribution"><span class="toc-section-number">1.5</span> Poisson inverse Gaussian distribution</a></li>
+<li><a href="#logarithmic-distribution">1.2. logarithmic distribution</a></li>
+<li><a href="#zero-truncated-distributions">1.3. Zero truncated distributions</a></li>
+<li><a href="#zero-modified-distributions">1.4. Zero modified distributions</a></li>
+<li><a href="#poisson-inverse-gaussian-distribution">1.5. Poisson inverse Gaussian distribution</a></li>
 </ul></li>
-<li><a href="#continuous-distributions"><span class="toc-section-number">2</span> Continuous distributions</a>
+<li><a href="#continuous-distributions">2. Continuous distributions</a>
 <ul>
-<li><a href="#normal-distribution"><span class="toc-section-number">2.1</span> Normal distribution</a></li>
-<li><a href="#lognormal-distribution"><span class="toc-section-number">2.2</span> Lognormal distribution</a></li>
-<li><a href="#beta-distribution-of-the-first-kind"><span class="toc-section-number">2.3</span> Beta distribution (of the first kind)</a></li>
-<li><a href="#other-continuous-distribution-in-actuar"><span class="toc-section-number">2.4</span> Other continuous distribution in <code>actuar</code></a>
+<li><a href="#normal-distribution">2.1. Normal distribution</a></li>
+<li><a href="#lognormal-distribution">2.2. Lognormal distribution</a></li>
+<li><a href="#beta-distribution-of-the-first-kind">2.3. Beta distribution (of the first kind)</a></li>
+<li><a href="#other-continuous-distribution-in-actuar">2.4. Other continuous distribution in <code>actuar</code></a>
 <ul>
-<li><a href="#log-gamma"><span class="toc-section-number">2.4.1</span> Log-gamma</a></li>
-<li><a href="#gumbel"><span class="toc-section-number">2.4.2</span> Gumbel</a></li>
-<li><a href="#inverse-gaussian-distribution"><span class="toc-section-number">2.4.3</span> Inverse Gaussian distribution</a></li>
-<li><a href="#generalized-beta"><span class="toc-section-number">2.4.4</span> Generalized beta</a></li>
+<li><a href="#log-gamma">2.4.1. Log-gamma</a></li>
+<li><a href="#gumbel">2.4.2. Gumbel</a></li>
+<li><a href="#inverse-gaussian-distribution">2.4.3. Inverse Gaussian distribution</a></li>
+<li><a href="#generalized-beta">2.4.4. Generalized beta</a></li>
 </ul></li>
-<li><a href="#feller-pareto-family"><span class="toc-section-number">2.5</span> Feller-Pareto family</a>
+<li><a href="#feller-pareto-family">2.5. Feller-Pareto family</a>
 <ul>
-<li><a href="#transformed-beta"><span class="toc-section-number">2.5.1</span> Transformed beta</a></li>
-<li><a href="#generalized-pareto"><span class="toc-section-number">2.5.2</span> Generalized Pareto</a></li>
-<li><a href="#burr"><span class="toc-section-number">2.5.3</span> Burr</a></li>
-<li><a href="#loglogistic"><span class="toc-section-number">2.5.4</span> Loglogistic</a></li>
-<li><a href="#paralogistic"><span class="toc-section-number">2.5.5</span> Paralogistic</a></li>
-<li><a href="#inverse-burr"><span class="toc-section-number">2.5.6</span> Inverse Burr</a></li>
-<li><a href="#inverse-paralogistic"><span class="toc-section-number">2.5.7</span> Inverse paralogistic</a></li>
-<li><a href="#inverse-pareto"><span class="toc-section-number">2.5.8</span> Inverse pareto</a></li>
-<li><a href="#pareto-iv"><span class="toc-section-number">2.5.9</span> Pareto IV</a></li>
-<li><a href="#pareto-iii"><span class="toc-section-number">2.5.10</span> Pareto III</a></li>
-<li><a href="#pareto-ii"><span class="toc-section-number">2.5.11</span> Pareto II</a></li>
-<li><a href="#pareto-i"><span class="toc-section-number">2.5.12</span> Pareto I</a></li>
-<li><a href="#pareto"><span class="toc-section-number">2.5.13</span> Pareto</a></li>
+<li><a href="#transformed-beta">2.5.1. Transformed beta</a></li>
+<li><a href="#generalized-pareto">2.5.2. Generalized Pareto</a></li>
+<li><a href="#burr">2.5.3. Burr</a></li>
+<li><a href="#loglogistic">2.5.4. Loglogistic</a></li>
+<li><a href="#paralogistic">2.5.5. Paralogistic</a></li>
+<li><a href="#inverse-burr">2.5.6. Inverse Burr</a></li>
+<li><a href="#inverse-paralogistic">2.5.7. Inverse paralogistic</a></li>
+<li><a href="#inverse-pareto">2.5.8. Inverse pareto</a></li>
+<li><a href="#pareto-iv">2.5.9. Pareto IV</a></li>
+<li><a href="#pareto-iii">2.5.10. Pareto III</a></li>
+<li><a href="#pareto-ii">2.5.11. Pareto II</a></li>
+<li><a href="#pareto-i">2.5.12. Pareto I</a></li>
+<li><a href="#pareto">2.5.13. Pareto</a></li>
 </ul></li>
-<li><a href="#transformed-gamma-family"><span class="toc-section-number">2.6</span> Transformed gamma family</a>
+<li><a href="#transformed-gamma-family">2.6. Transformed gamma family</a>
 <ul>
-<li><a href="#transformed-gamma-distribution"><span class="toc-section-number">2.6.1</span> Transformed gamma distribution</a></li>
-<li><a href="#gamma-distribution"><span class="toc-section-number">2.6.2</span> gamma distribution</a></li>
-<li><a href="#weibull-distribution"><span class="toc-section-number">2.6.3</span> Weibull distribution</a></li>
-<li><a href="#exponential-distribution"><span class="toc-section-number">2.6.4</span> Exponential distribution</a></li>
+<li><a href="#transformed-gamma-distribution">2.6.1. Transformed gamma distribution</a></li>
+<li><a href="#gamma-distribution">2.6.2. gamma distribution</a></li>
+<li><a href="#weibull-distribution">2.6.3. Weibull distribution</a></li>
+<li><a href="#exponential-distribution">2.6.4. Exponential distribution</a></li>
 </ul></li>
-<li><a href="#inverse-transformed-gamma-family"><span class="toc-section-number">2.7</span> Inverse transformed gamma family</a>
+<li><a href="#inverse-transformed-gamma-family">2.7. Inverse transformed gamma family</a>
 <ul>
-<li><a href="#inverse-transformed-gamma-distribution"><span class="toc-section-number">2.7.1</span> Inverse transformed gamma distribution</a></li>
-<li><a href="#inverse-gamma-distribution"><span class="toc-section-number">2.7.2</span> Inverse gamma distribution</a></li>
-<li><a href="#inverse-weibull-distribution"><span class="toc-section-number">2.7.3</span> Inverse Weibull distribution</a></li>
-<li><a href="#inverse-exponential"><span class="toc-section-number">2.7.4</span> Inverse exponential</a></li>
+<li><a href="#inverse-transformed-gamma-distribution">2.7.1. Inverse transformed gamma distribution</a></li>
+<li><a href="#inverse-gamma-distribution">2.7.2. Inverse gamma distribution</a></li>
+<li><a href="#inverse-weibull-distribution">2.7.3. Inverse Weibull distribution</a></li>
+<li><a href="#inverse-exponential">2.7.4. Inverse exponential</a></li>
 </ul></li>
 </ul></li>
-<li><a href="#bibliography"><span class="toc-section-number">3</span> Bibliography</a>
+<li><a href="#bibliography">3. Bibliography</a>
 <ul>
-<li><a href="#general-books"><span class="toc-section-number">3.1</span> General books</a></li>
-<li><a href="#books-dedicated-to-a-distribution-family"><span class="toc-section-number">3.2</span> Books dedicated to a distribution family</a></li>
-<li><a href="#books-with-applications"><span class="toc-section-number">3.3</span> Books with applications</a></li>
+<li><a href="#general-books">3.1. General books</a></li>
+<li><a href="#books-dedicated-to-a-distribution-family">3.2. Books dedicated to a distribution family</a></li>
+<li><a href="#books-with-applications">3.3. Books with applications</a></li>
 </ul></li>
 </ul>
 </div>
@@ -325,24 +325,24 @@ Starting values are computed in <code>R/util-startarg.R</code>.
 We give below the starting values for discrete and continuous
 distributions and refer to the bibliograhy sections for
 details.</p>
-<div id="discrete-distributions" class="section level1" number="1">
-<h1><span class="header-section-number">1</span> Discrete distributions</h1>
-<div id="base-r-distribution" class="section level2" number="1.1">
-<h2><span class="header-section-number">1.1</span> Base R distribution</h2>
-<div id="geometric-distribution" class="section level3" number="1.1.1">
-<h3><span class="header-section-number">1.1.1</span> Geometric distribution</h3>
+<div id="discrete-distributions" class="section level1">
+<h1>1. Discrete distributions</h1>
+<div id="base-r-distribution" class="section level2">
+<h2>1.1. Base R distribution</h2>
+<div id="geometric-distribution" class="section level3">
+<h3>1.1.1. Geometric distribution</h3>
 <p>The MME is used <span class="math inline">\(\hat p=1/(1+m_1)\)</span>.</p>
 </div>
-<div id="negative-binomial-distribution" class="section level3" number="1.1.2">
-<h3><span class="header-section-number">1.1.2</span> Negative binomial distribution</h3>
+<div id="negative-binomial-distribution" class="section level3">
+<h3>1.1.2. Negative binomial distribution</h3>
 <p>The MME is used <span class="math inline">\(\hat n = m_1^2/(\mu_2-m_1)\)</span>.</p>
 </div>
-<div id="poisson-distribution" class="section level3" number="1.1.3">
-<h3><span class="header-section-number">1.1.3</span> Poisson distribution</h3>
+<div id="poisson-distribution" class="section level3">
+<h3>1.1.3. Poisson distribution</h3>
 <p>Both the MME and the MLE is <span class="math inline">\(\hat \lambda = m_1\)</span>.</p>
 </div>
-<div id="binomial-distribution" class="section level3" number="1.1.4">
-<h3><span class="header-section-number">1.1.4</span> Binomial distribution</h3>
+<div id="binomial-distribution" class="section level3">
+<h3>1.1.4. Binomial distribution</h3>
 <p>The MME is used
 <span class="math display">\[
 Var[X]/E[X] = 1-p
@@ -355,8 +355,8 @@ the size parameter is
 \]</span></p>
 </div>
 </div>
-<div id="logarithmic-distribution" class="section level2" number="1.2">
-<h2><span class="header-section-number">1.2</span> logarithmic distribution</h2>
+<div id="logarithmic-distribution" class="section level2">
+<h2>1.2. logarithmic distribution</h2>
 <p>The expectation simplifies for small values of <span class="math inline">\(p\)</span>
 <span class="math display">\[
 E[X] = -\frac{1}{\log(1-p)}\frac{p}{1-p}
@@ -369,19 +369,19 @@ So the initial estimate is
 \hat p = 1-1/m_1.
 \]</span></p>
 </div>
-<div id="zero-truncated-distributions" class="section level2" number="1.3">
-<h2><span class="header-section-number">1.3</span> Zero truncated distributions</h2>
+<div id="zero-truncated-distributions" class="section level2">
+<h2>1.3. Zero truncated distributions</h2>
 <p>This distribution are the distribution of <span class="math inline">\(X\vert X&gt;0\)</span> when <span class="math inline">\(X\)</span> follows a particular discrete distributions.
 Hence the initial estimate are the one used for base R on sample <span class="math inline">\(x-1\)</span>.</p>
 </div>
-<div id="zero-modified-distributions" class="section level2" number="1.4">
-<h2><span class="header-section-number">1.4</span> Zero modified distributions</h2>
+<div id="zero-modified-distributions" class="section level2">
+<h2>1.4. Zero modified distributions</h2>
 <p>The MLE of the probability parameter is the empirical mass at 0 <span class="math inline">\(\hat p_0=\frac1n \sum_i 1_{x_i=0}\)</span>.
 For other estimators we use the classical estimator with probability
 parameter <span class="math inline">\(1-\hat p_0\)</span>.</p>
 </div>
-<div id="poisson-inverse-gaussian-distribution" class="section level2" number="1.5">
-<h2><span class="header-section-number">1.5</span> Poisson inverse Gaussian distribution</h2>
+<div id="poisson-inverse-gaussian-distribution" class="section level2">
+<h2>1.5. Poisson inverse Gaussian distribution</h2>
 <p>The first two moments are
 <span class="math display">\[
 E[X]=\mu,
@@ -394,18 +394,18 @@ So the initial estimate are
 \]</span></p>
 </div>
 </div>
-<div id="continuous-distributions" class="section level1" number="2">
-<h1><span class="header-section-number">2</span> Continuous distributions</h1>
-<div id="normal-distribution" class="section level2" number="2.1">
-<h2><span class="header-section-number">2.1</span> Normal distribution</h2>
+<div id="continuous-distributions" class="section level1">
+<h1>2. Continuous distributions</h1>
+<div id="normal-distribution" class="section level2">
+<h2>2.1. Normal distribution</h2>
 <p>The MLE is the MME so we use the empirical mean and variance.</p>
 </div>
-<div id="lognormal-distribution" class="section level2" number="2.2">
-<h2><span class="header-section-number">2.2</span> Lognormal distribution</h2>
+<div id="lognormal-distribution" class="section level2">
+<h2>2.2. Lognormal distribution</h2>
 <p>The log sample follows a normal distribution, so same as normal on the log sample.</p>
 </div>
-<div id="beta-distribution-of-the-first-kind" class="section level2" number="2.3">
-<h2><span class="header-section-number">2.3</span> Beta distribution (of the first kind)</h2>
+<div id="beta-distribution-of-the-first-kind" class="section level2">
+<h2>2.3. Beta distribution (of the first kind)</h2>
 <p>The density function for a beta <span class="math inline">\(\mathcal Be(a,b)\)</span> is
 <span class="math display">\[
 f_X(x) = \frac{\Gamma(a)\Gamma(b)}{\Gamma(a+b)} x^{a-1}(1-x)^{b-1}.
@@ -414,17 +414,17 @@ The initial estimate is the MME
 <span class="math display" id="eq:betaguessestimator">\[\begin{equation}
 \hat a = m_1 \delta, \hat b = (1-m_1)\delta,
 \delta = \frac{m_1(1-m_1)}{\mu_2}-1,
-\tag{2.1}
+\tag{1}
 \end{equation}\]</span></p>
 </div>
-<div id="other-continuous-distribution-in-actuar" class="section level2" number="2.4">
-<h2><span class="header-section-number">2.4</span> Other continuous distribution in <code>actuar</code></h2>
-<div id="log-gamma" class="section level3" number="2.4.1">
-<h3><span class="header-section-number">2.4.1</span> Log-gamma</h3>
+<div id="other-continuous-distribution-in-actuar" class="section level2">
+<h2>2.4. Other continuous distribution in <code>actuar</code></h2>
+<div id="log-gamma" class="section level3">
+<h3>2.4.1. Log-gamma</h3>
 <p>Use the gamma initial values on the sample <span class="math inline">\(\log(x)\)</span></p>
 </div>
-<div id="gumbel" class="section level3" number="2.4.2">
-<h3><span class="header-section-number">2.4.2</span> Gumbel</h3>
+<div id="gumbel" class="section level3">
+<h3>2.4.2. Gumbel</h3>
 <p>The distribution function is
 <span class="math display">\[
 F(x) = \exp(-\exp(-\frac{x-\alpha}{\theta})).
@@ -453,8 +453,8 @@ initial estimate
 \hat\alpha = \hat\theta\log(\log(2)) + q_2.
 \]</span></p>
 </div>
-<div id="inverse-gaussian-distribution" class="section level3" number="2.4.3">
-<h3><span class="header-section-number">2.4.3</span> Inverse Gaussian distribution</h3>
+<div id="inverse-gaussian-distribution" class="section level3">
+<h3>2.4.3. Inverse Gaussian distribution</h3>
 <p>The moments of this distribution are
 <span class="math display">\[
 E[X] = \mu,
@@ -462,8 +462,8 @@ Var[X] = \mu^3\phi.
 \]</span>
 Hence the initial estimate are <span class="math inline">\(\hat\mu=m_1\)</span>, <span class="math inline">\(\hat\phi=\mu_2/m_1^3\)</span>.</p>
 </div>
-<div id="generalized-beta" class="section level3" number="2.4.4">
-<h3><span class="header-section-number">2.4.4</span> Generalized beta</h3>
+<div id="generalized-beta" class="section level3">
+<h3>2.4.4. Generalized beta</h3>
 <p>This is the distribution of <span class="math inline">\(\theta X^{1/\tau}\)</span> when <span class="math inline">\(X\)</span> is beta distributed <span class="math inline">\(\mathcal Be(a,b)\)</span>
 The moments are
 <span class="math display">\[
@@ -492,8 +492,8 @@ then we use beta initial estimate on sample
 <span class="math inline">\((\frac{x_i}{\hat\theta})^{\hat\tau}\)</span>.</p>
 </div>
 </div>
-<div id="feller-pareto-family" class="section level2" number="2.5">
-<h2><span class="header-section-number">2.5</span> Feller-Pareto family</h2>
+<div id="feller-pareto-family" class="section level2">
+<h2>2.5. Feller-Pareto family</h2>
 <p>The Feller-Pareto distribution is the distribution <span class="math inline">\(X=\mu+\theta(1/B-1)^{1/\gamma}\)</span> when
 <span class="math inline">\(B\)</span> follows a beta distribution with shape parameters <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\tau\)</span>.
 See details at <a href="https://doi.org/10.18637/jss.v103.i06" class="uri">https://doi.org/10.18637/jss.v103.i06</a>
@@ -509,7 +509,7 @@ For <span class="math inline">\(\gamma\)</span> close to 1, <span class="math in
 = (\tau \gamma - 1) \sum_{i} \log(\frac{x_i-\mu}\theta) 
 - (\alpha+\tau)\sum_i \log(1+(\frac{x_i-\mu}\theta)^\gamma)
 + n\log(\gamma) - n\log(\theta) -n \log(\beta(\alpha,\tau)).
-\tag{2.2}.
+\tag{2}.
 \end{equation}\]</span>
 The MLE of <span class="math inline">\(\mu\)</span> is the minimum.</p>
 <p>The gradient with respect to <span class="math inline">\(\theta, \alpha, \gamma, \tau\)</span> is
@@ -533,7 +533,7 @@ The MLE of <span class="math inline">\(\mu\)</span> is the minimum.</p>
 - \sum_i \log(1+(\frac{x_i-\mu}\theta)^\gamma)
 -n (\psi(\tau) - \psi(\alpha+\tau))
 \end{pmatrix}.
-\tag{2.3}
+\tag{3}
 \end{equation}\]</span>
 Cancelling the first component of score for <span class="math inline">\(\gamma=\alpha=2\)</span>, we get
 <span class="math display">\[
@@ -557,13 +557,13 @@ Cancelling the first component of score for <span class="math inline">\(\gamma=\
 = \theta.
 \]</span>
 Neglecting unknown value of <span class="math inline">\(\tau\)</span> and the denominator in <span class="math inline">\(\theta\)</span>, we get
-with <span class="math inline">\(\hat\mu\)</span> set with (<a href="#eq:pareto4muinit">(2.16)</a>)
+with <span class="math inline">\(\hat\mu\)</span> set with (<a href="#eq:pareto4muinit">(16)</a>)
 <span class="math display" id="eq:fellerparetothetahat">\[\begin{equation}
 \hat\theta = \sqrt{
 \frac{ \frac1n\sum_i \frac{x_i 2(x_i-\hat\mu)}{1+(x_i-\hat\mu)^2}
 }{\left(\frac1n \sum_{i} \frac{x_i}{x_i-\hat\mu} -1\right)}
 }.
-\tag{2.4}
+\tag{4}
 \end{equation}\]</span>
 Initial value of <span class="math inline">\(\tau,\alpha\)</span> are obtained on the sample <span class="math inline">\((z_i)_i\)</span>
 <span class="math display">\[
@@ -571,7 +571,7 @@ z_i = y_i/(1+y_i),
 y_i = (x_i - \hat\mu)/\hat\theta,
 \]</span>
 with initial values of a beta distribution which is based on MME
-(<a href="#eq:betaguessestimator">(2.1)</a>).</p>
+(<a href="#eq:betaguessestimator">(1)</a>).</p>
 <p>Cancelling the last component of the gradient leads to
 <span class="math display">\[
 (\gamma - 1) \frac1n\sum_{i} \log(\frac{x_i-\mu}\theta) 
@@ -593,12 +593,12 @@ Neglecting the value <span class="math inline">\(\gamma\)</span> on the right-ha
 }{
 \frac1n\sum_{i} \log(\frac{x_i-\mu}\theta) 
 }.
-\tag{2.5}
+\tag{5}
 \end{equation}\]</span></p>
-<div id="transformed-beta" class="section level3" number="2.5.1">
-<h3><span class="header-section-number">2.5.1</span> Transformed beta</h3>
+<div id="transformed-beta" class="section level3">
+<h3>2.5.1. Transformed beta</h3>
 <p>This is the Feller-Pareto with <span class="math inline">\(\mu=0\)</span>.
-So the first component of <a href="#eq:fellerparetogradient">(2.3)</a> simplifies to with
+So the first component of <a href="#eq:fellerparetogradient">(3)</a> simplifies to with
 <span class="math inline">\(\gamma=\alpha=2\)</span>
 <span class="math display">\[
 -(2\tau  - 1) \sum_{i} \frac{x_i}{\theta(x_i)} 
@@ -617,7 +617,7 @@ Neglecting unknown value of <span class="math inline">\(\tau\)</span> in the den
 \hat\theta = \sqrt{
 \frac1n\sum_i \frac{2x_i^2}{1+x_i^2}
 }.
-\tag{2.6}
+\tag{6}
 \end{equation}\]</span>
 Initial value of <span class="math inline">\(\tau,\alpha\)</span> are obtained on the sample <span class="math inline">\((z_i)_i\)</span>
 <span class="math display">\[
@@ -625,7 +625,7 @@ z_i = y_i/(1+y_i),
 y_i = x_i/\hat\theta,
 \]</span>
 with initial values of a beta distribution which is based on MME
-(<a href="#eq:betaguessestimator">(2.1)</a>).
+(<a href="#eq:betaguessestimator">(1)</a>).
 Similar to Feller-Pareto, we set
 <span class="math display" id="eq:fellerparetogammahat">\[\begin{equation}
 \hat\gamma = 
@@ -636,13 +636,13 @@ Similar to Feller-Pareto, we set
 }{
 \frac1n\sum_{i} \log(\frac{x_i}\theta) 
 }.
-\tag{2.5}
+\tag{5}
 \end{equation}\]</span></p>
 </div>
-<div id="generalized-pareto" class="section level3" number="2.5.2">
-<h3><span class="header-section-number">2.5.2</span> Generalized Pareto</h3>
+<div id="generalized-pareto" class="section level3">
+<h3>2.5.2. Generalized Pareto</h3>
 <p>This is the Feller-Pareto with <span class="math inline">\(\mu=0\)</span> <span class="math inline">\(\gamma=1\)</span>.
-So the first component of <a href="#eq:fellerparetogradient">(2.3)</a> simplifies to with
+So the first component of <a href="#eq:fellerparetogradient">(3)</a> simplifies to with
 <span class="math inline">\(\gamma=2\)</span>
 <span class="math display">\[
 -(\tau - 1) \frac{n}{\theta} 
@@ -657,7 +657,7 @@ Neglecting unknown value of <span class="math inline">\(\tau\)</span> leads to
 <span class="math display" id="eq:generalizedparetotheta">\[\begin{equation}
 \hat\theta = 
 \frac1n\sum_i \frac{x_i}{1+x_i}
-\tag{2.7}
+\tag{7}
 \end{equation}\]</span></p>
 <p>Initial value of <span class="math inline">\(\tau,\alpha\)</span> are obtained on the sample <span class="math inline">\((z_i)_i\)</span>
 <span class="math display">\[
@@ -665,10 +665,10 @@ z_i = y_i/(1+y_i),
 y_i = x_i/\hat\theta,
 \]</span>
 with initial values of a beta distribution which is based on MME
-(<a href="#eq:betaguessestimator">(2.1)</a>).</p>
+(<a href="#eq:betaguessestimator">(1)</a>).</p>
 </div>
-<div id="burr" class="section level3" number="2.5.3">
-<h3><span class="header-section-number">2.5.3</span> Burr</h3>
+<div id="burr" class="section level3">
+<h3>2.5.3. Burr</h3>
 <p>Burr is a Feller-Pareto distribution with <span class="math inline">\(\mu=0\)</span>, <span class="math inline">\(\tau=1\)</span>.</p>
 <p>The survival function is
 <span class="math display">\[
@@ -683,9 +683,9 @@ The initial value is
 \alpha
 =
 \frac{\log(2)}{\log(1+(q_2/\theta)^\gamma)},
-\tag{2.8}
+\tag{8}
 \end{equation}\]</span></p>
-<p>So the first component of <a href="#eq:fellerparetogradient">(2.3)</a> simplifies to with
+<p>So the first component of <a href="#eq:fellerparetogradient">(3)</a> simplifies to with
 <span class="math inline">\(\gamma=\alpha=2\)</span>, <span class="math inline">\(\tau=1\)</span>, <span class="math inline">\(\mu=0\)</span>.
 <span class="math display">\[
 - n/\theta
@@ -702,12 +702,12 @@ Neglecting unknown value in the denominator in <span class="math inline">\(\thet
 \frac1n\sum_i \frac{2x_i^2}{1+(x_i)^2}
 }
 }.
-\tag{2.6}
+\tag{6}
 \end{equation}\]</span>
-We use for <span class="math inline">\(\hat\gamma\)</span> <a href="#eq:fellerparetogammahat">(2.5)</a> with <span class="math inline">\(\tau=1\)</span> and <span class="math inline">\(\alpha=2\)</span> and previous <span class="math inline">\(\hat\theta\)</span>.</p>
+We use for <span class="math inline">\(\hat\gamma\)</span> <a href="#eq:fellerparetogammahat">(5)</a> with <span class="math inline">\(\tau=1\)</span> and <span class="math inline">\(\alpha=2\)</span> and previous <span class="math inline">\(\hat\theta\)</span>.</p>
 </div>
-<div id="loglogistic" class="section level3" number="2.5.4">
-<h3><span class="header-section-number">2.5.4</span> Loglogistic</h3>
+<div id="loglogistic" class="section level3">
+<h3>2.5.4. Loglogistic</h3>
 <p>Loglogistic is a Feller-Pareto distribution with <span class="math inline">\(\mu=0\)</span>, <span class="math inline">\(\tau=1\)</span>, <span class="math inline">\(\alpha=1\)</span>.
 The survival function is
 <span class="math display">\[
@@ -737,11 +737,11 @@ The sum of previous equations
 \]</span>
 <span class="math display" id="eq:llogisthetahat">\[\begin{equation}
 \hat\theta = \frac12 e^{\log(q_1q_3)}.
-\tag{2.9}
+\tag{9}
 \end{equation}\]</span></p>
 </div>
-<div id="paralogistic" class="section level3" number="2.5.5">
-<h3><span class="header-section-number">2.5.5</span> Paralogistic</h3>
+<div id="paralogistic" class="section level3">
+<h3>2.5.5. Paralogistic</h3>
 <p>Paralogistic is a Feller-Pareto distribution with <span class="math inline">\(\mu=0\)</span>, <span class="math inline">\(\tau=1\)</span>, <span class="math inline">\(\alpha=\gamma\)</span>.
 The survival function is
 <span class="math display">\[
@@ -757,7 +757,7 @@ The log-likelihood is
 = ( \alpha - 1) \sum_{i} \log(\frac{x_i}\theta) 
 - (\alpha+1)\sum_i \log(1+(\frac{x_i}\theta)^\alpha)
 + 2n\log(\alpha) - n\log(\theta).
-\tag{2.10}
+\tag{10}
 \end{equation}\]</span>
 The gradient with respect to <span class="math inline">\(\theta\)</span>, <span class="math inline">\(\alpha\)</span> is
 <span class="math display">\[
@@ -801,27 +801,27 @@ Initial estimators are
 }{
 \frac1n\sum_i \frac{x_i^2\log(x_i)}{1+x_i^2} - 2
 },
-\tag{2.11}
+\tag{11}
 \end{equation}\]</span>
 <span class="math display" id="eq:paralogisthetahat">\[\begin{equation}
 \hat\theta = (\hat\alpha+1)\frac1n\sum_i \frac{ (x_i)^{\hat\alpha+1}}{1+(x_i)^{\hat\alpha}}.
-\tag{2.12}
+\tag{12}
 \end{equation}\]</span></p>
 </div>
-<div id="inverse-burr" class="section level3" number="2.5.6">
-<h3><span class="header-section-number">2.5.6</span> Inverse Burr</h3>
+<div id="inverse-burr" class="section level3">
+<h3>2.5.6. Inverse Burr</h3>
 <p>Use Burr estimate on the sample <span class="math inline">\(1/x\)</span></p>
 </div>
-<div id="inverse-paralogistic" class="section level3" number="2.5.7">
-<h3><span class="header-section-number">2.5.7</span> Inverse paralogistic</h3>
+<div id="inverse-paralogistic" class="section level3">
+<h3>2.5.7. Inverse paralogistic</h3>
 <p>Use paralogistic estimate on the sample <span class="math inline">\(1/x\)</span></p>
 </div>
-<div id="inverse-pareto" class="section level3" number="2.5.8">
-<h3><span class="header-section-number">2.5.8</span> Inverse pareto</h3>
+<div id="inverse-pareto" class="section level3">
+<h3>2.5.8. Inverse pareto</h3>
 <p>Use pareto estimate on the sample <span class="math inline">\(1/x\)</span></p>
 </div>
-<div id="pareto-iv" class="section level3" number="2.5.9">
-<h3><span class="header-section-number">2.5.9</span> Pareto IV</h3>
+<div id="pareto-iv" class="section level3">
+<h3>2.5.9. Pareto IV</h3>
 <p>The survival function is
 <span class="math display">\[
 1-F(x) = \left(1+
@@ -849,7 +849,7 @@ Hence we get two useful relations
 }{
 \log\left(\frac{q_1-\mu}{q_3-\mu}\right)
 },
-\tag{2.13}
+\tag{13}
 \end{equation}\]</span>
 <span class="math display" id="eq:pareto4thetarelation">\[\begin{equation}
 \theta
@@ -859,7 +859,7 @@ Hence we get two useful relations
 ((\frac43)^{1/\alpha}-1)^{1/\gamma}
 - ((4)^{1/\alpha}-1)^{1/\gamma}
 }.
-\tag{2.14}
+\tag{14}
 \end{equation}\]</span></p>
 <p>The log-likelihood of a Pareto 4 sample (see Equation (5.2.94) of Arnold (2015)
 updated with Goulet et al. notation) is
@@ -874,7 +874,7 @@ leads to
 <span class="math display" id="eq:pareto4alpharelation">\[\begin{equation}
 \alpha
 =n/\sum_i \log(1+ (\frac{x_i-\mu}{\theta})^{\gamma}).
-\tag{2.15}
+\tag{15}
 \end{equation}\]</span></p>
 <p>The MLE of the threshold parameter <span class="math inline">\(\mu\)</span>
 is the minimum. So the initial estimate is slightly under the minimum in
@@ -885,17 +885,17 @@ order that all observations are strictly above it
 (1-\epsilon) \min_i x_i &amp; \text{if } \min_i x_i &lt;0 \\
 (1+\epsilon)\min_i x_i &amp; \text{if } \min_i x_i \geq 0 \\
 \end{array} \right. .
-\tag{2.16}
+\tag{16}
 \end{equation}\]</span>
 where <span class="math inline">\(\epsilon=0.05\)</span>.</p>
 <p>Initial parameter estimation is <span class="math inline">\(\hat\mu\)</span>,
 <span class="math inline">\(\alpha^\star = 2\)</span> ,
-<span class="math inline">\(\hat\gamma\)</span> from <a href="#eq:pareto4gammarelation">(2.13)</a> with <span class="math inline">\(\alpha^\star\)</span>,
-<span class="math inline">\(\hat\theta\)</span> from <a href="#eq:pareto4thetarelation">(2.14)</a> with <span class="math inline">\(\alpha^\star\)</span> and <span class="math inline">\(\hat\gamma\)</span>,
-<span class="math inline">\(\hat\alpha\)</span> from <a href="#eq:pareto4alpharelation">(2.15)</a> with <span class="math inline">\(\hat\mu\)</span>, <span class="math inline">\(\hat\theta\)</span> and <span class="math inline">\(\hat\gamma\)</span>.</p>
+<span class="math inline">\(\hat\gamma\)</span> from <a href="#eq:pareto4gammarelation">(13)</a> with <span class="math inline">\(\alpha^\star\)</span>,
+<span class="math inline">\(\hat\theta\)</span> from <a href="#eq:pareto4thetarelation">(14)</a> with <span class="math inline">\(\alpha^\star\)</span> and <span class="math inline">\(\hat\gamma\)</span>,
+<span class="math inline">\(\hat\alpha\)</span> from <a href="#eq:pareto4alpharelation">(15)</a> with <span class="math inline">\(\hat\mu\)</span>, <span class="math inline">\(\hat\theta\)</span> and <span class="math inline">\(\hat\gamma\)</span>.</p>
 </div>
-<div id="pareto-iii" class="section level3" number="2.5.10">
-<h3><span class="header-section-number">2.5.10</span> Pareto III</h3>
+<div id="pareto-iii" class="section level3">
+<h3>2.5.10. Pareto III</h3>
 <p>Pareto III corresponds to Pareto IV with <span class="math inline">\(\alpha=1\)</span>.
 <span class="math display">\[\begin{equation}
 \gamma
@@ -927,8 +927,8 @@ where <span class="math inline">\(\epsilon=0.05\)</span>.</p>
 <span class="math inline">\(\hat\gamma\)</span> from ,
 <span class="math inline">\(\hat\theta\)</span> from  with <span class="math inline">\(\hat\gamma\)</span>.</p>
 </div>
-<div id="pareto-ii" class="section level3" number="2.5.11">
-<h3><span class="header-section-number">2.5.11</span> Pareto II</h3>
+<div id="pareto-ii" class="section level3">
+<h3>2.5.11. Pareto II</h3>
 <p>Pareto II corresponds to Pareto IV with <span class="math inline">\(\gamma=1\)</span>.</p>
 <p><span class="math display">\[\begin{equation}
 \theta
@@ -945,8 +945,8 @@ where <span class="math inline">\(\epsilon=0.05\)</span>.</p>
 <span class="math inline">\(\hat\theta\)</span> from  with <span class="math inline">\(\alpha^\star\)</span> and <span class="math inline">\(\gamma=1\)</span>,
 <span class="math inline">\(\hat\alpha\)</span> from  with <span class="math inline">\(\hat\mu\)</span>, <span class="math inline">\(\hat\theta\)</span> and <span class="math inline">\(\gamma=1\)</span>,</p>
 </div>
-<div id="pareto-i" class="section level3" number="2.5.12">
-<h3><span class="header-section-number">2.5.12</span> Pareto I</h3>
+<div id="pareto-i" class="section level3">
+<h3>2.5.12. Pareto I</h3>
 <p>Pareto I corresponds to Pareto IV with <span class="math inline">\(\gamma=1\)</span>, <span class="math inline">\(\mu=\theta\)</span>.</p>
 <p>The MLE is
 <span class="math display">\[\begin{equation}
@@ -962,8 +962,8 @@ where <span class="math inline">\(\epsilon=0.05\)</span>.</p>
 <p>Initial parameter estimation is <span class="math inline">\(\hat\mu\)</span>,
 <span class="math inline">\(\hat\alpha\)</span> from .</p>
 </div>
-<div id="pareto" class="section level3" number="2.5.13">
-<h3><span class="header-section-number">2.5.13</span> Pareto</h3>
+<div id="pareto" class="section level3">
+<h3>2.5.13. Pareto</h3>
 <p>Pareto corresponds to Pareto IV with <span class="math inline">\(\gamma=1\)</span>, <span class="math inline">\(\mu=0\)</span>.
 <span class="math display">\[\begin{equation}
 \theta
@@ -984,10 +984,10 @@ with <span class="math inline">\(m_i\)</span> are empirical raw moment of order 
 <span class="math inline">\(\hat\alpha\)</span> from  with <span class="math inline">\(\mu=0\)</span>, <span class="math inline">\(\hat\theta\)</span> and <span class="math inline">\(\gamma=1\)</span>.</p>
 </div>
 </div>
-<div id="transformed-gamma-family" class="section level2" number="2.6">
-<h2><span class="header-section-number">2.6</span> Transformed gamma family</h2>
-<div id="transformed-gamma-distribution" class="section level3" number="2.6.1">
-<h3><span class="header-section-number">2.6.1</span> Transformed gamma distribution</h3>
+<div id="transformed-gamma-family" class="section level2">
+<h2>2.6. Transformed gamma family</h2>
+<div id="transformed-gamma-distribution" class="section level3">
+<h3>2.6.1. Transformed gamma distribution</h3>
 <p>The log-likelihood is given by
 <span class="math display">\[
 \mathcal L(\alpha,\tau,\theta)
@@ -1007,7 +1007,7 @@ n/\tau + \alpha\sum_i \log(x_i/\theta)
 +\sum_i \tau \frac{x_i}{\theta^2}(x_i/\theta)^{\tau-1}
 \end{pmatrix}.
 \]</span>
-We compute moment-estimator as in gamma
+We compute the moment-estimator as in gamma 
 <span class="math display">\[
 \hat\alpha = m_2^2/\mu_2, 
 \hat\theta= \mu_2/m_1.
@@ -1017,17 +1017,18 @@ Then cancelling the first component of the gradient we set
 \hat\tau =  \frac{\psi(\hat\alpha)}{\frac1n\sum_i \log(x_i/\hat\theta) }.
 \]</span></p>
 </div>
-<div id="gamma-distribution" class="section level3" number="2.6.2">
-<h3><span class="header-section-number">2.6.2</span> gamma distribution</h3>
+<div id="gamma-distribution" class="section level3">
+<h3>2.6.2. gamma distribution</h3>
 <p>Transformed gamma with <span class="math inline">\(\tau=1\)</span></p>
-<p>We compute moment-estimator as in gamma
-<span class="math display">\[
+<p>We compute the moment-estimator given by
+<span class="math display">\[\begin{equation}
 \hat\alpha = m_2^2/\mu_2, 
 \hat\theta= \mu_2/m_1.
-\]</span></p>
+\label{eq:gamma:relation}
+\end{equation}\]</span></p>
 </div>
-<div id="weibull-distribution" class="section level3" number="2.6.3">
-<h3><span class="header-section-number">2.6.3</span> Weibull distribution</h3>
+<div id="weibull-distribution" class="section level3">
+<h3>2.6.3. Weibull distribution</h3>
 <p>Transformed gamma with <span class="math inline">\(\alpha=1\)</span></p>
 <p>Let <span class="math inline">\(\tilde m=\frac1n\sum_i \log(x_i)\)</span> and <span class="math inline">\(\tilde v=\frac1n\sum_i (\log(x_i) - \tilde m)^2\)</span>.
 We use an approximate MME
@@ -1055,40 +1056,40 @@ Hence the QME for Weibull is
 with <span class="math inline">\(p_1=1/4\)</span>, <span class="math inline">\(p_2=3/4\)</span>, <span class="math inline">\(p_3=1/2\)</span>, <span class="math inline">\(x_i\)</span> corresponding empirical quantiles.</p>
 <p>Initial parameters are <span class="math inline">\(\tilde\tau\)</span> and <span class="math inline">\(\tilde\theta\)</span> unless the empirical quantiles <span class="math inline">\(x_1=x_2\)</span>, in that case we use <span class="math inline">\(\hat\tau\)</span>, <span class="math inline">\(\hat\theta\)</span>.</p>
 </div>
-<div id="exponential-distribution" class="section level3" number="2.6.4">
-<h3><span class="header-section-number">2.6.4</span> Exponential distribution</h3>
+<div id="exponential-distribution" class="section level3">
+<h3>2.6.4. Exponential distribution</h3>
 <p>The MLE is the MME
 <span class="math inline">\(\hat\lambda = 1/m_1.\)</span></p>
 </div>
 </div>
-<div id="inverse-transformed-gamma-family" class="section level2" number="2.7">
-<h2><span class="header-section-number">2.7</span> Inverse transformed gamma family</h2>
-<div id="inverse-transformed-gamma-distribution" class="section level3" number="2.7.1">
-<h3><span class="header-section-number">2.7.1</span> Inverse transformed gamma distribution</h3>
+<div id="inverse-transformed-gamma-family" class="section level2">
+<h2>2.7. Inverse transformed gamma family</h2>
+<div id="inverse-transformed-gamma-distribution" class="section level3">
+<h3>2.7.1. Inverse transformed gamma distribution</h3>
 <p>Same as transformed gamma distribution with <span class="math inline">\((1/x_i)_i\)</span>.</p>
 </div>
-<div id="inverse-gamma-distribution" class="section level3" number="2.7.2">
-<h3><span class="header-section-number">2.7.2</span> Inverse gamma distribution</h3>
+<div id="inverse-gamma-distribution" class="section level3">
+<h3>2.7.2. Inverse gamma distribution</h3>
 <p>We compute moment-estimator as
 <span class="math display">\[
 \hat\alpha = (2m_2-m_1^2)/(m_2-m_1^2), 
 \hat\theta= m_1m_2/(m_2-m_1^2).
 \]</span></p>
 </div>
-<div id="inverse-weibull-distribution" class="section level3" number="2.7.3">
-<h3><span class="header-section-number">2.7.3</span> Inverse Weibull distribution</h3>
+<div id="inverse-weibull-distribution" class="section level3">
+<h3>2.7.3. Inverse Weibull distribution</h3>
 <p>We use the QME.</p>
 </div>
-<div id="inverse-exponential" class="section level3" number="2.7.4">
-<h3><span class="header-section-number">2.7.4</span> Inverse exponential</h3>
+<div id="inverse-exponential" class="section level3">
+<h3>2.7.4. Inverse exponential</h3>
 <p>Same as transformed gamma distribution with <span class="math inline">\((1/x_i)_i\)</span>.</p>
 </div>
 </div>
 </div>
-<div id="bibliography" class="section level1" number="3">
-<h1><span class="header-section-number">3</span> Bibliography</h1>
-<div id="general-books" class="section level2" number="3.1">
-<h2><span class="header-section-number">3.1</span> General books</h2>
+<div id="bibliography" class="section level1">
+<h1>3. Bibliography</h1>
+<div id="general-books" class="section level2">
+<h2>3.1. General books</h2>
 <ul>
 <li>N. L. Johnson, S. Kotz, N. Balakrishnan (1994). Continuous univariate distributions, Volume 1, Wiley.</li>
 <li>N. L. Johnson, S. Kotz, N. Balakrishnan (1995). Continuous univariate distributions, Volume 2, Wiley.</li>
@@ -1096,8 +1097,8 @@ with <span class="math inline">\(p_1=1/4\)</span>, <span class="math inline">\(p
 <li>G. Wimmer (1999), Thesaurus of univariate discrete probability distributions.</li>
 </ul>
 </div>
-<div id="books-dedicated-to-a-distribution-family" class="section level2" number="3.2">
-<h2><span class="header-section-number">3.2</span> Books dedicated to a distribution family</h2>
+<div id="books-dedicated-to-a-distribution-family" class="section level2">
+<h2>3.2. Books dedicated to a distribution family</h2>
 <ul>
 <li>M. Ahsanullah, B.M. Golam Kibria, M. Shakil (2014). Normal and Student’s t Distributions and Their Applications, Springer.</li>
 <li>B. C. Arnold (2010). Pareto Distributions, Chapman and Hall.</li>
@@ -1105,8 +1106,8 @@ with <span class="math inline">\(p_1=1/4\)</span>, <span class="math inline">\(p
 <li>N. Balakrishnan (2014). Handbook of the Logistic Distribution, CRC Press.</li>
 </ul>
 </div>
-<div id="books-with-applications" class="section level2" number="3.3">
-<h2><span class="header-section-number">3.3</span> Books with applications</h2>
+<div id="books-with-applications" class="section level2">
+<h2>3.3. Books with applications</h2>
 <ul>
 <li>C. Forbes, M. Evans, N. Hastings, B. Peacock (2011). Statistical Distributions, Wiley.</li>
 <li>Z. A. Karian, E. J. Dudewicz, K. Shimizu (2010). Handbook of Fitting Statistical Distributions with R, CRC Press.</li>

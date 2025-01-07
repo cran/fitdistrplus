@@ -1,31 +1,32 @@
 ## ----setup, echo=FALSE, message=FALSE, warning=FALSE--------------------------
-require(fitdistrplus)
+require("fitdistrplus")
 set.seed(1234)
 options(digits = 3)
 
 ## ----eval=FALSE---------------------------------------------------------------
-#  dgumbel <- function(x, a, b) 1/b*exp((a-x)/b)*exp(-exp((a-x)/b))
-#  pgumbel <- function(q, a, b) exp(-exp((a-q)/b))
-#  qgumbel <- function(p, a, b) a-b*log(-log(p))
-#  data(groundbeef)
-#  fitgumbel <- fitdist(groundbeef$serving, "gumbel", start=list(a=10, b=10))
+# dgumbel <- function(x, a, b) 1/b*exp((a-x)/b)*exp(-exp((a-x)/b))
+# pgumbel <- function(q, a, b) exp(-exp((a-q)/b))
+# qgumbel <- function(p, a, b) a-b*log(-log(p))
+# data(groundbeef)
+# fitgumbel <- fitdist(groundbeef$serving, "gumbel", start=list(a=10, b=10))
 
 ## ----eval=FALSE---------------------------------------------------------------
-#  dzmgeom <- function(x, p1, p2) p1 * (x == 0) + (1-p1)*dgeom(x-1, p2)
-#  pzmgeom <- function(q, p1, p2) p1 * (q >= 0) + (1-p1)*pgeom(q-1, p2)
-#  rzmgeom <- function(n, p1, p2)
-#  {
-#    u <- rbinom(n, 1, 1-p1) #prob to get zero is p1
-#    u[u != 0] <- rgeom(sum(u != 0), p2)+1
-#    u
-#  }
-#  x2 <- rzmgeom(1000, 1/2, 1/10)
-#  fitdist(x2, "zmgeom", start=list(p1=1/2, p2=1/2))
+# dzmgeom <- function(x, p1, p2) p1 * (x == 0) + (1-p1)*dgeom(x-1, p2)
+# pzmgeom <- function(q, p1, p2) p1 * (q >= 0) + (1-p1)*pgeom(q-1, p2)
+# rzmgeom <- function(n, p1, p2)
+# {
+#   u <- rbinom(n, 1, 1-p1) #prob to get zero is p1
+#   u[u != 0] <- rgeom(sum(u != 0), p2)+1
+#   u
+# }
+# x2 <- rzmgeom(1000, 1/2, 1/10)
+# fitdist(x2, "zmgeom", start=list(p1=1/2, p2=1/2))
 
 ## ----message=FALSE------------------------------------------------------------
 data("endosulfan")
-library("actuar")
-fendo.B <- fitdist(endosulfan$ATV, "burr", start = list(shape1 = 0.3, shape2 = 1, rate = 1))
+require("actuar")
+fendo.B <- fitdist(endosulfan$ATV, "burr", start = list(shape1 = 0.3, 
+                                                        shape2 = 1, rate = 1))
 summary(fendo.B)
 
 ## ----fig.height=3.5, fig.width=7----------------------------------------------
@@ -153,7 +154,7 @@ x <- rbeta(1000, .3, .3)
 fitdist(x, "beta2", start=list(shape=1/2), optim.method="L-BFGS-B", lower=1e-2)	
 
 ## ----message=FALSE, fig.height=4, fig.width=6---------------------------------
-require(mc2d)
+require("mc2d")
 x2 <- rpert(n=2e2, min=0, mode=1, max=2, shape=3/4)
 eps <- sqrt(.Machine$double.eps)
 f1 <- fitdist(x2, "pert", start=list(min=-1, mode=0, max=10, shape=1),
@@ -241,9 +242,9 @@ k0 <- length(f0$estimate) # number of parameters of the simplified distribution
 (rejected <- stat > critical_value)
 
 ## ----eval=FALSE---------------------------------------------------------------
-#  n <- 1e3
-#  x <- rlnorm(n)
-#  descdist(x)
+# n <- 1e3
+# x <- rlnorm(n)
+# descdist(x)
 
 ## ----echo=FALSE, fig.width=5, fig.height=5------------------------------------
 n <- 1e3
@@ -303,34 +304,34 @@ log(prod(dshiftlnorm_no(y, 0.16383978, 0.01679231, 1.17586600 )))
 sum(dshiftlnorm(y, 0.16383978, 0.01679231, 1.17586600, TRUE ))
 
 ## ----eval=FALSE, echo=TRUE----------------------------------------------------
-#  double dlnorm(double x, double meanlog, double sdlog, int give_log)
-#  {
-#      double y;
-#  
-#  #ifdef IEEE_754
-#      if (ISNAN(x) || ISNAN(meanlog) || ISNAN(sdlog))
-#  	return x + meanlog + sdlog;
-#  #endif
-#      if(sdlog <= 0) {
-#  	if(sdlog < 0) ML_ERR_return_NAN;
-#  	// sdlog == 0 :
-#  	return (log(x) == meanlog) ? ML_POSINF : R_D__0;
-#      }
-#      if(x <= 0) return R_D__0;
-#  
-#      y = (log(x) - meanlog) / sdlog;
-#      return (give_log ?
-#  	    -(M_LN_SQRT_2PI   + 0.5 * y * y + log(x * sdlog)) :
-#  	    M_1_SQRT_2PI * exp(-0.5 * y * y)  /	 (x * sdlog));
-#      /* M_1_SQRT_2PI = 1 / sqrt(2 * pi) */
-#  
-#  }
+# double dlnorm(double x, double meanlog, double sdlog, int give_log)
+# {
+#     double y;
+# 
+# #ifdef IEEE_754
+#     if (ISNAN(x) || ISNAN(meanlog) || ISNAN(sdlog))
+# 	return x + meanlog + sdlog;
+# #endif
+#     if(sdlog <= 0) {
+# 	if(sdlog < 0) ML_ERR_return_NAN;
+# 	// sdlog == 0 :
+# 	return (log(x) == meanlog) ? ML_POSINF : R_D__0;
+#     }
+#     if(x <= 0) return R_D__0;
+# 
+#     y = (log(x) - meanlog) / sdlog;
+#     return (give_log ?
+# 	    -(M_LN_SQRT_2PI   + 0.5 * y * y + log(x * sdlog)) :
+# 	    M_1_SQRT_2PI * exp(-0.5 * y * y)  /	 (x * sdlog));
+#     /* M_1_SQRT_2PI = 1 / sqrt(2 * pi) */
+# 
+# }
 
 ## ----eval=FALSE, echo=TRUE----------------------------------------------------
-#  -(M_LN_SQRT_2PI   + 0.5 * y * y + log(x * sdlog))
+# -(M_LN_SQRT_2PI   + 0.5 * y * y + log(x * sdlog))
 
 ## ----eval=FALSE, echo=TRUE----------------------------------------------------
-#  M_1_SQRT_2PI * exp(-0.5 * y * y)  /	 (x * sdlog))
+# M_1_SQRT_2PI * exp(-0.5 * y * y)  /	 (x * sdlog))
 
 ## -----------------------------------------------------------------------------
 f2 <- fitdist(y, "shiftlnorm", start=start, lower=c(-Inf, 0, -min(y)), optim.method="Nelder-Mead")
@@ -378,10 +379,10 @@ psexp <- function(x, rate, shift)
 rsexp <- function(n, rate, shift)
   rexp(n, rate=rate)+shift
 x <- rsexp(1000, 1/4, 1)
-fitdist(x, "sexp", start=list(rate=1, shift=0), lower= c(0, -min(x)))
+fitdist(x, "sexp", start=list(rate=1, shift=0), upper= c(Inf, min(x)))
 
 ## ----message=FALSE------------------------------------------------------------
-library(GeneralizedHyperbolic)
+require("GeneralizedHyperbolic")
 myoptim <- function(fn, par, ui, ci, ...)
 {
   res <- constrOptim(f=fn, theta=par, method="Nelder-Mead", ui=ui, ci=ci, ...)
@@ -644,8 +645,8 @@ llplot(fg, back.col = FALSE)
 
 ## ----fig.height=4, fig.width=7, warning = FALSE-------------------------------
 data(salinity)
-log10LC50 <-log10(salinity)
-fit <- fitdistcens(log10LC50, "norm")
+log10LC50 <- log10(salinity)
+fit <- fitdistcens(log10LC50, "norm", control=list(trace=1))
 # Bootstrap 
 bootsample <- bootdistcens(fit, niter = 101)
 #### We used only 101 iterations in that example to limit the calculation time but
@@ -685,7 +686,7 @@ cdfcomp(fit, addlegend = FALSE, main = "", xlab = "serving sizes (g)", fitcol = 
 ppcomp(fit, addlegend = FALSE, main = "", fitpch = 16, fitcol = "grey", line01lty = 2)
 
 ## ----fig.height= 4, fig.width= 7, warning = FALSE-----------------------------
-library(ggplot2)
+require("ggplot2")
 fitW <- fitdist(serving, "weibull")
 fitln <- fitdist(serving, "lnorm")
 fitg <- fitdist(serving, "gamma")

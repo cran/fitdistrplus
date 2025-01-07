@@ -1,13 +1,13 @@
 ## ----setup, echo=FALSE, message=FALSE, warning=FALSE--------------------------
-require(fitdistrplus)
-require(knitr) #for kable() function
+require("fitdistrplus")
+require("knitr") # for kable() function
 set.seed(12345)
 options(digits = 3)
 
 ## ----echo=TRUE, eval=FALSE----------------------------------------------------
-#  fitbench <- function(data, distr, method, grad = NULL,
-#                       control = list(trace = 0, REPORT = 1, maxit = 1000),
-#                       lower = -Inf, upper = +Inf, ...)
+# fitbench <- function(data, distr, method, grad = NULL,
+#                      control = list(trace = 0, REPORT = 1, maxit = 1000),
+#                      lower = -Inf, upper = +Inf, ...)
 
 ## ----echo=FALSE---------------------------------------------------------------
 fitbench <- fitdistrplus:::fitbench
