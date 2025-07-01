@@ -62,8 +62,7 @@ fitdist(x2, "zmgeom", start=list(p1=1/2, p2=1/2))
 
 ## 1.3. How do I set (or find) initial values for non standard distributions?
 As documented, we provide initial values for the following distributions:
-`"norm"`, `"lnorm"`, `"exp"`, `"pois"`, `"cauchy"`, `"gamma`", `"logis"`, `"nbinom"`, `"geom"`, `"beta"`, `"weibull"` from the `stats` package; `"invgamma"`, `"llogis"`, `"invweibull"`, `"pareto1"`, `"pareto"`,
-`"lgamma"`, `"trgamma"`, `"invtrgamma"` from the `actuar` package.
+`"norm"`, `"lnorm"`, `"exp"`, `"pois"`, `"cauchy"`, `"gamma`", `"logis"`, `"nbinom"`, `"geom"`, `"beta"`, `"weibull"` from the `stats` package; all distributions (except phase-type distributions) from the `actuar` package.
 
 Look first at statistics and probability books such as 
 
@@ -206,8 +205,10 @@ ptexp <- function(q, rate, low, upp)
 }
 n <- 200
 x <- rexp(n); x <- x[x > .5 & x < 3]
-f1 <- fitdist(x, "texp", method="mle", start=list(rate=3), fix.arg=list(low=min(x), upp=max(x)))
-f2 <- fitdist(x, "texp", method="mle", start=list(rate=3), fix.arg=list(low=.5, upp=3))
+f1 <- fitdist(x, "texp", method="mle", start=list(rate=3), 
+              fix.arg=list(low=min(x), upp=max(x)))
+f2 <- fitdist(x, "texp", method="mle", start=list(rate=3), 
+              fix.arg=list(low=.5, upp=3))
 gofstat(list(f1, f2))
 par(mfrow=c(1,1), mar=c(4,4,2,1))
 cdfcomp(list(f1, f2), do.points = FALSE, xlim=c(0, 3.5))
@@ -260,8 +261,10 @@ ptiexp <- function(q, rate, low, upp)
 n <- 100; x <- pmax(pmin(rexp(n), 3), .5)
 # the loglikelihood has a discontinous point at the solution
 par(mar=c(4,4,2,1), mfrow=1:2)
-llcurve(x, "tiexp", plot.arg="low", fix.arg = list(rate=2, upp=5), min.arg=0, max.arg=.5, lseq=200)
-llcurve(x, "tiexp", plot.arg="upp", fix.arg = list(rate=2, low=0), min.arg=3, max.arg=4, lseq=200)
+llcurve(x, "tiexp", plot.arg="low", fix.arg = list(rate=2, upp=5), 
+        min.arg=0, max.arg=.5, lseq=200)
+llcurve(x, "tiexp", plot.arg="upp", fix.arg = list(rate=2, low=0), 
+        min.arg=3, max.arg=4, lseq=200)
 ```
 
 The first method directly maximizes the log-likelihood $L(l, \theta, u)$; the second
@@ -270,7 +273,8 @@ Inside $[0.5,3]$, the CDF are correctly estimated in both methods but the first 
 does not succeed to estimate the true value of the bounds $l,u$.
 ```{r, fig.height=3.5, fig.width=7}
 (f1 <- fitdist(x, "tiexp", method="mle", start=list(rate=3, low=0, upp=20)))
-(f2 <- fitdist(x, "tiexp", method="mle", start=list(rate=3), fix.arg=list(low=min(x), upp=max(x))))
+(f2 <- fitdist(x, "tiexp", method="mle", start=list(rate=3), 
+               fix.arg=list(low=min(x), upp=max(x))))
 gofstat(list(f1, f2))
 par(mfrow=c(1,1), mar=c(4,4,2,1))
 cdfcomp(list(f1, f2), do.points = FALSE, addlegend=FALSE, xlim=c(0, 3.5))
@@ -709,10 +713,58 @@ available without providing the gradient of the objective function:
 Nelder-Mead via `constrOptim()` and bounded BFGS via `optim()`.
 In both cases, see the help of `mledist()` and the vignette on optimization algorithms.
 
-## 3.2. The optimization algorithm stops with error code 100. What shall I do?
+## 3.2. The optimization algorithm stops with error code, e.g., 100. What shall I do?
 First, add traces by adding `control=list(trace=1, REPORT=1)`.
-Second, try to set bounds for parameters.
-Third, find better starting values (see FAQ 1.3).
+Second, try to set bounds for parameters, typically shape and rate parameters are generally positive.
+Third, try better starting values (see FAQ 1.3) or change the optimization method.
+
+A short example is given below of a fit of a Burr distribution.
+By default, the Nelder-Mead algorithm is used which reaches the iteration limit and raises error code 1.
+```{r}
+data("danishuni")
+try(fitdist(danishuni$Loss, "burr"))
+```
+If we increase the maximum number of iteration, it does not help and we get a non-finite finite-difference value, yet Nelder-Mead may handle infinite values.
+```{r}
+try(fitdist(danishuni$Loss, "burr", control=list(maxit=1000)))
+```
+If we set bounds, it only helps with an upper bound on parameters values. But the upper bound should be relatively small.
+```{r}
+try(fitdist(danishuni$Loss, "burr", lower=0))
+try(fitBurr_cvg1 <- fitdist(danishuni$Loss, "burr", upper=100))
+try(fitdist(danishuni$Loss, "burr", upper=1000))
+```
+Using another algorithm, such as the BFGS algorithm, helps the convergence as long as we set a lower bound.
+
+```{r}
+try(fitBurr_cvg2 <- fitdist(danishuni$Loss, "burr", lower=.Machine$double.eps,
+                            optim.method="L-BFGS-B"))
+```
+The fitted values have the same magnitude and the fits are appropriate.
+```{r, fig.height=3.5, fig.width=7}
+cdfcomp(list(fitBurr_cvg1, fitBurr_cvg2), xlogscale = TRUE, fitlwd = 2)
+sapply(list(fitBurr_cvg1, fitBurr_cvg2), coef)
+```
+
+The `llplot()` function helps in understanding how good is the fit.
+```{r, warning=FALSE, message=FALSE, fig.height=6, fig.width=6, echo=FALSE}
+llplot(fitBurr_cvg1, fit.show = TRUE)
+llplot(fitBurr_cvg2, fit.show = TRUE)
+```
+
+The log-likelihood surface is rather flat around the fitted values in shape1/shape2 spaces. 
+We observe a certain dependency so that the product of shape parameters is almost constant.
+```{r, warning=FALSE}
+print(prod(coef(fitBurr_cvg1)[1:2]), digits=5)
+print(prod(coef(fitBurr_cvg2)[1:2]), digits=5)
+```
+In terms of computation time, we retrieve that the Nelder-Mead algorithm is slower.
+```{r}
+system.time(fitdist(danishuni$Loss, "burr", upper=100))
+system.time(fitdist(danishuni$Loss, "burr", lower=.Machine$double.eps, optim.method="L-BFGS-B"))
+```
+
+
 
 ## 3.3 Why distribution with a `log` argument may converge better?
 Say, we study the shifted lognormal distribution defined by the following density
@@ -724,11 +776,16 @@ $\delta$ a boundary parameter.
 Let us fit this distribution on the dataset `y` by MLE.
 We define two functions for the densities with and without a `log` argument.
 ```{r}
-dshiftlnorm <- function(x, mean, sigma, shift, log = FALSE) dlnorm(x+shift, mean, sigma, log=log)
-pshiftlnorm <- function(q, mean, sigma, shift, log.p = FALSE) plnorm(q+shift, mean, sigma, log.p=log.p)
-qshiftlnorm <- function(p, mean, sigma, shift, log.p = FALSE) qlnorm(p, mean, sigma, log.p=log.p)-shift
-dshiftlnorm_no <- function(x, mean, sigma, shift) dshiftlnorm(x, mean, sigma, shift)
-pshiftlnorm_no <- function(q, mean, sigma, shift) pshiftlnorm(q, mean, sigma, shift)
+dshiftlnorm <- function(x, mean, sigma, shift, log = FALSE) 
+  dlnorm(x+shift, mean, sigma, log=log)
+pshiftlnorm <- function(q, mean, sigma, shift, log.p = FALSE) 
+  plnorm(q+shift, mean, sigma, log.p=log.p)
+qshiftlnorm <- function(p, mean, sigma, shift, log.p = FALSE) 
+  qlnorm(p, mean, sigma, log.p=log.p)-shift
+dshiftlnorm_no <- function(x, mean, sigma, shift) 
+  dshiftlnorm(x, mean, sigma, shift)
+pshiftlnorm_no <- function(q, mean, sigma, shift) 
+  pshiftlnorm(q, mean, sigma, shift)
 ```
 We now optimize the minus log-likelihood.
 ```{r}
@@ -802,7 +859,8 @@ we use the `constrOptim` wrapping `optim` to take into account linear constraint
 This allows also to use other optimization methods than L-BFGS-B 
 (low-memory BFGS bounded) used in optim.
 ```{r}
-f2 <- fitdist(y, "shiftlnorm", start=start, lower=c(-Inf, 0, -min(y)), optim.method="Nelder-Mead")
+f2 <- fitdist(y, "shiftlnorm", start=start, lower=c(-Inf, 0, -min(y)), 
+              optim.method="Nelder-Mead")
 summary(f2)
 print(cbind(BFGS=f$estimate, NelderMead=f2$estimate))
 
@@ -963,7 +1021,8 @@ require("GeneralizedHyperbolic")
 myoptim <- function(fn, par, ui, ci, ...)
 {
   res <- constrOptim(f=fn, theta=par, method="Nelder-Mead", ui=ui, ci=ci, ...)
-  c(res, convergence=res$convergence, value=res$objective, par=res$minimum, hessian=res$hessian)
+  c(res, convergence=res$convergence, value=res$objective, 
+    par=res$minimum, hessian=res$hessian)
 }
 x <- rnig(1000, 3, 1/2, 1/2, 1/4)
 ui <- rbind(c(0,1,0,0), c(0,0,1,0), c(0,0,1,-1), c(0,0,1,1))
@@ -975,7 +1034,7 @@ fitdist(x, "nig", custom.optim=myoptim, ui=ui, ci=ci, start=list(mu = 0, delta =
 
 
 
-## 3.6. How works quantile matching estimation for discrete distributions?
+## 3.6. How does quantile matching estimation work for discrete distributions?
 Let us consider the geometric distribution with values in $\{0,1,2,3,\dots\}$.
 The probability mass function, the cumulative distribution function and the quantile function are
 $$
@@ -1032,14 +1091,17 @@ L2 <- function(p)
   (qgeom(1/2, p) - median(x))^2
 L2(1/3) #theoretical value
 par(mfrow=c(1,1), mar=c(4,4,2,1))
-curve(L2(x), 0.10, 0.95, xlab=expression(p), ylab=expression(L2(p)), main="squared differences", n=301)
+curve(L2(x), 0.10, 0.95, xlab=expression(p), ylab=expression(L2(p)), 
+      main="squared differences", type="s")
 ```
 
 Any value between [1/3, 5/9] minimizes the squared differences.
 Therefore, `fitdist()` may be sensitive to the chosen initial value with deterministic optimization algorithm.
 ```{r}
-fitdist(x, "geom", method="qme", probs=1/2, start=list(prob=1/2), control=list(trace=1, REPORT=1))
-fitdist(x, "geom", method="qme", probs=1/2, start=list(prob=1/20), control=list(trace=1, REPORT=1))
+fitdist(x, "geom", method="qme", probs=1/2, start=list(prob=1/2), 
+        control=list(trace=1, REPORT=1))
+fitdist(x, "geom", method="qme", probs=1/2, start=list(prob=1/20), 
+        control=list(trace=1, REPORT=1))
 ```
 The solution is to use a stochastic algorithm such as simulated annealing (SANN).
 ```{r}
@@ -1077,7 +1139,8 @@ x <- rpois(100, lambda=7.5)
 L2 <- function(lam)
   (qpois(1/2, lambda = lam) - median(x))^2
 par(mfrow=c(1,1), mar=c(4,4,2,1))
-curve(L2(x), 6, 9, xlab=expression(lambda), ylab=expression(L2(lambda)), main="squared differences", n=201)
+curve(L2(x), 6, 9, xlab=expression(lambda), ylab=expression(L2(lambda)), 
+      main="squared differences", type="s")
 ```
 
 Therefore, using `fitdist()` may be sensitive to the chosen initial value.
@@ -1199,7 +1262,6 @@ fit.NM.2P <- fitdist(
   method = "mle",
   start = list(shape = 10, rate = 10),
   fix.arg = list(low = x0, upp = Inf),
-  #control=list(trace=1, REPORT=1),
   optim.method="Nelder-Mead",
   lower = c(0, 0), upper=c(Inf, Inf))
 
@@ -1345,7 +1407,7 @@ bn <- bootdist(fn)
 bn$CI
 fn$estimate + cbind("estimate"= 0, "2.5%"= -1.96*fn$sd, "97.5%"= 1.96*fn$sd)
 par(mfrow=c(1,1), mar=c(4,4,2,1))
-llplot(fn, back.col = FALSE)
+llplot(fn, back.col = FALSE, fit.show=TRUE)
 ```
 
 ```{r, fig.height=4, fig.width=4, warning = FALSE}
@@ -1356,7 +1418,7 @@ bg <- bootdist(fg)
 bg$CI
 fg$estimate + cbind("estimate"= 0, "2.5%"= -1.96*fg$sd, "97.5%"= 1.96*fg$sd)
 par(mfrow=c(1,1), mar=c(4,4,2,1))
-llplot(fg, back.col = FALSE)
+llplot(fg, back.col = FALSE, fit.show=TRUE)
 ```
 
 ## 4.2. How can we compute confidence intervals on quantiles from the fit of a distribution ?
@@ -1373,7 +1435,7 @@ of rivermarine invertebrates.
 ```{r, fig.height=4, fig.width=7, warning = FALSE}
 data(salinity)
 log10LC50 <- log10(salinity)
-fit <- fitdistcens(log10LC50, "norm", control=list(trace=1))
+fit <- fitdistcens(log10LC50, "norm", control=list(trace=0))
 # Bootstrap 
 bootsample <- bootdistcens(fit, niter = 101)
 #### We used only 101 iterations in that example to limit the calculation time but
@@ -1450,10 +1512,14 @@ data(groundbeef)
 serving <- groundbeef$serving
 fit <- fitdist(serving, "gamma")
 par(mfrow = c(2,2), mar = c(4, 4, 1, 1))
-denscomp(fit, addlegend = FALSE, main = "", xlab = "serving sizes (g)", fitcol = "orange")
-qqcomp(fit, addlegend = FALSE, main = "", fitpch = 16, fitcol = "grey", line01lty = 2)
-cdfcomp(fit, addlegend = FALSE, main = "", xlab = "serving sizes (g)", fitcol = "orange", lines01 = TRUE)
-ppcomp(fit, addlegend = FALSE, main = "", fitpch = 16, fitcol = "grey", line01lty = 2)
+denscomp(fit, addlegend = FALSE, main = "", xlab = "serving sizes (g)", 
+         fitcol = "orange")
+qqcomp(fit, addlegend = FALSE, main = "", fitpch = 16, fitcol = "grey", 
+       line01lty = 2)
+cdfcomp(fit, addlegend = FALSE, main = "", xlab = "serving sizes (g)", 
+        fitcol = "orange", lines01 = TRUE)
+ppcomp(fit, addlegend = FALSE, main = "", fitpch = 16, fitcol = "grey", 
+       line01lty = 2)
 ```
 
 In a similar way, the default plot of an object of class `fitdistcens` can be easily personalized 

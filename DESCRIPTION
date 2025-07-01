@@ -1,7 +1,7 @@
 Package: fitdistrplus
 Title: Help to Fit of a Parametric Distribution to Non-Censored or
         Censored Data
-Version: 1.2-2
+Version: 1.2-3
 Authors@R: c(person("Marie-Laure", "Delignette-Muller", role = "aut", email = "marielaure.delignettemuller@vetagro-sup.fr", comment = c(ORCID = "0000-0001-5453-3994")),
              person("Christophe", "Dutang", role = "aut", email = "christophe.dutang@ensimag.fr", comment = c(ORCID = "0000-0001-6732-1501")),
              person("Regis", "Pouillot", role = "ctb"),
@@ -32,14 +32,15 @@ Contact: Marie-Laure Delignette-Muller
         <marielaure.delignettemuller@vetagro-sup.fr> or Christophe
         Dutang <christophe.dutang@ensimag.fr>
 NeedsCompilation: no
-Packaged: 2025-01-07 11:51:12 UTC; siberchicot
-Author: Marie-Laure Delignette-Muller [aut]
-    (<https://orcid.org/0000-0001-5453-3994>),
-  Christophe Dutang [aut] (<https://orcid.org/0000-0001-6732-1501>),
+Packaged: 2025-07-01 09:24:24 UTC; siberchicot
+Author: Marie-Laure Delignette-Muller [aut] (ORCID:
+    <https://orcid.org/0000-0001-5453-3994>),
+  Christophe Dutang [aut] (ORCID:
+    <https://orcid.org/0000-0001-6732-1501>),
   Regis Pouillot [ctb],
   Jean-Baptiste Denis [ctb],
-  Aurélie Siberchicot [aut, cre]
-    (<https://orcid.org/0000-0002-7638-8318>)
+  Aurélie Siberchicot [aut, cre] (ORCID:
+    <https://orcid.org/0000-0002-7638-8318>)
 Maintainer: Aurélie Siberchicot <aurelie.siberchicot@univ-lyon1.fr>
 Repository: CRAN
-Date/Publication: 2025-01-07 16:00:02 UTC
+Date/Publication: 2025-07-01 10:40:01 UTC

@@ -80,8 +80,10 @@ ptexp <- function(q, rate, low, upp)
 }
 n <- 200
 x <- rexp(n); x <- x[x > .5 & x < 3]
-f1 <- fitdist(x, "texp", method="mle", start=list(rate=3), fix.arg=list(low=min(x), upp=max(x)))
-f2 <- fitdist(x, "texp", method="mle", start=list(rate=3), fix.arg=list(low=.5, upp=3))
+f1 <- fitdist(x, "texp", method="mle", start=list(rate=3), 
+              fix.arg=list(low=min(x), upp=max(x)))
+f2 <- fitdist(x, "texp", method="mle", start=list(rate=3), 
+              fix.arg=list(low=.5, upp=3))
 gofstat(list(f1, f2))
 par(mfrow=c(1,1), mar=c(4,4,2,1))
 cdfcomp(list(f1, f2), do.points = FALSE, xlim=c(0, 3.5))
@@ -98,12 +100,15 @@ ptiexp <- function(q, rate, low, upp)
 n <- 100; x <- pmax(pmin(rexp(n), 3), .5)
 # the loglikelihood has a discontinous point at the solution
 par(mar=c(4,4,2,1), mfrow=1:2)
-llcurve(x, "tiexp", plot.arg="low", fix.arg = list(rate=2, upp=5), min.arg=0, max.arg=.5, lseq=200)
-llcurve(x, "tiexp", plot.arg="upp", fix.arg = list(rate=2, low=0), min.arg=3, max.arg=4, lseq=200)
+llcurve(x, "tiexp", plot.arg="low", fix.arg = list(rate=2, upp=5), 
+        min.arg=0, max.arg=.5, lseq=200)
+llcurve(x, "tiexp", plot.arg="upp", fix.arg = list(rate=2, low=0), 
+        min.arg=3, max.arg=4, lseq=200)
 
 ## ----fig.height=3.5, fig.width=7----------------------------------------------
 (f1 <- fitdist(x, "tiexp", method="mle", start=list(rate=3, low=0, upp=20)))
-(f2 <- fitdist(x, "tiexp", method="mle", start=list(rate=3), fix.arg=list(low=min(x), upp=max(x))))
+(f2 <- fitdist(x, "tiexp", method="mle", start=list(rate=3), 
+               fix.arg=list(low=min(x), upp=max(x))))
 gofstat(list(f1, f2))
 par(mfrow=c(1,1), mar=c(4,4,2,1))
 cdfcomp(list(f1, f2), do.points = FALSE, addlegend=FALSE, xlim=c(0, 3.5))
@@ -277,11 +282,48 @@ plot(somen, sapply(somen, function(n) kurtosis(x[1:n])), type="b", ylab="skewnes
 abline(a=kurtosis.th(1), b=0, col="grey")
 
 ## -----------------------------------------------------------------------------
-dshiftlnorm <- function(x, mean, sigma, shift, log = FALSE) dlnorm(x+shift, mean, sigma, log=log)
-pshiftlnorm <- function(q, mean, sigma, shift, log.p = FALSE) plnorm(q+shift, mean, sigma, log.p=log.p)
-qshiftlnorm <- function(p, mean, sigma, shift, log.p = FALSE) qlnorm(p, mean, sigma, log.p=log.p)-shift
-dshiftlnorm_no <- function(x, mean, sigma, shift) dshiftlnorm(x, mean, sigma, shift)
-pshiftlnorm_no <- function(q, mean, sigma, shift) pshiftlnorm(q, mean, sigma, shift)
+data("danishuni")
+try(fitdist(danishuni$Loss, "burr"))
+
+## -----------------------------------------------------------------------------
+try(fitdist(danishuni$Loss, "burr", control=list(maxit=1000)))
+
+## -----------------------------------------------------------------------------
+try(fitdist(danishuni$Loss, "burr", lower=0))
+try(fitBurr_cvg1 <- fitdist(danishuni$Loss, "burr", upper=100))
+try(fitdist(danishuni$Loss, "burr", upper=1000))
+
+## -----------------------------------------------------------------------------
+try(fitBurr_cvg2 <- fitdist(danishuni$Loss, "burr", lower=.Machine$double.eps,
+                            optim.method="L-BFGS-B"))
+
+## ----fig.height=3.5, fig.width=7----------------------------------------------
+cdfcomp(list(fitBurr_cvg1, fitBurr_cvg2), xlogscale = TRUE, fitlwd = 2)
+sapply(list(fitBurr_cvg1, fitBurr_cvg2), coef)
+
+## ----warning=FALSE, message=FALSE, fig.height=6, fig.width=6, echo=FALSE------
+llplot(fitBurr_cvg1, fit.show = TRUE)
+llplot(fitBurr_cvg2, fit.show = TRUE)
+
+## ----warning=FALSE------------------------------------------------------------
+print(prod(coef(fitBurr_cvg1)[1:2]), digits=5)
+print(prod(coef(fitBurr_cvg2)[1:2]), digits=5)
+
+## -----------------------------------------------------------------------------
+system.time(fitdist(danishuni$Loss, "burr", upper=100))
+system.time(fitdist(danishuni$Loss, "burr", lower=.Machine$double.eps, optim.method="L-BFGS-B"))
+
+## -----------------------------------------------------------------------------
+dshiftlnorm <- function(x, mean, sigma, shift, log = FALSE) 
+  dlnorm(x+shift, mean, sigma, log=log)
+pshiftlnorm <- function(q, mean, sigma, shift, log.p = FALSE) 
+  plnorm(q+shift, mean, sigma, log.p=log.p)
+qshiftlnorm <- function(p, mean, sigma, shift, log.p = FALSE) 
+  qlnorm(p, mean, sigma, log.p=log.p)-shift
+dshiftlnorm_no <- function(x, mean, sigma, shift) 
+  dshiftlnorm(x, mean, sigma, shift)
+pshiftlnorm_no <- function(q, mean, sigma, shift) 
+  pshiftlnorm(q, mean, sigma, shift)
 
 ## -----------------------------------------------------------------------------
 data(dataFAQlog1)
@@ -334,7 +376,8 @@ sum(dshiftlnorm(y, 0.16383978, 0.01679231, 1.17586600, TRUE ))
 # M_1_SQRT_2PI * exp(-0.5 * y * y)  /	 (x * sdlog))
 
 ## -----------------------------------------------------------------------------
-f2 <- fitdist(y, "shiftlnorm", start=start, lower=c(-Inf, 0, -min(y)), optim.method="Nelder-Mead")
+f2 <- fitdist(y, "shiftlnorm", start=start, lower=c(-Inf, 0, -min(y)), 
+              optim.method="Nelder-Mead")
 summary(f2)
 print(cbind(BFGS=f$estimate, NelderMead=f2$estimate))
 
@@ -386,7 +429,8 @@ require("GeneralizedHyperbolic")
 myoptim <- function(fn, par, ui, ci, ...)
 {
   res <- constrOptim(f=fn, theta=par, method="Nelder-Mead", ui=ui, ci=ci, ...)
-  c(res, convergence=res$convergence, value=res$objective, par=res$minimum, hessian=res$hessian)
+  c(res, convergence=res$convergence, value=res$objective, 
+    par=res$minimum, hessian=res$hessian)
 }
 x <- rnig(1000, 3, 1/2, 1/2, 1/4)
 ui <- rbind(c(0,1,0,0), c(0,0,1,0), c(0,0,1,-1), c(0,0,1,1))
@@ -411,11 +455,14 @@ L2 <- function(p)
   (qgeom(1/2, p) - median(x))^2
 L2(1/3) #theoretical value
 par(mfrow=c(1,1), mar=c(4,4,2,1))
-curve(L2(x), 0.10, 0.95, xlab=expression(p), ylab=expression(L2(p)), main="squared differences", n=301)
+curve(L2(x), 0.10, 0.95, xlab=expression(p), ylab=expression(L2(p)), 
+      main="squared differences", type="s")
 
 ## -----------------------------------------------------------------------------
-fitdist(x, "geom", method="qme", probs=1/2, start=list(prob=1/2), control=list(trace=1, REPORT=1))
-fitdist(x, "geom", method="qme", probs=1/2, start=list(prob=1/20), control=list(trace=1, REPORT=1))
+fitdist(x, "geom", method="qme", probs=1/2, start=list(prob=1/2), 
+        control=list(trace=1, REPORT=1))
+fitdist(x, "geom", method="qme", probs=1/2, start=list(prob=1/20), 
+        control=list(trace=1, REPORT=1))
 
 ## -----------------------------------------------------------------------------
 fitdist(x, "geom", method="qme", probs=1/2, optim.method="SANN", start=list(prob=1/20))
@@ -426,7 +473,8 @@ x <- rpois(100, lambda=7.5)
 L2 <- function(lam)
   (qpois(1/2, lambda = lam) - median(x))^2
 par(mfrow=c(1,1), mar=c(4,4,2,1))
-curve(L2(x), 6, 9, xlab=expression(lambda), ylab=expression(L2(lambda)), main="squared differences", n=201)
+curve(L2(x), 6, 9, xlab=expression(lambda), ylab=expression(L2(lambda)), 
+      main="squared differences", type="s")
 
 ## -----------------------------------------------------------------------------
 fitdist(x, "pois", method="qme", probs=1/2, start=list(lambda=2))
@@ -529,7 +577,6 @@ fit.NM.2P <- fitdist(
   method = "mle",
   start = list(shape = 10, rate = 10),
   fix.arg = list(low = x0, upp = Inf),
-  #control=list(trace=1, REPORT=1),
   optim.method="Nelder-Mead",
   lower = c(0, 0), upper=c(Inf, Inf))
 
@@ -631,7 +678,7 @@ bn <- bootdist(fn)
 bn$CI
 fn$estimate + cbind("estimate"= 0, "2.5%"= -1.96*fn$sd, "97.5%"= 1.96*fn$sd)
 par(mfrow=c(1,1), mar=c(4,4,2,1))
-llplot(fn, back.col = FALSE)
+llplot(fn, back.col = FALSE, fit.show=TRUE)
 
 ## ----fig.height=4, fig.width=4, warning = FALSE-------------------------------
 set.seed(1234)
@@ -641,12 +688,12 @@ bg <- bootdist(fg)
 bg$CI
 fg$estimate + cbind("estimate"= 0, "2.5%"= -1.96*fg$sd, "97.5%"= 1.96*fg$sd)
 par(mfrow=c(1,1), mar=c(4,4,2,1))
-llplot(fg, back.col = FALSE)
+llplot(fg, back.col = FALSE, fit.show=TRUE)
 
 ## ----fig.height=4, fig.width=7, warning = FALSE-------------------------------
 data(salinity)
 log10LC50 <- log10(salinity)
-fit <- fitdistcens(log10LC50, "norm", control=list(trace=1))
+fit <- fitdistcens(log10LC50, "norm", control=list(trace=0))
 # Bootstrap 
 bootsample <- bootdistcens(fit, niter = 101)
 #### We used only 101 iterations in that example to limit the calculation time but
@@ -680,10 +727,14 @@ data(groundbeef)
 serving <- groundbeef$serving
 fit <- fitdist(serving, "gamma")
 par(mfrow = c(2,2), mar = c(4, 4, 1, 1))
-denscomp(fit, addlegend = FALSE, main = "", xlab = "serving sizes (g)", fitcol = "orange")
-qqcomp(fit, addlegend = FALSE, main = "", fitpch = 16, fitcol = "grey", line01lty = 2)
-cdfcomp(fit, addlegend = FALSE, main = "", xlab = "serving sizes (g)", fitcol = "orange", lines01 = TRUE)
-ppcomp(fit, addlegend = FALSE, main = "", fitpch = 16, fitcol = "grey", line01lty = 2)
+denscomp(fit, addlegend = FALSE, main = "", xlab = "serving sizes (g)", 
+         fitcol = "orange")
+qqcomp(fit, addlegend = FALSE, main = "", fitpch = 16, fitcol = "grey", 
+       line01lty = 2)
+cdfcomp(fit, addlegend = FALSE, main = "", xlab = "serving sizes (g)", 
+        fitcol = "orange", lines01 = TRUE)
+ppcomp(fit, addlegend = FALSE, main = "", fitpch = 16, fitcol = "grey", 
+       line01lty = 2)
 
 ## ----fig.height= 4, fig.width= 7, warning = FALSE-----------------------------
 require("ggplot2")
