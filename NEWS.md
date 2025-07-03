@@ -1,5 +1,10 @@
-# fitdistrplus 1.2-3
+# fitdistrplus 1.2-4
 
+BUG FIX
+
+- fix a convergence issue of `fitdist()` in the FAQ 1.11 for U-shaped beta density. Now use the constrained-version Nelder-Mead algorithm.
+
+# fitdistrplus 1.2-3
 
 NEW FEATURES
 
@@ -7,6 +12,8 @@ NEW FEATURES
 - correct man page regarding default starting values.
 - add a link to the FAQ website in most man pages.
 - add defensive programing in `llplot()`.
+- add a link to the Software Heritage archive
+- update graphics created in ggplot style, in line with the next version of ggplot2
 
 BUG FIX
 

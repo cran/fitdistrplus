@@ -155,8 +155,8 @@ pbeta2 <- function(q, shape, ...)
 fitdist(x, "beta2", start=list(shape=1/2))
 
 ## -----------------------------------------------------------------------------
-x <- rbeta(1000, .3, .3)
-fitdist(x, "beta2", start=list(shape=1/2), optim.method="L-BFGS-B", lower=1e-2)	
+x <- rbeta(1000, 0.5, 0.5)
+fitdist(x, "beta2", start=list(shape=0.4), optim.method="Nelder-Mead", lower=1e-1)
 
 ## ----message=FALSE, fig.height=4, fig.width=6---------------------------------
 require("mc2d")
