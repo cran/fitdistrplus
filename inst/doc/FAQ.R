@@ -1,6 +1,6 @@
 ## ----setup, echo=FALSE, message=FALSE, warning=FALSE--------------------------
 require("fitdistrplus")
-set.seed(1234)
+set.seed(123) # here just to make random sampling reproducible
 options(digits = 3)
 
 ## ----eval=FALSE---------------------------------------------------------------
@@ -48,7 +48,6 @@ c("Var(X) by MME"=as.numeric(exp(2*f2$estimate["meanlog"]+f2$estimate["sdlog"]^2
 	"empirical"=var(x3))
 
 ## -----------------------------------------------------------------------------
-set.seed(1234)
 x <- rnorm(100, mean = 1, sd = 0.5)
 (try(fitdist(x, "exp")))
 
@@ -57,7 +56,6 @@ fitdist(x[x >= 0], "exp")
 fitdist(x - min(x), "exp")
 
 ## -----------------------------------------------------------------------------
-set.seed(1234)
 x <- rnorm(100, mean = 0.5, sd = 0.25)
 (try(fitdist(x, "beta")))
 
@@ -175,7 +173,6 @@ par(mfrow=c(1,1), mar=c(4,4,2,1))
 cdfcomp(list(f1,f2))
 
 ## ----fig.height=3, fig.width=6------------------------------------------------
-set.seed(1234)
 x <- rgamma(n = 100, shape = 2, scale = 1)
 # fit of the good distribution
 fgamma <- fitdist(x, "gamma")
@@ -196,7 +193,6 @@ g$cvmtest
 g$kstest
 
 ## ----fig.height=3.5, fig.width=7----------------------------------------------
-set.seed(1234)
 x1 <- rpois(n = 100, lambda = 100)
 f1 <- fitdist(x1, "norm")
 g1 <- gofstat(f1)
@@ -212,7 +208,6 @@ denscomp(f1, demp = TRUE, addlegend = FALSE, main = "small sample")
 denscomp(f2, demp = TRUE, addlegend = FALSE, main = "big sample")
 
 ## ----fig.height=3.5, fig.width=7----------------------------------------------
-set.seed(1234)
 x3 <- rpois(n = 500, lambda = 1)
 f3 <- fitdist(x3, "norm")
 g3 <- gofstat(f3)
@@ -234,7 +229,6 @@ g4$chisqtable
 g4$chisqpvalue
 
 ## -----------------------------------------------------------------------------
-set.seed(1234)
 g <- rgamma(100, shape = 2, rate = 1)
 (f <- fitdist(g, "gamma"))
 (f0 <- fitdist(g, "exp"))
@@ -401,7 +395,6 @@ for(i in 0:5)
 cat(10^(-2*i), try(mledist(dataFAQscale2*10^(-2*i), "cauchy")$estimate), "\n")
 
 ## ----scalenormal, echo=TRUE, warning=FALSE------------------------------------
-set.seed(1234)
 x <- rnorm(1000, 1, 2)
 fitdist(x, "norm", lower=c(-Inf, 0))
 
@@ -671,7 +664,6 @@ matpar <- cbind(
 showpar(matpar)
 
 ## ----fig.height=4, fig.width=4, warning = FALSE-------------------------------
-set.seed(1234)
 n <- rnorm(30, mean = 10, sd = 2)
 fn <- fitdist(n, "norm")
 bn <- bootdist(fn)
@@ -681,7 +673,6 @@ par(mfrow=c(1,1), mar=c(4,4,2,1))
 llplot(fn, back.col = FALSE, fit.show=TRUE)
 
 ## ----fig.height=4, fig.width=4, warning = FALSE-------------------------------
-set.seed(1234)
 g <- rgamma(30, shape = 0.1, rate = 10)
 fg <- fitdist(g, "gamma")
 bg <- bootdist(fg)

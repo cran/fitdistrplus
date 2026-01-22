@@ -1,6 +1,6 @@
 ## ----setup, echo=FALSE, message=FALSE, warning=FALSE--------------------------
 options(digits = 4)
-set.seed(1234)
+set.seed(123) # here just to make random sampling reproducible
 
 ## ----datgroundbeef, echo=TRUE-------------------------------------------------
 require("fitdistrplus")

@@ -1,7 +1,7 @@
 ## ----setup, echo=FALSE, message=FALSE, warning=FALSE--------------------------
 require("fitdistrplus")
 require("knitr") # for kable() function
-set.seed(12345)
+set.seed(123) # here just to make random sampling reproducible
 options(digits = 3)
 
 ## ----echo=TRUE, eval=FALSE----------------------------------------------------
