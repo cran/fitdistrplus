@@ -12,7 +12,7 @@
 
 <meta name="author" content="Marie Laure Delignette Muller, Christophe Dutang" />
 
-<meta name="date" content="2026-01-22" />
+<meta name="date" content="2026-01-23" />
 
 <title>Frequently Asked Questions</title>
 
@@ -327,7 +327,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">Frequently Asked Questions</h1>
 <h4 class="author">Marie Laure Delignette Muller, Christophe Dutang</h4>
-<h4 class="date">2026-01-22</h4>
+<h4 class="date">2026-01-23</h4>
 
 
 <div id="TOC">
@@ -1225,10 +1225,10 @@ We observe a certain dependency so that the product of shape parameters is almos
 <p>In terms of computation time, we retrieve that the Nelder-Mead algorithm is slower.</p>
 <div class="sourceCode" id="cb113"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb113-1"><a href="#cb113-1" tabindex="-1"></a><span class="fu">system.time</span>(<span class="fu">fitdist</span>(danishuni<span class="sc">$</span>Loss, <span class="st">&quot;burr&quot;</span>, <span class="at">upper=</span><span class="dv">100</span>))</span></code></pre></div>
 <pre><code>## utilisateur     système      écoulé 
-##       0.327       0.000       0.326</code></pre>
+##       0.453       0.000       0.453</code></pre>
 <div class="sourceCode" id="cb115"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb115-1"><a href="#cb115-1" tabindex="-1"></a><span class="fu">system.time</span>(<span class="fu">fitdist</span>(danishuni<span class="sc">$</span>Loss, <span class="st">&quot;burr&quot;</span>, <span class="at">lower=</span>.Machine<span class="sc">$</span>double.eps, <span class="at">optim.method=</span><span class="st">&quot;L-BFGS-B&quot;</span>))</span></code></pre></div>
 <pre><code>## utilisateur     système      écoulé 
-##       0.122       0.000       0.122</code></pre>
+##       0.193       0.000       0.193</code></pre>
 </div>
 <div id="why-distribution-with-a-log-argument-may-converge-better" class="section level2">
 <h2>3.3 Why distribution with a <code>log</code> argument may converge better?</h2>
